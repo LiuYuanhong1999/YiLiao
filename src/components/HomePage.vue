@@ -73,16 +73,6 @@ export default {
   name: "Home",
   data() {
     return{
-      //左侧菜单数据
-      menulist: [125,1903],
-      // 定义菜单的icon用一级菜单的id作为key
-      iconObj: {
-        '125': 'el-icon-s-marketing',
-        '103': 'el-icon-warning',
-        '101': 'el-icon-s-goods',
-        '102': 'el-icon-s-order',
-        '145': 'el-icon-s-marketing',
-      },
       isCollapse: false,  // 这里false 没有引号
 
     }
