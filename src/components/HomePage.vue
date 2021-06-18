@@ -1,0 +1,178 @@
+<template>
+  <el-container class="home-container" style="height: 656px">
+    <el-header class="home-header">
+      <div>
+        <img src="../assets/64.gif" alt=""/>
+        <span>医疗管理系统</span>
+      </div>
+      <el-button @click="logout">退出</el-button>
+    </el-header>
+    <el-container>
+      <!-- 点击折叠按钮后菜单宽度的变化 -->
+      <el-aside :width="isCollapse ? '64px' : '200px'" class="home-aside">
+        <div class="toggle-button" @click="toggleCollapse">|||</div>
+        <el-menu
+            default-active="2"
+            class="el-menu-vertical-demo"
+            @open="handleOpen"
+            @close="handleClose"
+            background-color="#262626"
+            text-color="#fff"
+            active-text-color="#2c8aee"
+            unique-opened
+            :collapse="isCollapse"
+            :collapse-transition="false">  <!--active-text-color设置二级菜单的文字颜色-->  <!--unique-opened设置一次只能打开一个菜单-->
+
+          <el-submenu index="1">
+            <template #title>
+              <i class="el-icon-user"></i>
+              <span>护士管理系统</span>
+            </template>
+            <el-menu-item-group>
+              <template #title>护士信息管理</template>
+              <el-menu-item index="1-1">选项1</el-menu-item>
+              <el-menu-item index="1-2">选项2</el-menu-item>
+            </el-menu-item-group>
+            <el-menu-item-group title="分组2">
+              <el-menu-item index="1-3">选项3</el-menu-item>
+            </el-menu-item-group>
+            <el-submenu index="1-4">
+              <template #title>选项4</template>
+              <el-menu-item index="1-4-1">选项1</el-menu-item>
+            </el-submenu>
+          </el-submenu>
+          <el-menu-item index="2">
+            <i class="el-icon-menu"></i>
+            <template #title>医生</template>
+          </el-menu-item>
+          <el-menu-item index="3" disabled>
+            <i class="el-icon-document"></i>
+            <template #title>前台</template>
+          </el-menu-item>
+          <el-menu-item index="4">
+            <i class="el-icon-setting"></i>
+            <template #title>药房</template>
+          </el-menu-item>
+
+          <el-menu-item index="4">
+            <i class="el-icon-setting"></i>
+            <template #title>药库</template>
+          </el-menu-item>
+        </el-menu>
+      </el-aside>
+      <el-main class="home-main">
+      <router-view/>
+
+      </el-main>
+    </el-container>
+  </el-container>
+</template>
+
+<script>
+export default {
+  name: "Home",
+  data() {
+    return{
+      //左侧菜单数据
+      menulist: [125,1903],
+      // 定义菜单的icon用一级菜单的id作为key
+      iconObj: {
+        '125': 'el-icon-s-marketing',
+        '103': 'el-icon-warning',
+        '101': 'el-icon-s-goods',
+        '102': 'el-icon-s-order',
+        '145': 'el-icon-s-marketing',
+      },
+      isCollapse: false,  // 这里false 没有引号
+
+    }
+  },
+  created() {
+    this.getMenuList();
+  },
+  methods: {
+    logout() {
+      // 删除本地的token
+      window.sessionStorage.clear();
+      // 用编程式路由跳转到登录页面
+      this.$router.push('/')
+    },
+    // 获取所有菜单
+    async getMenuList() {
+      //结构赋值
+      const {data: res} = await this.$http.get('menus')
+      //如果非200 提示meta里面的msg信息
+      if(res.meta.status !== 200) return this.$message.error(res.meta.msg)
+      //如果200 将data传给menulist
+      this.menulist = res.data
+      console.log(res)
+    },
+    // 点击折叠按钮切换bool值
+    toggleCollapse() {
+      this.isCollapse = !this.isCollapse;
+
+    },
+    handleOpen(key, keyPath) {
+      console.log(key, keyPath);
+    },
+    handleClose(key, keyPath) {
+      console.log(key, keyPath);
+    }
+
+  }
+}
+</script>
+
+<style lang="less" scoped>
+// header 的背景色
+.home-header {
+  background-color: #242424;
+  display: flex;
+  // 左右两边对齐
+  justify-content: space-between;
+  //左边icon 到左边不留空
+  padding-left: 0;
+  //退出按钮上下居中对齐
+  align-items: center;
+  // 字体的颜色
+  color: #ffffff;
+  // 这里的> 表示控制的是el-header 下的子标签，孙标签不起作用
+  > div {
+    display: flex;
+    align-items: center;
+
+    span {
+      margin-left: 15px;
+    }
+  }
+}
+
+// 左边栏的背景色
+.home-aside {
+  background-color: #262626;
+  // 解决左侧菜单栏有边框不齐的问题
+  .el-menu {
+    border-right: none;
+  }
+}
+
+// 主区域的背景色
+.home-main {
+  background-color: #d8d8d8;
+}
+
+// 布局撑满全屏
+.home-container {
+  height: 100%;
+}
+.toggle-button {
+  background-color: #404040;
+  font-size: 15px;
+  color: #eeeeee;
+  text-align: center;
+  letter-spacing: 0.2em;
+  cursor: pointer;
+
+}
+
+</style>
