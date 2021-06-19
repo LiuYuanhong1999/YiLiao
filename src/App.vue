@@ -24,5 +24,11 @@ import HelloWorld from './components/HelloWorld.vue'
   color: #2c3e50;
   width: 100%;
   height: 100%;
+  margin-top: auto;
+}
+
+html,body,#app{
+  height: 100%;
+  background:rgba(38, 24, 49,.6);
 }
 </style>

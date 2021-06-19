@@ -1,5 +1,5 @@
 <template>
-  <el-container class="home-container" style="height: 656px">
+  <el-container class="home-container" style="height: 100%">
     <el-header class="home-header">
       <div>
         <img src="../assets/64.gif" alt=""/>
@@ -41,23 +41,34 @@
               <el-menu-item index="1-4-1">选项1</el-menu-item>
             </el-submenu>
           </el-submenu>
+
+
           <el-menu-item index="2">
             <i class="el-icon-menu"></i>
             <template #title>医生</template>
           </el-menu-item>
-          <el-menu-item index="3" disabled>
+          <el-menu-item index="3" >
             <i class="el-icon-document"></i>
             <template #title>前台</template>
           </el-menu-item>
           <el-menu-item index="4">
             <i class="el-icon-setting"></i>
             <template #title>药房</template>
+
+
+
           </el-menu-item>
 
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <template #title>药库</template>
-          </el-menu-item>
+
+
+          <el-submenu index="5">
+            <template #title>
+              <i class="el-icon-user"></i>
+              <span>药库</span>
+            </template>
+            <el-menu-item index="5-1">管理</el-menu-item>
+          </el-submenu>
+
         </el-menu>
       </el-aside>
       <el-main class="home-main">
@@ -153,7 +164,7 @@ export default {
 
 // 布局撑满全屏
 .home-container {
-  height: 100%;
+    width: 100%;
 }
 .toggle-button {
   background-color: #404040;
