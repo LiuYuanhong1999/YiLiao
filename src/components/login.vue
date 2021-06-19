@@ -2,7 +2,7 @@
 
   <div class="login" style="height: 100%;margin-top: -91px" >
     <div class="loginContainer">
-      <h2 class="title">安逸医院内部管理系统登录</h2>
+      <h2 class="title">医院内部管理系统登录</h2>
       <el-form ref="loginForm" :model="loginForm" label-width="80px">
         <el-form-item prop="userName">
           <el-input prefix-icon="el-icon-user" placeholder="请输入用户名" v-model="loginForm.userName"></el-input>
@@ -15,8 +15,8 @@
 
         </el-form-item>
       </el-form>
-      <p class="tips">本系统有六个测试的用户账号为root、doctor、nurse、checkstand、pharmacist、pharmacy，
-        密码为各自用户名，例如root用户的密码为root。其中最高权限是root用户 </p>
+<!--      <p class="tips">本系统有六个测试的用户账号为root、doctor、nurse、checkstand、pharmacist、pharmacy，-->
+<!--        密码为各自用户名，例如root用户的密码为root。其中最高权限是root用户 </p>-->
     </div>
   </div>
 </template>
@@ -44,14 +44,19 @@ name: "login",
           .then(res=>{
             console.log(res.data);
             if(typeof(res.data) == 'string'){
+
               this.$message.error(res.data);
             }else{
+              
+              window.sessionStorage.setItem("token",JSON.stringify(res.data));
               this.$router.push("/s");
             }
           });
     },
   },
   created() {
+    //先清空
+    window.sessionStorage.removeItem("token");
   }
 }
 </script>

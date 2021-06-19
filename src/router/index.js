@@ -11,7 +11,11 @@ const routes=[
         name: 'HomePage',
         component:()=>import('/src/components/HomePage.vue'),
         children:[
-
+            {
+              path:'/recipe',
+                name:'recipe',
+                component:()=>import('/src/components/LYH/recipe.vue'),
+            },
         ],
     }
 ];

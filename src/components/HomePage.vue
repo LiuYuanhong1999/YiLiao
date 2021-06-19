@@ -5,6 +5,7 @@
         <img src="../assets/64.gif" alt=""/>
         <span>医疗管理系统</span>
       </div>
+      {{user.userName}}
       <el-button @click="logout">退出</el-button>
     </el-header>
     <el-container>
@@ -51,15 +52,28 @@
             <i class="el-icon-document"></i>
             <template #title>前台</template>
           </el-menu-item>
-          <el-menu-item index="4">
-            <i class="el-icon-setting"></i>
-            <template #title>药房</template>
 
 
+          <el-submenu index="4">
+            <template #title>
+              <i class="el-icon-user"></i>
+              <span>药房</span>
+            </template>
+            <el-menu-item-group>
+              <template #title>中药房</template>
 
-          </el-menu-item>
+                <el-menu-item index="4-1"> <router-link to="/recipe">处理处方 </router-link></el-menu-item>
 
 
+              <el-menu-item index="4-2">选项2</el-menu-item>
+            </el-menu-item-group>
+
+            <el-menu-item-group>
+              <template #title>西药房</template>
+              <el-menu-item index="4-3">选项1</el-menu-item>
+              <el-menu-item index="4-4">选项2</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
 
           <el-submenu index="5">
             <template #title>
@@ -85,11 +99,15 @@ export default {
   data() {
     return{
       isCollapse: false,  // 这里false 没有引号
-
+      user:{
+        userId:'',
+        userName:'',
+      },
     }
   },
   created() {
     this.getMenuList();
+    this.user = eval("("+window.sessionStorage.getItem("token")+")");
   },
   methods: {
     logout() {
@@ -120,7 +138,8 @@ export default {
       console.log(key, keyPath);
     }
 
-  }
+  },
+
 }
 </script>
 
