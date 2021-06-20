@@ -14,7 +14,7 @@
   <!--表头-->
   <el-row>
     <el-col :span="4">
-      <el-input placeholder="请输入审批单号" v-model="eaaOrderNumber"  ></el-input>
+      <el-input placeholder="请输入药品名" v-model="eaaOrderNumber"  ></el-input>
     </el-col>
 
     <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
@@ -23,9 +23,11 @@
   </el-row>
   <el-table
 
-      stripe
-      style="width: 100%"
+
       :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+      border stripe style="width: 100%;margin-top: 10px"
+      :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"
+      :cell-style="{'text-align':'center'}"
   >
     <el-table-column
         prop="eId"
@@ -249,6 +251,6 @@ a {
 }
 .fy_div{
   margin-top:20px;
-  margin-left: 450px;
+  margin-left: -200px;
 }
 </style>
