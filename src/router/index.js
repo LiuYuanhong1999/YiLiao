@@ -39,58 +39,58 @@ const routes=[
             },
 
 
-            // {
-            //     path:'/relieve',
-            //     name:'relieveManager',
-            //     component:()=>import('/src/components/ZSX/opc/relieveManager.vue')
-            //     // meta:'门诊解锁'
-            // },
-            // //住院
-            // {
-            //     path: '/zytz',
-            //     name:'zytz',
-            //     component:()=>import('/src/components/TYH/zytz.vue'),
-            // },
-            // {
-            //     path: '/zydj',
-            //     name:'zydj',
-            //     component:()=>import('/src/components/TYH/zydj.vue'),
-            // },
-            // {
-            //     path: '/yjsq',
-            //     name:'yjsq',
-            //     component:()=>import('/src/components/TYH/yjsq.vue'),
-            // },
-            // {
-            //     path: '/cytz',
-            //     name:'cytz',
-            //     component:()=>import('/src/components/TYH/cytz.vue'),
-            // },
-            // {
-            //     path: '/zyfyjz',
-            //     name:'zyfyjz',
-            //     component:()=>import('/src/components/TYH/zyfyjz.vue'),
-            // },
-            // {
-            //     path: '/yjtf',
-            //     name:'yjtf',
-            //     component:()=>import('/src/components/TYH/yjtf.vue'),
-            // },
-            // {
-            //     path: '/cyjl',
-            //     name:'cyjl',
-            //     component:()=>import('/src/components/TYH/cyjl.vue'),
-            // },
-            // {
-            //     path: '/zysd',
-            //     name:'zysd',
-            //     component:()=>import('/src/components/TYH/zysd.vue'),
-            // },
-            // {
-            //     path: '/zyjs',
-            //     name:'zyjs',
-            //     component:()=>import('/src/components/TYH/zyjs.vue'),
-            // },
+            {
+                path:'/relieve',
+                name:'relieveManager',
+                component:()=>import('/src/components/ZSX/opc/relieveManager.vue')
+                // meta:'门诊解锁'
+            },
+            //住院
+            {
+                path: '/zytz',
+                name:'zytz',
+                component:()=>import('/src/components/TYH/zytz.vue'),
+            },
+            {
+                path: '/zydj',
+                name:'zydj',
+                component:()=>import('/src/components/TYH/zydj.vue'),
+            },
+            {
+                path: '/yjsq',
+                name:'yjsq',
+                component:()=>import('/src/components/TYH/yjsq.vue'),
+            },
+            {
+                path: '/cytz',
+                name:'cytz',
+                component:()=>import('/src/components/TYH/cytz.vue'),
+            },
+            {
+                path: '/zyfyjz',
+                name:'zyfyjz',
+                component:()=>import('/src/components/TYH/zyfyjz.vue'),
+            },
+            {
+                path: '/yjtf',
+                name:'yjtf',
+                component:()=>import('/src/components/TYH/yjtf.vue'),
+            },
+            {
+                path: '/cyjl',
+                name:'cyjl',
+                component:()=>import('/src/components/TYH/cyjl.vue'),
+            },
+            {
+                path: '/zysd',
+                name:'zysd',
+                component:()=>import('/src/components/TYH/zysd.vue'),
+            },
+            {
+                path: '/zyjs',
+                name:'zyjs',
+                component:()=>import('/src/components/TYH/zyjs.vue'),
+            },
 
         // {
         //     path: "/tyh",

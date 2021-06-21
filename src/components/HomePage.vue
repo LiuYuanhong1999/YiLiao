@@ -8,8 +8,6 @@
       <div style="margin-left: 1040px">
         <el-color-picker v-model="themeVal" ></el-color-picker>
       </div>
-      {{themeVal}}
-      {{color}}
       <div class="tt" title="全屏" @click="screenCli()"><img src="/src/assets/screen.png"></div>
       {{user.userName}}
       <el-button @click="logout">退出</el-button>
@@ -31,37 +29,53 @@
             :collapse="isCollapse"
             :collapse-transition="false">  <!--active-text-color设置二级菜单的文字颜色-->  <!--unique-opened设置一次只能打开一个菜单-->
 
+
           <el-submenu index="1">
             <template #title>
               <i class="el-icon-user"></i>
-              <span>护士管理系统</span>
+              <span>门诊管理</span>
             </template>
             <el-menu-item-group>
-              <template #title>护士信息管理</template>
-              <el-menu-item index="1-1">选项1</el-menu-item>
-              <el-menu-item index="1-2">选项2</el-menu-item>
+              <template #title>挂号信息管理</template>
+              <el-menu-item index="1-1"><router-link to="/registration">挂号管理</router-link></el-menu-item>
+              <el-menu-item index="1-2"><router-link to="/charging">划价管理</router-link></el-menu-item>
             </el-menu-item-group>
-            <el-menu-item-group title="分组2">
-              <el-menu-item index="1-3">选项3</el-menu-item>
+            <el-menu-item-group title="门诊">
+              <el-menu-item index="1-3"><router-link to="/charge">门诊收费</router-link></el-menu-item>
+              <el-menu-item index="1-4"><router-link to="/lock">门诊锁定</router-link></el-menu-item>
+              <el-menu-item index="1-5"><router-link to="/relieve">门诊解锁</router-link></el-menu-item>
             </el-menu-item-group>
-            <el-submenu index="1-4">
-              <template #title>选项4</template>
-              <el-menu-item index="1-4-1">选项1</el-menu-item>
-            </el-submenu>
           </el-submenu>
 
-
-          <el-menu-item index="2">
+          <el-submenu index="2">
             <i class="el-icon-menu"></i>
-            <template #title>医生</template>
-          </el-menu-item>
-          <el-menu-item index="3" >
+            <template #title>医生工作站</template>
+            <el-menu-item index="2-1">门诊处方</el-menu-item>
+            <el-menu-item index="2-2">住院医嘱</el-menu-item>
+            <el-menu-item index="2-3">临时医嘱</el-menu-item>
+          </el-submenu>
+
+          <el-submenu index="3">
+            <i class="el-icon-menu"></i>
+            <template #title>住院管理</template>
+            <el-menu-item index="3-1"><router-link to="/zytz">住院通知</router-link></el-menu-item>
+            <el-menu-item index="3-2"><router-link to="/zydj">住院登记</router-link></el-menu-item>
+            <el-menu-item index="3-3"><router-link to="/yjsq">押金收取</router-link></el-menu-item>
+            <el-menu-item index="3-5"><router-link to="/cytz">出院通知</router-link></el-menu-item>
+            <el-menu-item index="3-6"><router-link to="/zyfyjz">住院费用结账</router-link></el-menu-item>
+            <el-menu-item index="3-7"><router-link to="/yjtf">押金退费</router-link></el-menu-item>
+            <el-menu-item index="3-8"><router-link to="/cyjl">出院记录</router-link></el-menu-item>
+            <el-menu-item index="3-9"><router-link to="/zysd">住院锁定</router-link></el-menu-item>
+            <el-menu-item index="3-10"><router-link to="/zyjs">住院解锁</router-link></el-menu-item>
+          </el-submenu>
+
+          <el-menu-item index="4" >
             <i class="el-icon-document"></i>
             <template #title>前台</template>
           </el-menu-item>
 
 
-          <el-submenu index="4">
+          <el-submenu index="5">
             <template #title>
               <i class="el-icon-user"></i>
               <span>药房</span>
@@ -69,32 +83,51 @@
             <el-menu-item-group>
               <template #title>中药房</template>
 
-              <el-menu-item index="4-1"> <router-link to="/recipe">处理处方 </router-link></el-menu-item>
+              <el-menu-item index="5-1"> <router-link to="/recipe">处理处方 </router-link></el-menu-item>
 
 
-              <el-menu-item index="4-2"><router-link to="/drugInfosC">药品库存</router-link></el-menu-item>
-              <el-menu-item index="4-3"><router-link to="/drugApplyC">药品调拨</router-link></el-menu-item>
+              <el-menu-item index="5-2"><router-link to="/drugInfosC">药品库存</router-link></el-menu-item>
+              <el-menu-item index="5-3"><router-link to="/drugApplyC">药品调拨</router-link></el-menu-item>
             </el-menu-item-group>
 
             <el-menu-item-group>
               <template #title>西药房</template>
-              <el-menu-item index="4-1"> <router-link to="/Xrecipe">处理处方 </router-link></el-menu-item>
+              <el-menu-item index="5-4"> <router-link to="/Xrecipe">处理处方 </router-link></el-menu-item>
 
 
-              <el-menu-item index="4-2"><router-link to="/XdrugInfosC">药品库存</router-link></el-menu-item>
-              <el-menu-item index="4-3"><router-link to="/XdrugApplyC">药品调拨</router-link></el-menu-item>
+              <el-menu-item index="5-5"><router-link to="/XdrugInfosC">药品库存</router-link></el-menu-item>
+              <el-menu-item index="5-6"><router-link to="/XdrugApplyC">药品调拨</router-link></el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
-          <el-submenu index="5">
+          <el-submenu index="6">
             <template #title>
               <i class="el-icon-user"></i>
               <span>药库</span>
             </template>
-            <el-menu-item index="5-1">进药</el-menu-item>
-            <el-menu-item index="5-2">查看药库</el-menu-item>
+            <el-menu-item index="6-1">进药</el-menu-item>
+            <el-menu-item index="6-2">查看药库</el-menu-item>
+          </el-submenu>
+          <el-submenu index="7">
+            <template #title>
+              <i class="el-icon-user"></i>
+              <span>手术管理</span>
+            </template>
+            <el-menu-item index="7-1">管理</el-menu-item>
           </el-submenu>
 
+
+          <el-submenu index="8">
+            <template #title>
+              <i class="el-icon-user"></i>
+              <span>护士工作站</span>
+            </template>
+            <el-menu-item index="8-1">住院发药记账</el-menu-item>
+            <el-menu-item index="8-2">住院治疗记账</el-menu-item>
+            <el-menu-item index="8-3">住院医嘱执行</el-menu-item>
+            <el-menu-item index="8-4">门诊医嘱执行</el-menu-item>
+            <el-menu-item index="8-5">住院发药</el-menu-item>
+          </el-submenu>
         </el-menu>
       </el-aside>
       <el-main class="home-main">
