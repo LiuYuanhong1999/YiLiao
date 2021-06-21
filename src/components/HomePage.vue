@@ -5,13 +5,13 @@
         <img src="../assets/64.gif" alt=""/>
         <span>医疗管理系统</span>
       </div>
-<div style="margin-left: 1040px">
-  <el-color-picker v-model="themeVal" ></el-color-picker>
-</div>
-{{themeVal}}
-{{color}}
+      <div style="margin-left: 1040px">
+        <el-color-picker v-model="themeVal" ></el-color-picker>
+      </div>
+      {{themeVal}}
+      {{color}}
       <div class="tt" title="全屏" @click="screenCli()"><img src="/src/assets/screen.png"></div>
-    {{user.userName}}
+      {{user.userName}}
       <el-button @click="logout">退出</el-button>
     </el-header>
 
@@ -69,16 +69,20 @@
             <el-menu-item-group>
               <template #title>中药房</template>
 
-                <el-menu-item index="4-1"> <router-link to="/recipe">处理处方 </router-link></el-menu-item>
+              <el-menu-item index="4-1"> <router-link to="/recipe">处理处方 </router-link></el-menu-item>
 
 
-              <el-menu-item index="4-2">选项2</el-menu-item>
+              <el-menu-item index="4-2"><router-link to="/drugInfosC">药品库存</router-link></el-menu-item>
+              <el-menu-item index="4-3"><router-link to="/drugApplyC">药品调拨</router-link></el-menu-item>
             </el-menu-item-group>
 
             <el-menu-item-group>
               <template #title>西药房</template>
-              <el-menu-item index="4-3">选项1</el-menu-item>
-              <el-menu-item index="4-4">选项2</el-menu-item>
+              <el-menu-item index="4-1"> <router-link to="/Xrecipe">处理处方 </router-link></el-menu-item>
+
+
+              <el-menu-item index="4-2"><router-link to="/XdrugInfosC">药品库存</router-link></el-menu-item>
+              <el-menu-item index="4-3"><router-link to="/XdrugApplyC">药品调拨</router-link></el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -87,13 +91,14 @@
               <i class="el-icon-user"></i>
               <span>药库</span>
             </template>
-            <el-menu-item index="5-1">管理</el-menu-item>
+            <el-menu-item index="5-1">进药</el-menu-item>
+            <el-menu-item index="5-2">查看药库</el-menu-item>
           </el-submenu>
 
         </el-menu>
       </el-aside>
       <el-main class="home-main">
-      <router-view/>
+        <router-view/>
 
       </el-main>
     </el-container>
@@ -101,22 +106,43 @@
 </template>
 
 <script>
+// import topTheme from "/src/components/LYH/top/top-theme.vue";
+// import topLock from "/src/components/LYH/top/top-lock.vue";
+// import theme from "/src/mixins/theme.js";
+import screenfull from 'screenfull'
 export default {
   name: "Home",
   data() {
     return{
+      themeVal:"",
+      chalk: "",
       isCollapse: false,  // 这里false 没有引号
       user:{
         userId:'',
         userName:'',
       },
+      color:{
+        backgroundColor:"1"
+      }
     }
+  },
+  mounted() {
   },
   created() {
     this.getMenuList();
     this.user = eval("("+window.sessionStorage.getItem("token")+")");
   },
   methods: {
+    screenCli(){
+      if (!screenfull.enabled) { // 如果不允许进入全屏，发出不允许提示
+        this.$message({
+          message: '不支持全屏',
+          type: 'warning'
+        })
+        return false
+      }
+      screenfull.toggle()
+    },
     logout() {
       // 删除本地的token
       window.sessionStorage.clear();
@@ -136,7 +162,6 @@ export default {
     // 点击折叠按钮切换bool值
     toggleCollapse() {
       this.isCollapse = !this.isCollapse;
-
     },
     handleOpen(key, keyPath) {
       console.log(key, keyPath);
@@ -144,16 +169,14 @@ export default {
     handleClose(key, keyPath) {
       console.log(key, keyPath);
     }
-
   },
-
 }
 </script>
 
 <style lang="less" scoped>
 // header 的背景色
 .home-header {
-  background-color: #242424;
+  //background-color: #242424;
   display: flex;
   // 左右两边对齐
   justify-content: space-between;
@@ -167,13 +190,11 @@ export default {
   > div {
     display: flex;
     align-items: center;
-
     span {
       margin-left: 15px;
     }
   }
 }
-
 // 左边栏的背景色
 .home-aside {
   background-color: #262626;
@@ -182,15 +203,13 @@ export default {
     border-right: none;
   }
 }
-
 // 主区域的背景色
 .home-main {
   background-color: #d8d8d8;
 }
-
 // 布局撑满全屏
 .home-container {
-    width: 100%;
+  width: 100%;
 }
 .toggle-button {
   background-color: #404040;
@@ -199,7 +218,7 @@ export default {
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
-
 }
-
+.tt{
+}
 </style>
