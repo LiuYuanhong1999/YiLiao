@@ -72,17 +72,13 @@
                 <el-menu-item index="4-1"> <router-link to="/recipe">处理处方 </router-link></el-menu-item>
 
 
-              <el-menu-item index="4-2"><router-link to="/drugInfosC">药品库存</router-link></el-menu-item>
-              <el-menu-item index="4-3"><router-link to="/drugApplyC">药品调拨</router-link></el-menu-item>
+              <el-menu-item index="4-2">选项2</el-menu-item>
             </el-menu-item-group>
 
             <el-menu-item-group>
               <template #title>西药房</template>
-              <el-menu-item index="4-1"> <router-link to="/Xrecipe">处理处方 </router-link></el-menu-item>
-
-
-              <el-menu-item index="4-2"><router-link to="/XdrugInfosC">药品库存</router-link></el-menu-item>
-              <el-menu-item index="4-3"><router-link to="/XdrugApplyC">药品调拨</router-link></el-menu-item>
+              <el-menu-item index="4-3">选项1</el-menu-item>
+              <el-menu-item index="4-4">选项2</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -91,8 +87,7 @@
               <i class="el-icon-user"></i>
               <span>药库</span>
             </template>
-            <el-menu-item index="5-1">进药</el-menu-item>
-            <el-menu-item index="5-2">查看药库</el-menu-item>
+            <el-menu-item index="5-1">管理</el-menu-item>
           </el-submenu>
 
         </el-menu>
@@ -106,57 +101,22 @@
 </template>
 
 <script>
-// import topTheme from "/src/components/LYH/top/top-theme.vue";
-// import topLock from "/src/components/LYH/top/top-lock.vue";
-// import theme from "/src/mixins/theme.js";
-import screenfull from 'screenfull'
-
 export default {
   name: "Home",
-
   data() {
     return{
-      themeVal:"",
-      chalk: "",
       isCollapse: false,  // 这里false 没有引号
       user:{
         userId:'',
         userName:'',
       },
-
-      color:{
-        backgroundColor:"1"
-      }
-
-
-
     }
-
-  },
-  mounted() {
-
   },
   created() {
     this.getMenuList();
     this.user = eval("("+window.sessionStorage.getItem("token")+")");
   },
   methods: {
-    screenCli(){
-      if (!screenfull.enabled) { // 如果不允许进入全屏，发出不允许提示
-        this.$message({
-          message: '不支持全屏',
-          type: 'warning'
-        })
-        return false
-      }
-      screenfull.toggle()
-
-    },
-
-
-
-
-
     logout() {
       // 删除本地的token
       window.sessionStorage.clear();
@@ -193,7 +153,7 @@ export default {
 <style lang="less" scoped>
 // header 的背景色
 .home-header {
-  //background-color: #242424;
+  background-color: #242424;
   display: flex;
   // 左右两边对齐
   justify-content: space-between;
@@ -241,7 +201,5 @@ export default {
   cursor: pointer;
 
 }
-.tt{
 
-}
 </style>
