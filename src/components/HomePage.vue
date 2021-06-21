@@ -91,7 +91,8 @@
               <i class="el-icon-user"></i>
               <span>药库</span>
             </template>
-            <el-menu-item index="5-1">管理</el-menu-item>
+            <el-menu-item index="5-1">进药</el-menu-item>
+            <el-menu-item index="5-2">查看药库</el-menu-item>
           </el-submenu>
 
         </el-menu>
