@@ -9,7 +9,6 @@
             <el-breadcrumb-item>划价管理</el-breadcrumb-item>
         </el-breadcrumb>
 
-
         <el-card>
             <!--表头-->
             <el-row>
@@ -85,32 +84,316 @@
 
         </el-card>
         <el-dialog
-                title="提示"
+                title="划价管理"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
             <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工姓名" prop="eName">
-                            <el-input v-model="ruleForm.eName"></el-input>
-
+                        <el-form-item label="划价编号" prop="eName">
+                            <el-input v-model="ruleForm.eName" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="员工性别" prop="eSex">
+                        <el-form-item label="状态" prop="eSex">
+                            <el-select v-model="value" disabled placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="操作人" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="划价日期" prop="eSex">
+                            <el-date-picker
+                                    v-model="value1"
+                                    type="date"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="门诊号" prop="eSex">
+                            <el-input v-model="ruleForm.eSex" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="处方号" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="病人姓名" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-tabs @tab-click="handleClick">
+                        <el-tab-pane label="医疗">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="收费项目编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费项目名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="数量">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单位">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单价">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="状态">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="药品">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="药品编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="药品名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="数量">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单价">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="状态">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="检验">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="检验项目编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="检验项目名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="数量">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单价">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="治疗">
+                        <el-table
+                                :data="tableData"
+                                style="width: 100%">
+                            <el-table-column
+                                    prop="date"
+                                    label="收费项目编号">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    label="收费项目名称">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    label="数量">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    label="单价">
+                            </el-table-column>
+                            <el-table-column
+                                    prop="name"
+                                    label="金额">
+                            </el-table-column>
+                        </el-table>
+                    </el-tab-pane>
+                        <el-tab-pane label="设备">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="设备编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="设备名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="数量">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单价">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="耗材">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="耗材编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="耗材名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="数量">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单价">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="手术">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="项目编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="项目名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="数量">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单价">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                    </el-tabs>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="10">
+                        <el-form-item label="总费用" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="应收金额" prop="eSex">
                             <el-input v-model="ruleForm.eSex"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
 
                 <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="员工电话" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
-
-                        </el-form-item>
-                    </el-col>
+                    <el-table
+                            :data="tableData"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="date"
+                                label="收费编号">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="收费类型">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="收费项目">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="项目名称">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="收费日期">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="收费时间">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="金额">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="状态">
+                        </el-table-column>
+                    </el-table>
                 </el-row>
             </el-form>
 

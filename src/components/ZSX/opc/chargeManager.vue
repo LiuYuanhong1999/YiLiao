@@ -85,32 +85,152 @@
 
         </el-card>
         <el-dialog
-                title="提示"
+                title="收费管理"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
             <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工姓名" prop="eName">
-                            <el-input v-model="ruleForm.eName"></el-input>
-
+                        <el-form-item label="门诊收费号" prop="eName">
+                            <el-input v-model="ruleForm.eName" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="员工性别" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
+                        <el-form-item label="状态" prop="eSex">
+                            <el-select v-model="value" disabled placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="收费日期" prop="eSex">
+                            <el-date-picker
+                                    v-model="value1"
+                                    type="date"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="门诊号" prop="eSex">
+                            <el-input v-model="ruleForm.eSex" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="处方号" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="病人姓名" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="应收金额" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="实收金额" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="应退金额" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
 
                 <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="员工电话" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
-
-                        </el-form-item>
-                    </el-col>
+                    <el-tabs v-model="activeName" @tab-click="handleClick">
+                        <el-tab-pane label="未收费" name="first">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="收费编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费类型">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费项目">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费日期">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费时间">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="状态">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="机台号">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="费用清单" name="second">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="收费编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费类型">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费项目">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费日期">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="收费时间">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="状态">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                    </el-tabs>
                 </el-row>
             </el-form>
 

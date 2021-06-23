@@ -5,8 +5,8 @@
 
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
-            <el-breadcrumb-item>门诊管理</el-breadcrumb-item>
-            <el-breadcrumb-item>门诊锁定</el-breadcrumb-item>
+            <el-breadcrumb-item>手术管理</el-breadcrumb-item>
+            <el-breadcrumb-item>手术记录</el-breadcrumb-item>
         </el-breadcrumb>
 
 
@@ -14,7 +14,7 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入门诊锁定号" v-model="eaaOrderNumber"  ></el-input>
+                    <el-input placeholder="请输入审批单号" v-model="eaaOrderNumber"  ></el-input>
                 </el-col>
 
                 <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
@@ -29,27 +29,27 @@
             >
                 <el-table-column
                         prop="eId"
-                        label="门诊锁定号"
+                        label="编号"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eName"
-                        label="门诊号"
+                        label="姓名"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eSex"
-                        label="锁定原因"
+                        label="性别"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="ePhone"
-                        label="操作人"
+                        label="电话"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eDate"
-                        label="锁定日期"
+                        label="入职日期"
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
@@ -85,50 +85,33 @@
 
         </el-card>
         <el-dialog
-                title="门诊锁定"
+                title="提示"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
             <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="门诊锁定号" prop="eName">
+                        <el-form-item label="员工姓名" prop="eName">
                             <el-input v-model="ruleForm.eName"></el-input>
 
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="门诊号" prop="eSex">
+                        <el-form-item label="员工性别" prop="eSex">
                             <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="锁定原因" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="操作人" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="锁定日期" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="说明" prop="eSex">
-                            <el-input
-                                    type="textarea"
-                                    :rows="2"
-                                    placeholder="请输入内容"
-                                    v-model="textarea">
-                            </el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
 
+                <el-row>
+                    <el-col :span="10">
+                        <el-form-item label="员工电话" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
+
+                        </el-form-item>
+                    </el-col>
+                </el-row>
             </el-form>
 
             <template #footer>
@@ -146,9 +129,8 @@
 
 <script>
     import qs from "qs";
-    import {ref} from "vue";
     export default {
-        name: "lockManager",
+        name: "operationNoteManager",
         components: {},
 
 
@@ -164,8 +146,7 @@
                     eSex:'',
                     ePhone:'',
                     eDate:''
-                },
-                textarea: ref('')
+                }
             }
         },
         methods:{
