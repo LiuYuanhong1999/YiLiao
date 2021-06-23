@@ -51,7 +51,7 @@
     </el-table-column>
     <el-table-column
         prop="eDate"
-        label="入职日期"
+        label="地址"
         width="180">
     </el-table-column>
     <el-table-column  label="操作" width="130px">
