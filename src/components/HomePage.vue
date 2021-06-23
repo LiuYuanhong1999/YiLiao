@@ -94,6 +94,39 @@
             <el-menu-item index="5-1">管理</el-menu-item>
           </el-submenu>
 
+
+          <!--    体检管理     -->
+          <el-submenu index="6" >
+            <template #title>
+            <i class="el-icon-user"></i>
+              <span>体检管理</span>
+            </template>
+
+            <el-menu-item index="6-1"> <router-link to="/YxjCategory">体检类别</router-link></el-menu-item>
+            <el-menu-item index="6-2"> <router-link to="/YxjPhysical">体检记录</router-link></el-menu-item>
+
+          </el-submenu>
+
+
+          <!--     权限管理     -->
+          <el-submenu index="7" >
+            <template #title>
+              <i class="el-icon-user"></i>
+              <span>权限管理</span>
+            </template>
+
+            <el-menu-item index="7-1"> <router-link to="/YxjStaff">员工管理</router-link></el-menu-item>
+            <el-menu-item index="7-2"> <router-link to="/YxjDept">部门管理</router-link></el-menu-item>
+            <el-menu-item index="7-3"> <router-link to="/YxjDesk">科室管理</router-link></el-menu-item>
+            <el-menu-item index="7-4"> <router-link to="/YxjShift">班次管理</router-link></el-menu-item>
+            <el-menu-item index="7-5"> <router-link to="/YxjCrew">排班管理</router-link></el-menu-item>
+            <el-menu-item index="7-6"> <router-link to="/YxjPagePer">页面权限</router-link></el-menu-item>
+            <el-menu-item index="7-7"> <router-link to="/YxjRolePer">角色权限</router-link></el-menu-item>
+
+          </el-submenu>
+
+
+
         </el-menu>
       </el-aside>
       <el-main class="home-main">

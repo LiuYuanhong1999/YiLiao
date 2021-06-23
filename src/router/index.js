@@ -13,7 +13,6 @@ const routes=[
         children:[
             //主页
 
-
             //药房
             {
               path:'/recipe',
@@ -43,6 +42,58 @@ const routes=[
                 name: 'XdrugApplyC',
                 component:()=>import('/src/components/LYH/XdrugApplyC.vue')
             },
+            //yxj-体检管理
+            {
+                path: '/Yxjcategory',
+                name: 'Yxjcategory',
+                component:()=>import('/src/components/YXJ/physical/YxjCategory.vue')
+            },
+            {
+                path: '/Yxjphysical',
+                name: 'Yxjphysical',
+                component:()=>import('/src/components/YXJ/physical/YxjPhysical.vue')
+            },
+            //yxj-体检管理结束
+
+            //yxj-权限管理开始
+            {
+                path: '/YxjStaff',
+                name: 'YxjStaff',
+                component:()=>import('/src/components/YXJ/power/YxjStaff.vue')
+            },
+            {
+                path: '/YxjDept',
+                name: 'YxjDept',
+                component:()=>import('/src/components/YXJ/power/YxjDept.vue')
+            },
+            {
+                path: '/YxjDesk',
+                name: 'YxjDesk',
+                component:()=>import('/src/components/YXJ/power/YxjDesk.vue')
+            },
+            {
+                path: '/YxjShift',
+                name: 'YxjShift',
+                component:()=>import('/src/components/YXJ/power/YxjShift.vue')
+            },
+            {
+                path: '/YxjCrew',
+                name: 'YxjCrew',
+                component:()=>import('/src/components/YXJ/power/YxjCrew.vue')
+            },
+            {
+                path: '/YxjPagePer',
+                name: 'YxjPagePer',
+                component:()=>import('/src/components/YXJ/power/YxjPagePer.vue')
+            },
+            {
+                path: '/YxjRolePer',
+                name: 'YxjRolePer',
+                component:()=>import('/src/components/YXJ/power/YxjRolePer.vue')
+            },
+            //yxj-权限管理结束
+
+
         ],
     }
 ];
