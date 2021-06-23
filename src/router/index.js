@@ -11,42 +11,39 @@ const routes=[
         name: 'HomePage',
         component:()=>import('/src/components/HomePage.vue'),
         children:[
-            {
-              path:'/recipe',
-                name:'recipe',
-                component:()=>import('/src/components/LYH/recipe.vue'),
-            },
+            //主页
             //门诊
             {
                 path:'/registration',
                 name:'registrationManager',
                 component:()=>import('/src/components/ZSX/opc/registrationManager.vue'),
-                meta:'挂号管理',
+                // meta:'挂号管理',
             },
             {
                 path:'/charging',
                 name:'chargingManager',
                 component:()=>import('/src/components/ZSX/opc/chargingManager.vue'),
-                meta:'划价管理'
+                // meta:'划价管理'
             },
             {
                 path:'/charge',
                 name:'chargeManager',
                 component:()=>import('/src/components/ZSX/opc/chargeManager.vue'),
-                meta:'门诊收费'
+                // meta:'门诊收费'
             },
             {
                 path:'/lock',
                 name:'lockManager',
                 component:()=>import('/src/components/ZSX/opc/lockManager.vue'),
-                meta:'门诊锁定'
+                // meta:'门诊锁定'
             },
+
 
             {
                 path:'/relieve',
                 name:'relieveManager',
-                component:()=>import('/src/components/ZSX/opc/relieveManager.vue'),
-                meta:'门诊解锁'
+                component:()=>import('/src/components/ZSX/opc/relieveManager.vue')
+                // meta:'门诊解锁'
             },
             //护士工作站
             {
@@ -132,20 +129,122 @@ const routes=[
                 name:'zyjs',
                 component:()=>import('/src/components/TYH/zyjs.vue'),
             },
+
+        // {
+        //     path: "/tyh",
+        //         name: 'HomePage',
+        //         component:()=>import('/src/components/HomePage.vue'),
+        //         children:[
+        //             {
+        //                 path: '/zytz',
+        //                 name:'zytz',
+        //                 component:()=>import('/src/components/tyh/zytz.vue'),
+        //             },
+        //         ],
+        // }
+
+            //药房
+            {
+              path:'/recipe',
+                name:'recipe',
+                component:()=>import('/src/components/LYH/recipe.vue'),
+            },
+            {
+                path: '/drugInfosC',
+                name: 'drugInfosC',
+                component:()=>import('/src/components/LYH/drugInfosC.vue')
+            },{
+                path: '/drugApplyC',
+                name: 'drugApplyC',
+                component:()=>import('/src/components/LYH/drugApplyC.vue')
+            },
+            {
+                path:'/Xrecipe',
+                name:'Xrecipe',
+                component:()=>import('/src/components/LYH/Xrecipe.vue'),
+            },
+            {
+                path: '/XdrugInfosC',
+                name: 'XdrugInfosC',
+                component:()=>import('/src/components/LYH/XdrugInfosC.vue')
+            },{
+                path: '/XdrugApplyC',
+                name: 'XdrugApplyC',
+                component:()=>import('/src/components/LYH/XdrugApplyC.vue')
+            },
+            //药库
+            {
+              path: '/putlnStorage',
+              name: 'putlnStorage'  ,
+                component:()=>import('/src/components/LYH/putlnStorage.vue')
+            },
+
+            // {
+            //   path: '/CheckDrugStorage',
+            //   name: 'CheckDrugStorage',
+            //     component:()=>import('src/components/LYH/CheckDrugStorage.vue')
+            // },
+
+            {
+              path: '/CheckDrugStorage',
+              name: 'CheckDrugStorage',
+              component:()=>import('/src/components/LYH/CheckDrugStorage.vue')
+            },
+
+            //yxj-体检管理
+            {
+                path: '/Yxjcategory',
+                name: 'Yxjcategory',
+                component:()=>import('/src/components/YXJ/physical/YxjCategory.vue')
+            },
+            {
+                path: '/Yxjphysical',
+                name: 'Yxjphysical',
+                component:()=>import('/src/components/YXJ/physical/YxjPhysical.vue')
+            },
+            //yxj-体检管理结束
+
+            //yxj-权限管理开始
+            {
+                path: '/YxjStaff',
+                name: 'YxjStaff',
+                component:()=>import('/src/components/YXJ/power/YxjStaff.vue')
+            },
+            {
+                path: '/YxjDept',
+                name: 'YxjDept',
+                component:()=>import('/src/components/YXJ/power/YxjDept.vue')
+            },
+            {
+                path: '/YxjDesk',
+                name: 'YxjDesk',
+                component:()=>import('/src/components/YXJ/power/YxjDesk.vue')
+            },
+            {
+                path: '/YxjShift',
+                name: 'YxjShift',
+                component:()=>import('/src/components/YXJ/power/YxjShift.vue')
+            },
+            {
+                path: '/YxjCrew',
+                name: 'YxjCrew',
+                component:()=>import('/src/components/YXJ/power/YxjCrew.vue')
+            },
+            {
+                path: '/YxjPagePer',
+                name: 'YxjPagePer',
+                component:()=>import('/src/components/YXJ/power/YxjPagePer.vue')
+            },
+            {
+                path: '/YxjRolePer',
+                name: 'YxjRolePer',
+                component:()=>import('/src/components/YXJ/power/YxjRolePer.vue')
+            },
+            //yxj-权限管理结束
+
+
         ],
-    },
-    // {
-    //     path: "/tyh",
-    //         name: 'HomePage',
-    //         component:()=>import('/src/components/HomePage.vue'),
-    //         children:[
-    //             {
-    //                 path: '/zytz',
-    //                 name:'zytz',
-    //                 component:()=>import('/src/components/tyh/zytz.vue'),
-    //             },
-    //         ],
-    // }
+    }
 ];
 const router=createRouter({
     history:createWebHistory(),

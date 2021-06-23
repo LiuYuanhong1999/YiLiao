@@ -14,7 +14,7 @@
   <!--表头-->
   <el-row>
     <el-col :span="4">
-      <el-input placeholder="请输入审批单号" v-model="eaaOrderNumber"  ></el-input>
+      <el-input placeholder="请输入药品名" v-model="eaaOrderNumber"  ></el-input>
     </el-col>
 
     <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
@@ -23,9 +23,11 @@
   </el-row>
   <el-table
 
-      stripe
-      style="width: 100%"
+
       :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+      border stripe style="width: 100%;margin-top: 10px"
+      :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"
+      :cell-style="{'text-align':'center'}"
   >
     <el-table-column
         prop="eId"
@@ -49,7 +51,7 @@
     </el-table-column>
     <el-table-column
         prop="eDate"
-        label="入职日期"
+        label="地址"
         width="180">
     </el-table-column>
     <el-table-column  label="操作" width="130px">
@@ -85,15 +87,15 @@
 
 </el-card>
   <el-dialog
-      title="提示"
+      title=""
       v-model="dialogVisible"
       width="60%"
       :before-close="handleClose">
     <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
       <el-row>
         <el-col :span="10">
-          <el-form-item label="员工姓名" prop="eName">
-            <el-input v-model="ruleForm.eName"></el-input>
+          <el-form-item label="处方编号" prop="eName">
+            <el-select v-model="ruleForm.eName"></el-select>
 
           </el-form-item>
         </el-col>
@@ -106,9 +108,15 @@
 
       <el-row>
         <el-col :span="10">
-          <el-form-item label="员工电话" prop="eName">
+          <el-form-item label="电话" prop="eName">
             <el-input v-model="ruleForm.ePhone"></el-input>
 
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="10">
+          <el-form-item label="地址">
+            <el-input></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -249,6 +257,6 @@ a {
 }
 .fy_div{
   margin-top:20px;
-  margin-left: 450px;
+  margin-left: -200px;
 }
 </style>

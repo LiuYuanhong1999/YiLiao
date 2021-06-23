@@ -397,7 +397,7 @@
                     })))
                     .then((v) => {
                         this.$message('删除成功！');
-                        this.initData(this.currPage, this.pageSize);
+                        this.initData();
                     })
             },
 
