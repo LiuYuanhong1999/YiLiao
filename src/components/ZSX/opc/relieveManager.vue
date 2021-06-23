@@ -95,33 +95,60 @@
 
         </el-card>
         <el-dialog
-                title="提示"
+                title="门诊解锁"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
             <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工姓名" prop="eName">
+                        <el-form-item label="门诊解锁号" prop="eName">
                             <el-input v-model="ruleForm.eName"></el-input>
 
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="员工性别" prop="eSex">
+                        <el-form-item label="门诊号" prop="eSex">
                             <el-input v-model="ruleForm.eSex"></el-input>
                         </el-form-item>
                     </el-col>
-                </el-row>
-
-                <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工电话" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
-
+                        <el-form-item label="锁定日期" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="锁定原因" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="操作人" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="解锁日期" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="解锁原因" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="说明" prop="eSex">
+                            <el-input
+                                    type="textarea"
+                                    :rows="2"
+                                    placeholder="请输入内容"
+                                    v-model="textarea">
+                            </el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
+
             </el-form>
 
             <template #footer>
@@ -139,6 +166,7 @@
 
 <script>
     import qs from "qs";
+    import {ref} from 'vue'
     export default {
         name: "relieve",
         components: {},
@@ -156,7 +184,8 @@
                     eSex:'',
                     ePhone:'',
                     eDate:''
-                }
+                },
+                textarea: ref('')
             }
         },
         methods:{
