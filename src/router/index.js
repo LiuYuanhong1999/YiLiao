@@ -134,6 +134,25 @@ const routes=[
                 name: 'XdrugApplyC',
                 component:()=>import('/src/components/LYH/XdrugApplyC.vue')
             },
+            //药库
+            {
+              path: '/putlnStorage',
+              name: 'putlnStorage'  ,
+                component:()=>import('/src/components/LYH/putlnStorage.vue')
+            },
+
+            // {
+            //   path: '/CheckDrugStorage',
+            //   name: 'CheckDrugStorage',
+            //     component:()=>import('src/components/LYH/CheckDrugStorage.vue')
+            // },
+
+            {
+              path: '/CheckDrugStorage',
+              name: 'CheckDrugStorage',
+              component:()=>import('/src/components/LYH/CheckDrugStorage.vue')
+            },
+
             //yxj-体检管理
             {
                 path: '/Yxjcategory',

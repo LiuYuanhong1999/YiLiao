@@ -87,15 +87,15 @@
 
 </el-card>
   <el-dialog
-      title="提示"
+      title=""
       v-model="dialogVisible"
       width="60%"
       :before-close="handleClose">
     <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
       <el-row>
         <el-col :span="10">
-          <el-form-item label="员工姓名" prop="eName">
-            <el-input v-model="ruleForm.eName"></el-input>
+          <el-form-item label="处方编号" prop="eName">
+            <el-select v-model="ruleForm.eName"></el-select>
 
           </el-form-item>
         </el-col>
@@ -108,9 +108,15 @@
 
       <el-row>
         <el-col :span="10">
-          <el-form-item label="员工电话" prop="eName">
+          <el-form-item label="电话" prop="eName">
             <el-input v-model="ruleForm.ePhone"></el-input>
 
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="10">
+          <el-form-item label="地址">
+            <el-input></el-input>
           </el-form-item>
         </el-col>
       </el-row>

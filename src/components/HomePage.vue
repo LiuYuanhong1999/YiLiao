@@ -1,6 +1,6 @@
 <template>
   <el-container class="home-container" style="height: 100%">
-    <el-header class="home-header" :style="color">
+    <el-header class="home-header" >
       <div>
         <img src="../assets/64.gif" alt=""/>
         <span>医疗管理系统</span>
@@ -105,8 +105,12 @@
               <i class="el-icon-user"></i>
               <span>药库</span>
             </template>
-            <el-menu-item index="6-1">进药</el-menu-item>
-            <el-menu-item index="6-2">查看药库</el-menu-item>
+            <el-menu-item index="6-1">
+              <router-link to="/putlnStorage">
+                进药
+              </router-link>
+              </el-menu-item>
+            <el-menu-item index="6-2"><router-link to="/CheckDrugStorage">查看药库</router-link></el-menu-item>
           </el-submenu>
           <el-submenu index="7">
             <template #title>
@@ -243,7 +247,7 @@ export default {
 <style lang="less" scoped>
 // header 的背景色
 .home-header {
-  //background-color: #242424;
+  background-color: #242424;
   display: flex;
   // 左右两边对齐
   justify-content: space-between;
