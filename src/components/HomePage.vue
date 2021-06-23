@@ -105,7 +105,9 @@
               <i class="el-icon-user"></i>
               <span>手术管理</span>
             </template>
-            <el-menu-item index="7-1">管理</el-menu-item>
+            <el-menu-item index="7-1"><router-link to="/project">手术项目管理</router-link></el-menu-item>
+            <el-menu-item index="7-1"><router-link to="/operationRoom">手术室安排</router-link></el-menu-item>
+            <el-menu-item index="7-1"><router-link to="/operationNote">手术记录</router-link></el-menu-item>
           </el-submenu>
 
           <el-submenu index="8">
@@ -113,11 +115,11 @@
               <i class="el-icon-user"></i>
               <span>护士工作站</span>
             </template>
-            <el-menu-item index="8-1">住院发药记账</el-menu-item>
-            <el-menu-item index="8-2">住院治疗记账</el-menu-item>
-            <el-menu-item index="8-3">住院医嘱执行</el-menu-item>
-            <el-menu-item index="8-4">门诊医嘱执行</el-menu-item>
-            <el-menu-item index="8-5">住院发药</el-menu-item>
+<!--            <el-menu-item index="8-1">住院发药记账</el-menu-item>-->
+<!--            <el-menu-item index="8-2">住院治疗记账</el-menu-item>-->
+            <el-menu-item index="8-3"><router-link to="/hospitalExecute">住院医嘱执行</router-link></el-menu-item>
+            <el-menu-item index="8-4"><router-link to="/opcExecute">门诊医嘱执行</router-link></el-menu-item>
+            <el-menu-item index="8-5"><router-link to="/dispensing">住院发药</router-link></el-menu-item>
           </el-submenu>
         </el-menu>
       </el-aside>

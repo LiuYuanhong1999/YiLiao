@@ -48,6 +48,44 @@ const routes=[
                 component:()=>import('/src/components/ZSX/opc/relieveManager.vue'),
                 meta:'门诊解锁'
             },
+            //护士工作站
+            {
+                path:'/dispensing',
+                name:'hospitalDispensingManager',
+                component:()=>import('/src/components/ZSX/nurse/hospitalDispensingManager.vue'),
+                meta:'住院发药'
+            },
+            {
+                path:'/hospitalExecute',
+                name:'hospitalExecuteManager',
+                component:()=>import('/src/components/ZSX/nurse/hospitalExecuteManager.vue'),
+                meta:'住院医嘱执行'
+            },
+            {
+                path:'/opcExecute',
+                name:'opcExecuteManager',
+                component:()=>import('/src/components/ZSX/nurse/opcExecuteManager.vue'),
+                meta:'门诊医嘱执行'
+            },
+            //手术室
+            {
+                path:'/operationNote',
+                name:'operationNoteManager',
+                component:()=>import('/src/components/ZSX/operation/operationNoteManager.vue'),
+                meta:'手术记录'
+            },
+            {
+                path:'/operationRoom',
+                name:'operationRoomManager',
+                component:()=>import('/src/components/ZSX/operation/operationRoomManager.vue'),
+                meta:'手术室安排'
+            },
+            {
+                path:'/project',
+                name:'projectManager',
+                component:()=>import('/src/components/ZSX/operation/projectManager.vue'),
+                meta:'手术项目管理'
+            },
             //住院
             {
                 path: '/zytz',
