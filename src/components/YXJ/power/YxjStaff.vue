@@ -12,7 +12,7 @@
 
       <el-row>
         <el-col :span="4">
-          <el-input placeholder="请输入体检类别名" v-model="eaaOrderNumber"></el-input>
+          <el-input placeholder="请输入" v-model="eaaOrderNumber"></el-input>
         </el-col>
 
         <el-button icon="el-icon-search" type="primary"
@@ -20,7 +20,7 @@
 
         <el-button @click="dialogVisible = true" icon="el-icon-circle-plus" type="success"
                    style="float: left;margin-left: 800px">
-          新增角色
+          新增员工
         </el-button>
 
       </el-row>

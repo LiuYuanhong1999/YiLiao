@@ -37,13 +37,13 @@
             </template>
             <el-menu-item-group>
               <template #title>挂号信息管理</template>
-              <el-menu-item index="1-1"><router-link to="/registration">挂号管理</router-link></el-menu-item>
-              <el-menu-item index="1-2"><router-link to="/charging">划价管理</router-link></el-menu-item>
+              <router-link to="/registration"><el-menu-item index="1-1">挂号管理</el-menu-item></router-link>
+              <router-link to="/charging"><el-menu-item index="1-2">划价管理</el-menu-item></router-link>
             </el-menu-item-group>
             <el-menu-item-group title="门诊">
-              <el-menu-item index="1-3"><router-link to="/charge">门诊收费</router-link></el-menu-item>
-              <el-menu-item index="1-4"><router-link to="/lock">门诊锁定</router-link></el-menu-item>
-              <el-menu-item index="1-5"><router-link to="/relieve">门诊解锁</router-link></el-menu-item>
+              <router-link to="/charge"> <el-menu-item index="1-3">门诊收费</el-menu-item></router-link>
+              <router-link to="/lock"><el-menu-item index="1-4">门诊锁定</el-menu-item></router-link>
+              <router-link to="/relieve"><el-menu-item index="1-5">门诊解锁</el-menu-item></router-link>
             </el-menu-item-group>
           </el-submenu>
 
@@ -58,21 +58,21 @@
           <el-submenu index="3">
             <i class="el-icon-menu"></i>
             <template #title>住院管理</template>
-            <el-menu-item index="3-1"><router-link to="/zytz">住院通知</router-link></el-menu-item>
-            <el-menu-item index="3-2"><router-link to="/zydj">住院登记</router-link></el-menu-item>
-            <el-menu-item index="3-3"><router-link to="/yjsq">押金收取</router-link></el-menu-item>
-            <el-menu-item index="3-5"><router-link to="/cytz">出院通知</router-link></el-menu-item>
-            <el-menu-item index="3-6"><router-link to="/zyfyjz">住院费用结账</router-link></el-menu-item>
-            <el-menu-item index="3-7"><router-link to="/yjtf">押金退费</router-link></el-menu-item>
-            <el-menu-item index="3-8"><router-link to="/cyjl">出院记录</router-link></el-menu-item>
-            <el-menu-item index="3-9"><router-link to="/zysd">住院锁定</router-link></el-menu-item>
-            <el-menu-item index="3-10"><router-link to="/zyjs">住院解锁</router-link></el-menu-item>
+            <router-link to="/zytz"><el-menu-item index="3-1">住院通知</el-menu-item></router-link>
+            <router-link to="/zydj"><el-menu-item index="3-2">住院登记</el-menu-item></router-link>
+            <router-link to="/yjsq"><el-menu-item index="3-3">押金收取</el-menu-item></router-link>
+            <router-link to="/cytz"><el-menu-item index="3-5">出院通知</el-menu-item></router-link>
+            <router-link to="/zyfyjz"><el-menu-item index="3-6">住院费用结账</el-menu-item></router-link>
+            <router-link to="/yjtf"><el-menu-item index="3-7">押金退费</el-menu-item></router-link>
+            <router-link to="/cyjl"><el-menu-item index="3-8">出院记录</el-menu-item></router-link>
+            <router-link to="/zysd"><el-menu-item index="3-9">住院锁定</el-menu-item></router-link>
+            <router-link to="/zyjs"><el-menu-item index="3-10">住院解锁</el-menu-item></router-link>
           </el-submenu>
 
-          <el-menu-item index="4" >
-            <i class="el-icon-document"></i>
-            <template #title>前台</template>
-          </el-menu-item>
+<!--          <el-menu-item index="4" >-->
+<!--            <i class="el-icon-document"></i>-->
+<!--            <template #title>前台</template>-->
+<!--          </el-menu-item>-->
 
 
           <el-submenu index="5">
@@ -83,20 +83,20 @@
             <el-menu-item-group>
               <template #title>中药房</template>
 
-              <el-menu-item index="5-1"> <router-link to="/recipe">处理处方 </router-link></el-menu-item>
+              <router-link to="/recipe"><el-menu-item index="5-1"> 处理处方 </el-menu-item></router-link>
 
 
-              <el-menu-item index="5-2"><router-link to="/drugInfosC">药品库存</router-link></el-menu-item>
-              <el-menu-item index="5-3"><router-link to="/drugApplyC">药品调拨</router-link></el-menu-item>
+              <router-link to="/drugInfosC"><el-menu-item index="5-2">药品库存</el-menu-item></router-link>
+              <router-link to="/drugApplyC"><el-menu-item index="5-3">药品调拨</el-menu-item></router-link>
             </el-menu-item-group>
 
             <el-menu-item-group>
               <template #title>西药房</template>
-              <el-menu-item index="5-4"> <router-link to="/Xrecipe">处理处方 </router-link></el-menu-item>
+              <router-link to="/Xrecipe"><el-menu-item index="5-4"> 处理处方 </el-menu-item></router-link>
 
 
-              <el-menu-item index="5-5"><router-link to="/XdrugInfosC">药品库存</router-link></el-menu-item>
-              <el-menu-item index="5-6"><router-link to="/XdrugApplyC">药品调拨</router-link></el-menu-item>
+              <router-link to="/XdrugInfosC"><el-menu-item index="5-5">药品库存</el-menu-item></router-link>
+              <router-link to="/XdrugApplyC"><el-menu-item index="5-6">药品调拨</el-menu-item></router-link>
             </el-menu-item-group>
           </el-submenu>
 
@@ -105,12 +105,14 @@
               <i class="el-icon-user"></i>
               <span>药库</span>
             </template>
+            <router-link to="/putlnStorage">
             <el-menu-item index="6-1">
-              <router-link to="/putlnStorage">
+
                 进药
-              </router-link>
+
               </el-menu-item>
-            <el-menu-item index="6-2"><router-link to="/CheckDrugStorage">查看药库</router-link></el-menu-item>
+            </router-link>
+            <router-link to="/CheckDrugStorage"><el-menu-item index="6-2">查看药库</el-menu-item></router-link>
           </el-submenu>
           <el-submenu index="7">
             <template #title>
@@ -135,32 +137,32 @@
 
 
           <!--    体检管理     -->
-          <el-submenu index="6" >
+          <el-submenu index="9" >
             <template #title>
             <i class="el-icon-user"></i>
               <span>体检管理</span>
             </template>
 
-            <el-menu-item index="6-1"> <router-link to="/YxjCategory">体检类别</router-link></el-menu-item>
-            <el-menu-item index="6-2"> <router-link to="/YxjPhysical">体检记录</router-link></el-menu-item>
+            <router-link to="/YxjCategory"><el-menu-item index="9-1"> 体检类别</el-menu-item></router-link>
+            <router-link to="/YxjPhysical"><el-menu-item index="9-2"> 体检记录</el-menu-item></router-link>
 
           </el-submenu>
 
 
           <!--     权限管理     -->
-          <el-submenu index="7" >
+          <el-submenu index="10" >
             <template #title>
               <i class="el-icon-user"></i>
               <span>权限管理</span>
             </template>
 
-            <el-menu-item index="7-1"> <router-link to="/YxjStaff">员工管理</router-link></el-menu-item>
-            <el-menu-item index="7-2"> <router-link to="/YxjDept">部门管理</router-link></el-menu-item>
-            <el-menu-item index="7-3"> <router-link to="/YxjDesk">科室管理</router-link></el-menu-item>
-            <el-menu-item index="7-4"> <router-link to="/YxjShift">班次管理</router-link></el-menu-item>
-            <el-menu-item index="7-5"> <router-link to="/YxjCrew">排班管理</router-link></el-menu-item>
-            <el-menu-item index="7-6"> <router-link to="/YxjPagePer">页面权限</router-link></el-menu-item>
-            <el-menu-item index="7-7"> <router-link to="/YxjRolePer">角色权限</router-link></el-menu-item>
+            <router-link to="/YxjStaff"><el-menu-item index="10-1"> 员工管理</el-menu-item></router-link>
+            <router-link to="/YxjDept"><el-menu-item index="10-2">部门管理</el-menu-item></router-link>
+            <router-link to="/YxjDesk"><el-menu-item index="10-3"> 科室管理</el-menu-item></router-link>
+            <router-link to="/YxjShift"><el-menu-item index="10-4"> 班次管理</el-menu-item></router-link>
+            <router-link to="/YxjCrew"><el-menu-item index="10-5"> 排班管理</el-menu-item></router-link>
+            <router-link to="/YxjPagePer"><el-menu-item index="10-6"> 页面权限</el-menu-item></router-link>
+            <router-link to="/YxjRolePer"><el-menu-item index="10-7"> 角色权限</el-menu-item></router-link>
 
           </el-submenu>
 
