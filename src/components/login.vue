@@ -1,7 +1,20 @@
 <template>
 
   <div class="login" style="height: 100%;margin-top: -91px" >
+
+<!--    <video autoplay="autoplay" loop="loop" muted="muted" >-->
+<!--      <source src="/src/static/video/gei.mp4" type="video/mp4">-->
+<!--    </video>-->
+
+<!--    <video-background-->
+<!--        src="/src/static/video/gei.mp4"-->
+<!--        style="max-height: 400px; height: 100vh;"-->
+<!--    >-->
+
+<!--    </video-background>-->
+
     <div class="loginContainer">
+
       <h2 class="title">医院内部管理系统登录</h2>
       <el-form ref="loginForm" :model="loginForm" label-width="80px">
         <el-form-item prop="userName">
@@ -15,8 +28,8 @@
 
         </el-form-item>
       </el-form>
-<!--      <p class="tips">本系统有六个测试的用户账号为root、doctor、nurse、checkstand、pharmacist、pharmacy，-->
-<!--        密码为各自用户名，例如root用户的密码为root。其中最高权限是root用户 </p>-->
+      <!--      <p class="tips">本系统有六个测试的用户账号为root、doctor、nurse、checkstand、pharmacist、pharmacy，-->
+      <!--        密码为各自用户名，例如root用户的密码为root。其中最高权限是root用户 </p>-->
     </div>
   </div>
 </template>

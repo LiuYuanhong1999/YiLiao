@@ -29,6 +29,6 @@ import HelloWorld from './components/HelloWorld.vue'
 
 html,body,#app{
   height: 100%;
-  background:rgba(38, 24, 49,.6);
+
 }
 </style>
