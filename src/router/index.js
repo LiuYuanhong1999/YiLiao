@@ -191,6 +191,12 @@ const routes=[
               component:()=>import('/src/components/LYH/CheckDrugStorage.vue')
             },
 
+            {
+              path: '/auditList',
+              name: 'auditList',
+              component:()=>import('/src/components/LYH/auditList.vue')
+            },
+
             //yxj-体检管理
             {
                 path: '/Yxjcategory',

@@ -1,5 +1,6 @@
 <template>
   <el-container class="home-container" style="height: 100%">
+
     <el-header class="home-header" >
       <div>
         <img src="../assets/64.gif" alt=""/>
@@ -105,14 +106,10 @@
               <i class="el-icon-user"></i>
               <span>药库</span>
             </template>
-            <router-link to="/putlnStorage">
-            <el-menu-item index="6-1">
-
-                进药
-
-              </el-menu-item>
-            </router-link>
-            <router-link to="/CheckDrugStorage"><el-menu-item index="6-2">查看药库</el-menu-item></router-link>
+            <router-link to="/putlnStorage"><el-menu-item index="6-1">采购入库</el-menu-item></router-link>
+            <router-link to="/auditList"><el-menu-item index="6-2">入库审核</el-menu-item></router-link>
+            <router-link to="/CheckDrugStorage"><el-menu-item index="6-3">查看药库</el-menu-item></router-link>
+            <router-link to="/CheckDrugStorage"><el-menu-item index="6-4">药库调拨</el-menu-item></router-link>
           </el-submenu>
           <el-submenu index="7">
             <template #title>

@@ -3,7 +3,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>药库</el-breadcrumb-item>
-      <el-breadcrumb-item>采购入库</el-breadcrumb-item>
+      <el-breadcrumb-item>入库审核</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
     <!-- 查询条件开始 -->
@@ -33,22 +33,6 @@
             style="width:180px"
         />
       </el-form-item>
-      <el-form-item label="单据状态" prop="status">
-        <el-select
-            v-model="queryParams.status"
-            placeholder="单据状态"
-            clearable
-            size="small"
-            style="width:240px"
-        >
-          <el-option
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-          />
-        </el-select>
-      </el-form-item>
 
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
@@ -60,16 +44,13 @@
     <!-- 表格工具按钮开始 -->
     <el-row :gutter="10" style="margin-bottom: 8px;">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleToNewPurchase">新增采购</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleAuditPass">审核通过</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoAudit">提交审核</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="handleNoAuditPass">审核不通过</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="handleDoInvalid">作废</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoInventory">提交入库</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleView">查看详情</el-button>
       </el-col>
     </el-row>
     <!-- 表格工具按钮结束 -->
@@ -77,13 +58,7 @@
     <!-- 数据表格开始 -->
     <el-table v-loading="loading" border :data="purchaseTableList" @selection-change="handleSelectionChnage">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="单据ID" align="center" width="200" prop="purchaseId">
-        <template slot-scope="scope">
-          <router-link :to="'/erp/purchase/editPurchase/'+scope.row.purchaseId" class="link-type">
-            <span>{{scope.row.purchaseId}}</span>
-          </router-link>
-        </template>
-      </el-table-column>
+      <el-table-column label="单据ID" align="center" width="200" prop="purchaseId" />
       <el-table-column label="供应商" width="200" align="center" prop="providerId" :formatter="providerFormatter" />
       <el-table-column label="采购批发总额" align="center" prop="purchaseTradeTotalAmount">
         <template slot-scope="scope">
@@ -94,7 +69,7 @@
       <el-table-column label="申请人" align="center" prop="applyUserName" />
       <el-table-column label="入库操作人" align="center" prop="storageOptUser" />
       <el-table-column label="入库时间" align="center" prop="storageOptTime" show-overflow-tooltip />
-      <el-table-column label="审核信息" align="center" prop="examine" />
+      <el-table-column label="审核信息" align="center" prop="auditMsg" />
       <el-table-column label="创建时间" align="center" prop="createTime" show-overflow-tooltip />
     </el-table>
     <!-- 数据表格结束 -->
@@ -110,12 +85,45 @@
         @current-change="handleCurrentChange"
     />
     <!-- 分页控件结束 -->
+
+    <!-- 详情弹出框开始 -->
+    <el-dialog
+        :title="title"
+        :visible.sync="open"
+        width="1000px"
+        center
+        append-to-body
+    >
+      <el-table v-loading="loading" border :data="purchaseItemTableList">
+        <el-table-column label="详情ID" width="180" align="center" prop="itemId" />
+        <el-table-column label="单据ID" width="200" align="center" prop="purchaseId" />
+        <el-table-column label="采购数量" align="center" prop="purchaseNumber" />
+        <el-table-column label="批发价" prop="tradePrice" align="center">
+          <template slot-scope="scope">
+            <span>{{ scope.row.tradePrice|rounding }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="批发额" align="center" prop="tradeTotalAmount">
+          <template slot-scope="scope">
+            <span>{{ scope.row.tradeTotalAmount|rounding }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="批次号" align="center" prop="batchNumber" />
+        <el-table-column label="药品名称" align="center" prop="medicinesName" />
+        <el-table-column label="单位" align="center" prop="conversion" />
+        <el-table-column label="创建时间" align="center" prop="unit" />
+      </el-table>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="cancel">取 消</el-button>
+      </span>
+    </el-dialog>
+    <!-- 详情弹出框结束 -->
     </el-card>
   </div>
 </template>
 <script>
 // 引入api
-// import { listPurchaseForPage, doAudit, doInvalid,doInventory } from '@/api/erp/purchase'
+// import { getPurchaseItemById, listPurchasePendingForPage, auditPass, auditNoPass } from '@/api/erp/purchase'
 // import { selectAllProvider } from '@/api/erp/provider'
 export default {
   // 过滤器
@@ -125,7 +133,6 @@ export default {
       return value.toFixed(2)
     }
   },
-  name: "putLnStorage",
   // 定义页面数据
   data() {
     return {
@@ -134,15 +141,19 @@ export default {
       // 选中数组
       ids: [],
       // 非单个禁用
-      single: false,
+      single: true,
       // 非多个禁用
       multiple: true,
       // 分页数据总条数
       total: 0,
+      // 是否打开详情弹出框
+      open: false,
       // 字典表格数据
       purchaseTableList: [],
       // 状态数据字典
       statusOptions: [],
+      // 采购详情列表
+      purchaseItemTableList: [],
       // 供应商列表
       providerOptions: [],
       // 查询参数
@@ -150,8 +161,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         providerId: undefined,
-        applyUserName: undefined,
-        status: undefined
+        applyUserName: undefined
       }
     }
   },
@@ -168,15 +178,15 @@ export default {
   //     this.providerOptions = res.data
   //   })
   // },
-  // // 方法
+  // 方法
   // methods: {
   //   // 查询表格数据
   //   getPurchaseList() {
-  //     this.loading = false // 打开遮罩
-  //     listPurchaseForPage(this.queryParams).then(res => {
+  //     this.loading = true // 打开遮罩
+  //     listPurchasePendingForPage(this.queryParams).then(res => {
   //       this.purchaseTableList = res.data
   //       this.total = res.total
-  //       this.loading = true// 关闭遮罩
+  //       this.loading = false// 关闭遮罩
   //     })
   //   },
   //   // 条件查询
@@ -223,85 +233,67 @@ export default {
   //     })
   //     return name
   //   },
-  //   // 提交审核
-  //   handleDoAudit() {
+  //   // 审核通过
+  //   handleAuditPass() {
   //     // 获取当前审核单据ID
   //     const purchaseId = this.ids[0]
-  //     this.$confirm('确定要提交审核单据号为【' + purchaseId + '】的采购单吗?', '提示', {
+  //     this.$confirm('确定要审核通过单据号为【' + purchaseId + '】的采购单吗?', '提示', {
   //       confirmButtonText: '确定',
   //       cancelButtonText: '取消',
   //       type: 'warning'
   //     }).then(() => {
-  //       doAudit(purchaseId).then(res => {
-  //         this.msgSuccess('提交成功')
+  //       auditPass(purchaseId).then(res => {
+  //         this.msgSuccess('审核成功')
   //         // 刷新
   //         this.getPurchaseList()
   //       }).catch(() => {
-  //         this.msgError('提交失败')
+  //         this.msgError('审核失败')
   //       })
   //     }).catch(() => {
-  //       this.msgError('提交已取消')
+  //       this.msgError('审核已取消')
   //     })
   //   },
-  //   // 作废
-  //   handleDoInvalid(row) {
+  //   // 审核不通过
+  //   handleNoAuditPass() {
   //     // 获取当前审核单据ID
   //     const purchaseId = this.ids[0]
-  //     this.$confirm('确定要作废单据号为【' + purchaseId + '】的采购单吗?', '提示', {
+  //
+  //     this.$prompt('请输入不通过原因', '提示', {
   //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       doInvalid(purchaseId).then(res => {
-  //         this.msgSuccess('作废成功')
+  //       cancelButtonText: '取消'
+  //     }).then(({ value }) => {
+  //       auditNoPass(purchaseId, value).then(res => {
+  //         this.msgSuccess('审核成功')
   //         // 刷新
   //         this.getPurchaseList()
   //       }).catch(() => {
-  //         this.msgError('作废失败')
+  //         this.msgError('审核失败')
   //       })
   //     }).catch(() => {
-  //       this.msgError('作废已取消')
+  //       this.msgError('已取消')
   //     })
   //   },
-  //   // 提交入库
-  //   handleDoInventory() {
-  //     // 获取要入库的采购单ID
+  //   // 查看详情
+  //   handleView() {
+  //     this.open = true
   //     const purchaseId = this.ids[0]
-  //     // 为了防止this冲突所以将this赋值给tx
-  //     const tx = this
-  //     tx.$confirm('确定要入库单据号为【' + purchaseId + '】的采购单吗?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       doInventory(purchaseId).then(res => {
-  //         tx.msgSuccess('入库成功')
-  //         // 刷新
-  //         tx.getPurchaseList()
-  //       }).catch(() => {
-  //         tx.msgError('入库失败')
-  //       })
-  //     }).catch(() => {
-  //       tx.msgError('入库已取消')
+  //     this.title = '单据编号为【' + purchaseId + '】的采购详情数据'
+  //     this.loading = true
+  //     getPurchaseItemById(purchaseId).then(res => {
+  //       this.loading = false
+  //       this.purchaseItemTableList = res.data
   //     })
   //   },
-  //   // 新增采购
-  //   handleToNewPurchase() {
-  //     // 跳转到新增采购的路由页面
-  //     this.$router.replace('/erp/purchase/newPurchase')
+  //   cancel() {
+  //     this.open = false
   //   }
   // }
-
-
-
 }
 
 </script>
 
+
 <style scoped>
-/*.putInStorage{*/
-/*  max-width:800px*/
-/*}*/
 a {
   text-decoration: none;
 }
