@@ -28,7 +28,7 @@
             active-text-color="#2c8aee"
             unique-opened
             :collapse="isCollapse"
-            :collapse-transition="false">  <!--active-text-color设置二级菜单的文字颜色-->  <!--unique-opened设置一次只能打开一个菜单-->
+            :collapse-transition="true">  <!--active-text-color设置二级菜单的文字颜色-->  <!--unique-opened设置一次只能打开一个菜单-->
 
 
           <el-submenu index="1">
@@ -246,7 +246,7 @@ export default {
 <style lang="less" scoped>
 // header 的背景色
 .home-header {
-  background-color:white;
+  background-color:#324157;
   display: flex;
   // 左右两边对齐
   justify-content: space-between;
