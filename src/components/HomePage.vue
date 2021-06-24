@@ -4,13 +4,13 @@
     <el-header class="home-header" >
       <div>
         <img src="../assets/64.gif" alt=""/>
-        <span>医疗管理系统</span>
+        <span style="color: gray">医疗管理系统</span>
       </div>
       <div style="margin-left: 1040px">
         <el-color-picker v-model="themeVal" ></el-color-picker>
       </div>
       <div class="tt" title="全屏" @click="screenCli()"><img src="/src/assets/screen.png"></div>
-      {{user.userName}}
+      <span style="color: gray">{{user.userName}}</span>
       <el-button @click="logout">退出</el-button>
     </el-header>
 
@@ -23,7 +23,7 @@
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
-            background-color="#262626"
+            background-color="#324157"
             text-color="#fff"
             active-text-color="#2c8aee"
             unique-opened
@@ -193,9 +193,7 @@ export default {
         userId:'',
         userName:'',
       },
-      color:{
-        backgroundColor:"1"
-      }
+
     }
   },
   mounted() {
@@ -248,7 +246,7 @@ export default {
 <style lang="less" scoped>
 // header 的背景色
 .home-header {
-  background-color: #242424;
+  background-color:white;
   display: flex;
   // 左右两边对齐
   justify-content: space-between;
@@ -269,7 +267,7 @@ export default {
 }
 // 左边栏的背景色
 .home-aside {
-  background-color: #262626;
+background-color: #324157;
   // 解决左侧菜单栏有边框不齐的问题
   .el-menu {
     border-right: none;
@@ -277,20 +275,21 @@ export default {
 }
 // 主区域的背景色
 .home-main {
-  background-color: #d8d8d8;
+  background-color:#f0f2f5;
 }
 // 布局撑满全屏
 .home-container {
   width: 100%;
 }
 .toggle-button {
-  background-color: #404040;
+  background-color: #324157;
   font-size: 15px;
   color: #eeeeee;
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
 }
-.tt{
+.el-menu-vertical-demo{
+
 }
 </style>
