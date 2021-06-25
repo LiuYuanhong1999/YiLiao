@@ -172,6 +172,11 @@ const routes=[
                 name: 'XdrugApplyC',
                 component:()=>import('/src/components/LYH/XdrugApplyC.vue')
             },
+            {
+              path: '/s',
+              name: 'Test',
+              component:()=>import('/src/components/LYH/Test.vue')
+            },
             //药库
             {
               path: '/putlnStorage',
@@ -196,6 +201,20 @@ const routes=[
               name: 'auditList',
               component:()=>import('/src/components/LYH/auditList.vue')
             },
+
+            {
+              path: '/diaobo',
+              name: 'diaobo',
+              component:()=>import('/src/components/LYH/diaobo.vue')
+            },
+
+            {
+              path: '/return',
+              name:'return',
+              component:()=>import('/src/components/LYH/return.vue')
+            },
+
+
 
             //yxj-体检管理
             {

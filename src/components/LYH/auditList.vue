@@ -8,21 +8,16 @@
     <el-card>
     <!-- 查询条件开始 -->
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="98px">
-      <el-form-item label="供应商名称" prop="providerId">
-        <el-select
+      <el-form-item label="供应商名称" prop="providerId" style="margin-left: -340px">
+        <el-input
             v-model="queryParams.providerId"
             placeholder="供应商名称"
             clearable
             size="small"
             style="width:240px"
         >
-          <el-option
-              v-for="provider in providerOptions"
-              :key="provider.providerId"
-              :label="provider.providerName"
-              :value="provider.providerId"
-          />
-        </el-select>
+
+        </el-input>
       </el-form-item>
       <el-form-item label="申请人" prop="applyUserName">
         <el-input
@@ -44,13 +39,13 @@
     <!-- 表格工具按钮开始 -->
     <el-row :gutter="10" style="margin-bottom: 8px;">
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleAuditPass">审核通过</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini"  @click="handleAuditPass">审核通过</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="handleNoAuditPass">审核不通过</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini"  @click="handleNoAuditPass">审核不通过</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleView">查看详情</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini"  @click="handleView">查看详情</el-button>
       </el-col>
     </el-row>
     <!-- 表格工具按钮结束 -->

@@ -98,6 +98,7 @@
 
               <router-link to="/XdrugInfosC"><el-menu-item index="5-5">药品库存</el-menu-item></router-link>
               <router-link to="/XdrugApplyC"><el-menu-item index="5-6">药品调拨</el-menu-item></router-link>
+              <router-link to="/s"><el-menu-item index="5-7">s</el-menu-item></router-link>
             </el-menu-item-group>
           </el-submenu>
 
@@ -109,7 +110,11 @@
             <router-link to="/putlnStorage"><el-menu-item index="6-1">采购入库</el-menu-item></router-link>
             <router-link to="/auditList"><el-menu-item index="6-2">入库审核</el-menu-item></router-link>
             <router-link to="/CheckDrugStorage"><el-menu-item index="6-3">查看药库</el-menu-item></router-link>
-            <router-link to="/CheckDrugStorage"><el-menu-item index="6-4">药库调拨</el-menu-item></router-link>
+            <router-link to="/diaobo"><el-menu-item index="6-4">药库调拨</el-menu-item></router-link>
+            <router-link to="/return"><el-menu-item index="6-5">药库退货</el-menu-item></router-link>
+
+
+
           </el-submenu>
           <el-submenu index="7">
             <template #title>

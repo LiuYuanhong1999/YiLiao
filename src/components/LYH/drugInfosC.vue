@@ -25,7 +25,7 @@
 
       :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
       border stripe style="width: 100%;margin-top: 10px"
-      :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"
+      :header-cell-style="{'text-align':'center','background':'#DAE2EF'}"
       :cell-style="{'text-align':'center'}"
   >
     <el-table-column
@@ -81,14 +81,65 @@
 
     <el-table-column  label="操作" width="80px">
       <template  #default="scope">
-        <el-tooltip content="查看" placement="top">
+        <el-tooltip content="申请调拨" placement="top">
           <el-button
               icon="el-icon-view" size="mini"
-              @click="editEmp(scope.row)"></el-button>
+              @click="editDrug(scope.row)"></el-button>
         </el-tooltip>
+
+
       </template>
     </el-table-column>
   </el-table>
+  <el-dialog
+      title="提示"
+      v-model="dialogVisible"
+      width="60%"
+      :before-close="handleClose">
+    <el-form>
+      <el-row >
+
+        <el-col :span="8">
+          <el-form-item label="申请调拨数量:">
+            <el-input-number></el-input-number>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8">
+          <el-form-item label="申请调拨数量:">
+            <el-input-number></el-input-number>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8">
+          <el-form-item label="申请调拨数量:">
+            <el-input-number></el-input-number>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="8">
+          <el-form-item label="申请调拨数量:">
+            <el-input-number></el-input-number>
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="申请调拨数量:">
+            <el-input-number></el-input-number>
+          </el-form-item>
+        </el-col>
+
+      </el-row>
+
+    </el-form>
+
+
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+    </template>
+  </el-dialog>
   <br>
   <!--分页-->
   <div class="fy_div">
@@ -121,6 +172,11 @@ name: "drugInfosC",
       }
   },
   methods:{
+
+    editDrug(row){
+        this.dialogVisible=true;
+      },
+
     initData(){
       this.axios.get("http://localhost:8088/emp")
           .then((v) => {
