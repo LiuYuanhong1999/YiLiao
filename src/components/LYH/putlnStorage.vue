@@ -60,7 +60,7 @@
     <!-- 表格工具按钮开始 -->
     <el-row :gutter="10" style="margin-bottom: 8px;">
       <el-col :span="1.5">
-        <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleToNewPurchase">新增采购</el-button>
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">新增采购</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoAudit">提交审核</el-button>
@@ -109,6 +109,84 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
     />
+      <el-dialog
+
+          v-model="dialogVisible"
+          width="80%"
+          :before-close="handleClose">
+        <div style="margin-top: -30px">—————————————————————<span style="color:red">采购入库</span>———————————————————————</div>
+        <div style="margin-top: 10px">
+          <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-row >
+
+              <el-col :span="10">
+                <el-form-item label="供应商:" prop="salesId"
+                              :rules="[
+                 {required: true,message: '供应商不能为空'},
+              ]"
+                >
+                  <el-select v-model="ruleForm.salesId">
+
+                    <el-option>
+
+                    </el-option>
+
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="10">
+                <el-form-item label="预计金额:" prop='salesTitle'
+                              :rules="[
+                 {required: true,message: '预计金额不能为空'},
+              ]"
+
+                >
+                  <el-input ty v-model="ruleForm.salesTitle" autocomplete="off" style="width: 200px;"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+
+
+
+            <el-table
+                :data="gridData"
+                      style="width: 100%;"
+                      max-height="200"
+                      :cell-style="{'text-align':'center'}"
+                      :header-cell-style="{background:'#D6E9FC',color:'#606266','text-align':'center'}">
+
+              <el-table-column width="50" type="selection"></el-table-column>
+              <el-table-column property="date" label="药品名" width="150"></el-table-column>
+              <el-table-column property="name" label="单价" width="200"></el-table-column>
+              <el-table-column property="address" label="生产日期"></el-table-column>
+              <el-table-column label="剂型"></el-table-column>
+              <el-table-column property="" label="数量">
+                <template #default="scope" style="text-align: center">
+                  <el-input-number style="width: 100px;text-align: center" v-model="scope.row.number" controls-position="right" @change="handleChange" :min="1" :max="20"></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column property="" label="参考价格">
+                <template #default="scope" style="text-align: center">
+                  {{scope.row.number *scope.row.name}}
+                </template>
+              </el-table-column>
+            </el-table>
+
+          </el-form>
+
+
+
+        </div>
+        <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+        </template>
+
+      </el-dialog>
     <!-- 分页控件结束 -->
     </el-card>
   </div>
@@ -129,6 +207,35 @@ export default {
   // 定义页面数据
   data() {
     return {
+      gridData: [{
+        date: '2016-05-02',
+        name: 12,
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }],
+      dialogVisible:false,
+      ruleForm: {
+        salesId:'',
+        customerId:'',
+        salesTitle:'',
+        salesMoney:0,
+
+        salesState:'',
+        salesKene:'20%',
+        salesJieduan:'初期沟通',
+        userId:"",
+      },
       // 是否启用遮罩层
       loading: false,
       // 选中数组
@@ -154,6 +261,12 @@ export default {
         status: undefined
       }
     }
+  },
+  methods:{
+
+    handleChange(value) {
+      console.log(value);
+    },
   },
   // // 勾子
   // created() {
