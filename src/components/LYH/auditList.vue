@@ -8,7 +8,7 @@
     <el-card>
     <!-- 查询条件开始 -->
     <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="98px">
-      <el-form-item label="供应商名称" prop="providerId" style="margin-left: -340px">
+      <el-form-item label="供应商名称" prop="providerId" style="margin-left: -410px">
         <el-input
             v-model="queryParams.providerId"
             placeholder="供应商名称"

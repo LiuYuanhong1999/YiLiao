@@ -88,7 +88,7 @@
 
 
               <router-link to="/drugInfosC"><el-menu-item index="5-2">药品库存</el-menu-item></router-link>
-              <router-link to="/drugApplyC"><el-menu-item index="5-3">药品调拨</el-menu-item></router-link>
+<!--              <router-link to="/drugApplyC"><el-menu-item index="5-3">药品调拨</el-menu-item></router-link>-->
             </el-menu-item-group>
 
             <el-menu-item-group>
@@ -97,7 +97,7 @@
 
 
               <router-link to="/XdrugInfosC"><el-menu-item index="5-5">药品库存</el-menu-item></router-link>
-              <router-link to="/XdrugApplyC"><el-menu-item index="5-6">药品调拨</el-menu-item></router-link>
+<!--              <router-link to="/XdrugApplyC"><el-menu-item index="5-6">药品调拨</el-menu-item></router-link>-->
               <router-link to="/s"><el-menu-item index="5-7">s</el-menu-item></router-link>
             </el-menu-item-group>
           </el-submenu>

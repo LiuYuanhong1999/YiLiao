@@ -40,6 +40,15 @@
                 icon="el-icon-delete" size="mini"
                 @click="deleteEmp(scope.row.eId)"></el-button>
           </el-tooltip>
+          <el-tooltip content="调拨" placement="top">
+            <router-link :to="{path: '/putlnStorage'}">
+
+              <el-button
+                  icon="el-icon-view" size="mini"
+              ></el-button>
+            </router-link>
+
+          </el-tooltip>
         </template>
       </el-table-column>
     </el-table>
@@ -85,7 +94,7 @@
       <el-button type="primary" @click="addEmp()">确 定</el-button>
 
     </el-dialog>
-{{multipleSelection}}11
+
 
 
   </div>

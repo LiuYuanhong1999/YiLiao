@@ -104,15 +104,16 @@
             width="76">
         </el-table-column>
 
-<el-table-column label="操作">
-  <template  #default="scope">
-    <el-tooltip content="调拨" placement="top">
-      <el-button
-          icon="el-icon-view" size="mini"
-          @click="editEmp(scope.row)"></el-button>
-    </el-tooltip>
-  </template>
-</el-table-column>
+<!--<el-table-column label="操作">-->
+<!--  <template  #default="scope">-->
+<!--    <el-tooltip content="调拨" placement="top">-->
+<!--      <el-button-->
+<!--          icon="el-icon-view" size="mini"-->
+<!--          @click="editEmp(scope.row)"></el-button>-->
+<!--    </el-tooltip>-->
+
+<!--  </template>-->
+<!--</el-table-column>-->
 
       </el-table>
       <br>

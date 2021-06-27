@@ -39,7 +39,7 @@
         width="80">
     </el-table-column>
     <el-table-column
-        prop="eSex"
+        prop="date"
         label="药品名称"
         width="120">
     </el-table-column>
@@ -105,28 +105,28 @@
           </el-form-item>
         </el-col>
 
-        <el-col :span="8">
-          <el-form-item label="申请调拨数量:">
-            <el-input-number></el-input-number>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="申请调拨数量:">-->
+<!--            <el-input-number></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
 
-        <el-col :span="8">
-          <el-form-item label="申请调拨数量:">
-            <el-input-number></el-input-number>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="申请调拨数量:">-->
+<!--            <el-input-number></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
 
-        <el-col :span="8">
-          <el-form-item label="申请调拨数量:">
-            <el-input-number></el-input-number>
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="申请调拨数量:">
-            <el-input-number></el-input-number>
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="申请调拨数量:">-->
+<!--            <el-input-number></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="申请调拨数量:">-->
+<!--            <el-input-number></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
 
       </el-row>
 
@@ -165,7 +165,27 @@ export default {
 name: "drugInfosC",
   data(){
       return{
-        tableData:[],
+        tableData:[
+
+          {
+            date: '2016-05-02',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1518 弄'
+          }, {
+            date: '2016-05-04',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1517 弄'
+          }, {
+            date: '2016-05-01',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1519 弄'
+          }, {
+            date: '2016-05-03',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1516 弄'
+          }
+
+        ],
         dialogVisible: false,
         currentPage:1, //初始页
         pagesize:10,    //    每页的数据
@@ -177,12 +197,12 @@ name: "drugInfosC",
         this.dialogVisible=true;
       },
 
-    initData(){
-      this.axios.get("http://localhost:8088/emp")
-          .then((v) => {
-            this.tableData = v.data;
-          })
-    },
+    // initData(){
+    //   this.axios.get("http://localhost:8088/emp")
+    //       .then((v) => {
+    //         this.tableData = v.data;
+    //       })
+    // },
 
     // 初始页currentPage、初始每页数据数pagesize和数据data
     handleSizeChange: function (size) {
@@ -194,10 +214,10 @@ name: "drugInfosC",
       console.log(this.currentPage)  //点击第几页
     },
   },
-  created() {
-    this.initData();
-
-  },
+  // created() {
+  //   this.initData();
+  //
+  // },
 }
 </script>
 
