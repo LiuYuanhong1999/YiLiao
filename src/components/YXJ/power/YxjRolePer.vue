@@ -52,8 +52,7 @@
         </el-table-column>
 
 
-
-        <el-table-column label="操作" >
+        <el-table-column label="操作">
           <template #default="scope">
             <el-tooltip content="查看" placement="top">
               <el-button
@@ -96,19 +95,20 @@
 
 
         <el-form-item label="角色描述 ">
-          <el-input type="textarea" v-model="form.desc" style="width: 400px;margin-left: -300px" placeholder="请输入角色描述"></el-input>
+          <el-input type="textarea" v-model="form.desc" style="width: 400px;margin-left: -300px"
+                    placeholder="请输入角色描述"></el-input>
         </el-form-item>
 
-        <el-form-item label="菜单" >
+        <el-form-item label="菜单">
 
 
-            <el-tree
-                style="margin-left: 10px"
-                :data="data"
-                show-checkbox
-                node-key="id"
-                :props="defaultProps">
-            </el-tree>
+          <el-tree
+              style="margin-left: 10px"
+              :data="data"
+              show-checkbox
+              node-key="id"
+              :props="defaultProps">
+          </el-tree>
 
 
         </el-form-item>
@@ -220,7 +220,8 @@ export default {
           .then(_ => {
             done();
           })
-          .catch(_ => {});
+          .catch(_ => {
+          });
     },
     //
 

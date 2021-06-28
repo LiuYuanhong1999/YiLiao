@@ -129,6 +129,11 @@ const routes=[
                 name:'zyjs',
                 component:()=>import('/src/components/TYH/zyjs.vue'),
             },
+            {
+                path: '/zyyz',
+                name:'zyyz',
+                component:()=>import('/src/components/TYH/zyyz.vue'),
+            },
 
         // {
         //     path: "/tyh",
@@ -235,6 +240,13 @@ const routes=[
                 name: 'YxjStaff',
                 component:()=>import('/src/components/YXJ/power/YxjStaff.vue')
             },
+            //员工新增路由
+            {
+                path: '/YxjStaffXz',
+                name: 'YxjStaffXz',
+                component:()=>import('/src/components/YXJ/power/YxjStaffXz.vue')
+            },
+
             {
                 path: '/YxjDept',
                 name: 'YxjDept',
