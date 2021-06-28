@@ -29,27 +29,47 @@
             >
                 <el-table-column
                         prop="eId"
-                        label="编号"
+                        label="门诊医嘱执行号"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eName"
-                        label="姓名"
+                        label="门诊号"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eSex"
-                        label="性别"
+                        label="医嘱类型"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="ePhone"
-                        label="电话"
+                        label="处方号"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eDate"
-                        label="入职日期"
+                        label="执行检况"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="执行情况"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="执行护士"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="执行日期"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="执行时间"
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
@@ -85,32 +105,73 @@
 
         </el-card>
         <el-dialog
-                title="提示"
+                title="新增门诊医嘱"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
             <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工姓名" prop="eName">
+                        <el-form-item label="医嘱执行号" prop="eName">
                             <el-input v-model="ruleForm.eName"></el-input>
 
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="员工性别" prop="eSex">
+                        <el-form-item label="门诊号" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="挂号状态" prop="eSex">
                             <el-input v-model="ruleForm.eSex"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
-
                 <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="员工电话" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
+                    <el-table
+                            :data="tableData"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="date"
+                                label="处方号">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="医嘱类型">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                label="医嘱状态">
+                        </el-table-column>
+                        <el-table-column
+                                prop="name"
+                                label="处方日期">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                label="执行次数">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                label="最新医嘱执行号">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                label="最新执行日期">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                label="最新执行时间">
+                        </el-table-column>
+                        <el-table-column
+                                prop="date"
+                                label="最新执行检况">
+                        </el-table-column>
+                    </el-table>
+                </el-row>
+                <el-row>
 
-                        </el-form-item>
-                    </el-col>
                 </el-row>
             </el-form>
 
