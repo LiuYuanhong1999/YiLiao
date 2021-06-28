@@ -25,7 +25,7 @@
 
       :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
       border stripe style="width: 100%;margin-top: 10px"
-      :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"
+      :header-cell-style="{'text-align':'center','background':'#DAE2EF'}"
       :cell-style="{'text-align':'center'}"
   >
     <el-table-column
@@ -39,7 +39,7 @@
         width="80">
     </el-table-column>
     <el-table-column
-        prop="eSex"
+        prop="date"
         label="药品名称"
         width="120">
     </el-table-column>
@@ -81,14 +81,65 @@
 
     <el-table-column  label="操作" width="80px">
       <template  #default="scope">
-        <el-tooltip content="查看" placement="top">
+        <el-tooltip content="申请调拨" placement="top">
           <el-button
               icon="el-icon-view" size="mini"
-              @click="editEmp(scope.row)"></el-button>
+              @click="editDrug(scope.row)"></el-button>
         </el-tooltip>
+
+
       </template>
     </el-table-column>
   </el-table>
+  <el-dialog
+      title="提示"
+      v-model="dialogVisible"
+      width="60%"
+      :before-close="handleClose">
+    <el-form>
+      <el-row >
+
+        <el-col :span="8">
+          <el-form-item label="申请调拨数量:">
+            <el-input-number></el-input-number>
+          </el-form-item>
+        </el-col>
+
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="申请调拨数量:">-->
+<!--            <el-input-number></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="申请调拨数量:">-->
+<!--            <el-input-number></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="申请调拨数量:">-->
+<!--            <el-input-number></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="8">-->
+<!--          <el-form-item label="申请调拨数量:">-->
+<!--            <el-input-number></el-input-number>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+
+      </el-row>
+
+    </el-form>
+
+
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+    </template>
+  </el-dialog>
   <br>
   <!--分页-->
   <div class="fy_div">
@@ -114,19 +165,44 @@ export default {
 name: "drugInfosC",
   data(){
       return{
-        tableData:[],
+        tableData:[
+
+          {
+            date: '2016-05-02',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1518 弄'
+          }, {
+            date: '2016-05-04',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1517 弄'
+          }, {
+            date: '2016-05-01',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1519 弄'
+          }, {
+            date: '2016-05-03',
+            name: '王小虎',
+            address: '上海市普陀区金沙江路 1516 弄'
+          }
+
+        ],
         dialogVisible: false,
         currentPage:1, //初始页
         pagesize:10,    //    每页的数据
       }
   },
   methods:{
-    initData(){
-      this.axios.get("http://localhost:8088/emp")
-          .then((v) => {
-            this.tableData = v.data;
-          })
-    },
+
+    editDrug(row){
+        this.dialogVisible=true;
+      },
+
+    // initData(){
+    //   this.axios.get("http://localhost:8088/emp")
+    //       .then((v) => {
+    //         this.tableData = v.data;
+    //       })
+    // },
 
     // 初始页currentPage、初始每页数据数pagesize和数据data
     handleSizeChange: function (size) {
@@ -138,10 +214,10 @@ name: "drugInfosC",
       console.log(this.currentPage)  //点击第几页
     },
   },
-  created() {
-    this.initData();
-
-  },
+  // created() {
+  //   this.initData();
+  //
+  // },
 }
 </script>
 
