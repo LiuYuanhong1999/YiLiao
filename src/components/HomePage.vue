@@ -52,8 +52,7 @@
             <i class="el-icon-menu"></i>
             <template #title>医生工作站</template>
             <el-menu-item index="2-1">门诊处方</el-menu-item>
-            <el-menu-item index="2-2">住院医嘱</el-menu-item>
-            <el-menu-item index="2-3">临时医嘱</el-menu-item>
+            <router-link to="/zyyz"><el-menu-item index="2-2">住院</el-menu-item></router-link>
           </el-submenu>
 
           <el-submenu index="3">
@@ -66,8 +65,7 @@
             <router-link to="/zyfyjz"><el-menu-item index="3-6">住院费用结账</el-menu-item></router-link>
             <router-link to="/yjtf"><el-menu-item index="3-7">押金退费</el-menu-item></router-link>
             <router-link to="/cyjl"><el-menu-item index="3-8">出院记录</el-menu-item></router-link>
-            <router-link to="/zysd"><el-menu-item index="3-9">住院锁定</el-menu-item></router-link>
-            <router-link to="/zyjs"><el-menu-item index="3-10">住院解锁</el-menu-item></router-link>
+            <router-link to="/zysd"><el-menu-item index="3-9">住院锁定与解锁</el-menu-item></router-link>
           </el-submenu>
 
 <!--          <el-menu-item index="4" >-->

@@ -110,40 +110,7 @@
                         </el-form-item>
                     </el-col>
                 </el-row>
-已核算项目
-                <el-table
-
-                        stripe
-                        style="width: 100%"
-                >
-                    <el-table-column
-                            prop=""
-                            label="项目名称"
-                            width="120">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="项目日期"
-                            width="120">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="项目金额"
-                            width="120">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="病人姓名"
-                            width="120">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="负责医生"
-                            width="120">
-                    </el-table-column>
-                </el-table><br>
-
-                未核算项目
+项目清单
                 <el-table
 
                         stripe
