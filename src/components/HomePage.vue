@@ -1,15 +1,16 @@
 <template>
   <el-container class="home-container" style="height: 100%">
+
     <el-header class="home-header" >
       <div>
         <img src="../assets/64.gif" alt=""/>
-        <span>医疗管理系统</span>
+        <span style="color: gray">医疗管理系统</span>
       </div>
       <div style="margin-left: 1040px">
         <el-color-picker v-model="themeVal" ></el-color-picker>
       </div>
       <div class="tt" title="全屏" @click="screenCli()"><img src="/src/assets/screen.png"></div>
-      {{user.userName}}
+      <span style="color: gray">{{user.userName}}</span>
       <el-button @click="logout">退出</el-button>
     </el-header>
 
@@ -22,12 +23,12 @@
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
-            background-color="#262626"
+            background-color="#324157"
             text-color="#fff"
             active-text-color="#2c8aee"
             unique-opened
             :collapse="isCollapse"
-            :collapse-transition="false">  <!--active-text-color设置二级菜单的文字颜色-->  <!--unique-opened设置一次只能打开一个菜单-->
+            :collapse-transition="true">  <!--active-text-color设置二级菜单的文字颜色-->  <!--unique-opened设置一次只能打开一个菜单-->
 
 
           <el-submenu index="1">
@@ -87,7 +88,7 @@
 
 
               <router-link to="/drugInfosC"><el-menu-item index="5-2">药品库存</el-menu-item></router-link>
-              <router-link to="/drugApplyC"><el-menu-item index="5-3">药品调拨</el-menu-item></router-link>
+<!--              <router-link to="/drugApplyC"><el-menu-item index="5-3">药品调拨</el-menu-item></router-link>-->
             </el-menu-item-group>
 
             <el-menu-item-group>
@@ -96,7 +97,8 @@
 
 
               <router-link to="/XdrugInfosC"><el-menu-item index="5-5">药品库存</el-menu-item></router-link>
-              <router-link to="/XdrugApplyC"><el-menu-item index="5-6">药品调拨</el-menu-item></router-link>
+<!--              <router-link to="/XdrugApplyC"><el-menu-item index="5-6">药品调拨</el-menu-item></router-link>-->
+              <router-link to="/s"><el-menu-item index="5-7">s</el-menu-item></router-link>
             </el-menu-item-group>
           </el-submenu>
 
@@ -105,14 +107,14 @@
               <i class="el-icon-user"></i>
               <span>药库</span>
             </template>
-            <router-link to="/putlnStorage">
-            <el-menu-item index="6-1">
+            <router-link to="/putlnStorage"><el-menu-item index="6-1">采购入库</el-menu-item></router-link>
+            <router-link to="/auditList"><el-menu-item index="6-2">入库审核</el-menu-item></router-link>
+            <router-link to="/CheckDrugStorage"><el-menu-item index="6-3">查看药库</el-menu-item></router-link>
+            <router-link to="/diaobo"><el-menu-item index="6-4">药库调拨</el-menu-item></router-link>
+            <router-link to="/return"><el-menu-item index="6-5">药库退货</el-menu-item></router-link>
 
-                进药
 
-              </el-menu-item>
-            </router-link>
-            <router-link to="/CheckDrugStorage"><el-menu-item index="6-2">查看药库</el-menu-item></router-link>
+
           </el-submenu>
           <el-submenu index="7">
             <template #title>
@@ -196,9 +198,7 @@ export default {
         userId:'',
         userName:'',
       },
-      color:{
-        backgroundColor:"1"
-      }
+
     }
   },
   mounted() {
@@ -251,7 +251,7 @@ export default {
 <style lang="less" scoped>
 // header 的背景色
 .home-header {
-  background-color: #242424;
+  background-color:#324157;
   display: flex;
   // 左右两边对齐
   justify-content: space-between;
@@ -272,7 +272,7 @@ export default {
 }
 // 左边栏的背景色
 .home-aside {
-  background-color: #262626;
+background-color: #324157;
   // 解决左侧菜单栏有边框不齐的问题
   .el-menu {
     border-right: none;
@@ -280,20 +280,21 @@ export default {
 }
 // 主区域的背景色
 .home-main {
-  background-color: #d8d8d8;
+  background-color:#f0f2f5;
 }
 // 布局撑满全屏
 .home-container {
   width: 100%;
 }
 .toggle-button {
-  background-color: #404040;
+  background-color: #324157;
   font-size: 15px;
   color: #eeeeee;
   text-align: center;
   letter-spacing: 0.2em;
   cursor: pointer;
 }
-.tt{
+.el-menu-vertical-demo{
+
 }
 </style>

@@ -1,196 +1,437 @@
 <template>
-  <div class="putInStorage">
+  <div class="app-container">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>药库</el-breadcrumb-item>
+      <el-breadcrumb-item>采购入库</el-breadcrumb-item>
+    </el-breadcrumb>
     <el-card>
-    <el-form ref="form" :model="form" label-width="80px"  :rules="rules">
-      <el-form-item label="药品名称" prop="name">
-        <el-input v-model.trim="form.name"></el-input>
-      </el-form-item>
-      <el-form-item label="数目" prop="amount">
-        <el-input v-model.trim.number="form.amount" type="number"></el-input>
-      </el-form-item>
-      <el-form-item label="进药时间">
-        <el-col :span="11">
-          <el-date-picker type="date" placeholder="选择日期" v-model="date1" style="width: 100%;"></el-date-picker>
-        </el-col>
-        <el-col class="line" :span="2">-</el-col>
-        <el-col :span="11">
-          <el-time-picker type="fixed-time" placeholder="选择时间" v-model="form.date2" style="width: 100%;"></el-time-picker>
-        </el-col>
-      </el-form-item>
-      <el-form-item label="厂家" prop="manufacturers">
-        <el-input v-model.trim="form.manufacturers" ></el-input>
-      </el-form-item>
-      <el-form-item label="种类" prop="species">
-        <el-input v-model.trim="form.species"></el-input>
-      </el-form-item>
-      <el-form-item label="生产日期">
-        <el-date-picker readOnly="true" type="date" placeholder="选择日期" v-model="form.productionData" style="width: 100%;"></el-date-picker>
-      </el-form-item>
-      <el-form-item label="规格"  prop="specification">
-        <el-input v-model.trim="form.specification"></el-input>
-      </el-form-item>
-      <el-form-item label="剂型"  prop="dosageForm">
-        <el-input v-model.trim="form.dosageForm"></el-input>
-      </el-form-item>
-      <el-form-item label="单价"  prop="unitPrice">
-        <el-input v-model.trim.number="form.unitPrice" type="number"></el-input>
-      </el-form-item>
-      <el-form-item label="总价">
-        {{form.totalPrices}}
-      </el-form-item>
-      <el-form-item label="储存温度"  prop="temperature">
-        <el-select v-model.trim="form.temperature" placeholder="请选择储存温度">
-          <el-option label="常温" value="01"></el-option>
-          <el-option label="冷藏" value="02"></el-option>
+    <!-- 查询条件开始 -->
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="98px">
+      <el-form-item label="供应商名称" prop="providerId">
+        <el-select
+            v-model="queryParams.providerId"
+            placeholder="供应商名称"
+            clearable
+            size="small"
+            style="width:240px"
+        >
+          <el-option
+              v-for="provider in providerOptions"
+              :key="provider.providerId"
+              :label="provider.providerName"
+              :value="provider.providerId"
+          />
         </el-select>
       </el-form-item>
-      <el-form-item label="经手人"  prop="handlers">
-        <el-input v-model.trim="form.handlers"></el-input>
+      <el-form-item label="申请人" prop="applyUserName">
+        <el-input
+            v-model="queryParams.applyUserName"
+            placeholder="请输入申请人"
+            clearable
+            size="small"
+            style="width:180px"
+        />
       </el-form-item>
-      <el-form-item label="质管员"  prop="qualityOfficer">
-        <el-input v-model.trim="form.qualityOfficer"></el-input>
-      </el-form-item>
-      <el-form-item label="仓库员"  prop="warehouseman">
-        <el-input v-model.trim="form.warehouseman"></el-input>
-      </el-form-item>
-      <el-form-item label="进药方式"  prop="pattern">
-        <el-select v-model.trim="form.pattern" placeholder="请选择进药方式">
-          <el-option label="网上订货" value="01"></el-option>
-          <el-option label="到厂家进货" value="02"></el-option>
+      <el-form-item label="单据状态" prop="status">
+        <el-select
+            v-model="queryParams.status"
+            placeholder="单据状态"
+            clearable
+            size="small"
+            style="width:240px"
+        >
+          <el-option
+              v-for="dict in statusOptions"
+              :key="dict.dictValue"
+              :label="dict.dictLabel"
+              :value="dict.dictValue"
+          />
         </el-select>
       </el-form-item>
+
       <el-form-item>
-        <el-button type="primary" @click="submitForm('form')">进药</el-button>
-        <el-button @click="resetForm('form')">重置</el-button>
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+        <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
+    <!-- 查询条件结束 -->
+
+    <!-- 表格工具按钮开始 -->
+    <el-row :gutter="10" style="margin-bottom: 8px;">
+      <el-col :span="1.5">
+        <el-button type="primary" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">新增采购</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoAudit">提交审核</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="handleDoInvalid">作废</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoInventory">提交入库</el-button>
+      </el-col>
+    </el-row>
+    <!-- 表格工具按钮结束 -->
+
+    <!-- 数据表格开始 -->
+    <el-table v-loading="loading" border :data="purchaseTableList" @selection-change="handleSelectionChnage">
+      <el-table-column type="selection" width="55" align="center" />
+      <el-table-column label="单据ID" align="center" width="200" prop="purchaseId">
+        <template slot-scope="scope">
+          <router-link :to="'/erp/purchase/editPurchase/'+scope.row.purchaseId" class="link-type">
+            <span>{{scope.row.purchaseId}}</span>
+          </router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="供应商" width="200" align="center" prop="providerId" :formatter="providerFormatter" />
+      <el-table-column label="采购批发总额" align="center" prop="purchaseTradeTotalAmount">
+        <template slot-scope="scope">
+          <span>{{ scope.row.purchaseTradeTotalAmount|rounding }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="状态" prop="status" align="center" :formatter="statusFormatter" />
+      <el-table-column label="申请人" align="center" prop="applyUserName" />
+      <el-table-column label="入库操作人" align="center" prop="storageOptUser" />
+      <el-table-column label="入库时间" align="center" prop="storageOptTime" show-overflow-tooltip />
+      <el-table-column label="审核信息" align="center" prop="examine" />
+      <el-table-column label="创建时间" align="center" prop="createTime" show-overflow-tooltip />
+    </el-table>
+    <!-- 数据表格结束 -->
+    <!-- 分页控件开始 -->
+    <el-pagination
+        v-show="total>0"
+        :current-page="queryParams.pageNum"
+        :page-sizes="[5, 10, 20, 30]"
+        :page-size="queryParams.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+    />
+      <el-dialog
+
+          v-model="dialogVisible"
+          width="80%"
+          :before-close="handleClose">
+        <div style="margin-top: -30px">—————————————————————<span style="color:red">采购入库</span>———————————————————————</div>
+        <div style="margin-top: 10px">
+          <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-row >
+
+              <el-col :span="10">
+                <el-form-item label="供应商:" prop="salesId"
+                              :rules="[
+                 {required: true,message: '供应商不能为空'},
+              ]"
+                >
+                  <el-select v-model="ruleForm.salesId">
+
+                    <el-option>
+
+                    </el-option>
+
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="10">
+                <el-form-item label="预计金额:" prop='salesTitle'
+                              :rules="[
+                 {required: true,message: '预计金额不能为空'},
+              ]"
+
+                >
+                  <el-input ty v-model="ruleForm.salesTitle" autocomplete="off" style="width: 200px;"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+
+
+
+            <el-table
+                :data="gridData"
+                      style="width: 100%;"
+                      max-height="200"
+                      :cell-style="{'text-align':'center'}"
+                      :header-cell-style="{background:'#D6E9FC',color:'#606266','text-align':'center'}">
+
+              <el-table-column width="50" type="selection"></el-table-column>
+              <el-table-column property="date" label="药品名" width="150"></el-table-column>
+              <el-table-column property="name" label="单价" width="200"></el-table-column>
+              <el-table-column property="address" label="生产日期"></el-table-column>
+              <el-table-column label="剂型"></el-table-column>
+              <el-table-column property="" label="数量">
+                <template #default="scope" style="text-align: center">
+                  <el-input-number style="width: 100px;text-align: center" v-model="scope.row.number" controls-position="right" @change="handleChange" :min="1" :max="20"></el-input-number>
+                </template>
+              </el-table-column>
+              <el-table-column property="" label="参考价格">
+                <template #default="scope" style="text-align: center">
+                  {{scope.row.number *scope.row.name}}
+                </template>
+              </el-table-column>
+            </el-table>
+
+
+          </el-form>
+
+
+
+        </div>
+        <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+        </template>
+
+      </el-dialog>
+    <!-- 分页控件结束 -->
     </el-card>
   </div>
 </template>
-
-<script type="text/ecmascript-6">
+<script>
+// 引入api
+// import { listPurchaseForPage, doAudit, doInvalid,doInventory } from '@/api/erp/purchase'
+// import { selectAllProvider } from '@/api/erp/provider'
 export default {
-  data () {
+  // 过滤器
+  filters: {
+    // 保留两位小数
+    rounding(value) {
+      return value.toFixed(2)
+    }
+  },
+  name: "putLnStorage",
+  // 定义页面数据
+  data() {
     return {
-      date1: '',
-      form: {
-        name: '',
-        manufacturers: '',
-        amount: '',
-        unitPrice: '',
-        totalPrices: 0,
-        temperature: '',
-        handlers: '',
-        qualityOfficer: '',
-        warehouseman: '',
-        pattern: '',
-        date2: '',
-        species: '',
-        productionData: '',
-        specification: '',
-        dosageForm: ''
+      gridData: [{
+        date: '2016-05-02',
+        name: 12,
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }],
+      dialogVisible:false,
+      ruleForm: {
+        salesId:'',
+        customerId:'',
+        salesTitle:'',
+        salesMoney:0,
+
+        salesState:'',
+        salesKene:'20%',
+        salesJieduan:'初期沟通',
+        userId:"",
       },
-      // 表单验证
-      rules: {
-        name: [
-          { required: true, message: '请输入药品名称', trigger: 'blur' }
-        ],
-        manufacturers: [
-          { required: true, message: '请输入厂家', trigger: 'blur' }
-        ],
-        species: [
-          { required: true, message: '请输入药品种类', trigger: 'blur' }
-        ],
-        specification: [
-          { required: true, message: '请输入药品规格', trigger: 'blur' }
-        ],
-        dosageForm: [
-          { required: true, message: '请输入药品剂型', trigger: 'blur' }
-        ],
-        handlers: [
-          { required: true, message: '请输入药品经手人', trigger: 'blur' }
-        ],
-        qualityOfficer: [
-          { required: true, message: '请输入药品质管员', trigger: 'blur' }
-        ],
-        warehouseman: [
-          { required: true, message: '请输入药品仓库员', trigger: 'blur' }
-        ],
-        pattern: [
-          { required: true, message: '请输入药品进药方式', trigger: 'blur' }
-        ]
+      // 是否启用遮罩层
+      loading: false,
+      // 选中数组
+      ids: [],
+      // 非单个禁用
+      single: false,
+      // 非多个禁用
+      multiple: true,
+      // 分页数据总条数
+      total: 0,
+      // 字典表格数据
+      purchaseTableList: [],
+      // 状态数据字典
+      statusOptions: [],
+      // 供应商列表
+      providerOptions: [],
+      // 查询参数
+      queryParams: {
+        pageNum: 1,
+        pageSize: 10,
+        providerId: undefined,
+        applyUserName: undefined,
+        status: undefined
       }
-    };
-  },
-  methods: {
-    // 提交进药数据vue-resource
-    submitForm () { // mark
-      if (!this.form.name || !this.form.manufacturers || !this.form.amount || !this.form.unitPrice || !this.form.temperature || !this.form.handlers || !this.form.qualityOfficer || !this.form.warehouseman || !this.form.pattern || !this.form.date2 || !this.form.species || !this.form.productionData || !this.form.specification || !this.form.dosageForm) {
-        this.$message.error('不能为空！');
-      } else {
-        // 转换时间格式
-        this.form.date2 = this.form.date2.getFullYear() + '-' + this.form.date2.getMonth() + '-' + this.form.date2.getDay() + ' ' + this.form.date2.getHours() + ':' + this.form.date2.getMinutes() + ':' + this.form.date2.getSeconds();
-        this.form.productionData = this.form.productionData.getFullYear() + '-' + this.form.productionData.getMonth();
-        console.log(this.form);
-        this.$message({
-          message: '传给后台的信息是用户编辑的对象' + JSON.stringify(this.form),
-          type: 'success'
-        });
-        this.$http.get(api.putInStorage, {params: {form: this.form}}).then(function (response) {
-          console.log(response.body);
-          this.resetForm();
-        }, function () {
-          this.$message.error('POST方式 后台接口有误,修改后台接口既可！');
-          this.resetForm();
-        });
-      }
-    },
-    // 重置输入表单
-    resetForm () {
-      this.date1 = '';
-      this.form = {
-        name: '',
-        manufacturers: '',
-        amount: '',
-        unitPrice: '',
-        totalPrices: 0,
-        temperature: '',
-        handlers: '',
-        qualityOfficer: '',
-        warehouseman: '',
-        pattern: '',
-        date1: '',
-        date2: '',
-        species: '',
-        productionData: '',
-        specification: '',
-        dosageForm: ''
-      };
     }
   },
-  computed: {
-    Amount () {
-      return this.form.amount;
+  methods:{
+
+    handleChange(value) {
+      console.log(value);
     },
-    UnitPrice () {
-      return this.form.unitPrice;
-    }
   },
-  watch: {
-    // 单价或者数量变化--计算总价
-    Amount (newValue, oldValue) {
-      this.form.totalPrices = this.form.amount * this.form.unitPrice;
-    },
-    UnitPrice (newValue, oldValue) {
-      this.form.totalPrices = this.form.amount * this.form.unitPrice;
-    }
-  }
-};
+  // // 勾子
+  // created() {
+  //   // 使用全局的根据字典类型查询字典数据的方法查询字典数据
+  //   this.getDataByType('his_order_status').then(res => {
+  //     this.statusOptions = res.data
+  //   })
+  //   // 查询表格数据
+  //   this.getPurchaseList()
+  //   // 查询供应商列表
+  //   selectAllProvider().then(res => {
+  //     this.providerOptions = res.data
+  //   })
+  // },
+  // // 方法
+  // methods: {
+  //   // 查询表格数据
+  //   getPurchaseList() {
+  //     this.loading = false // 打开遮罩
+  //     listPurchaseForPage(this.queryParams).then(res => {
+  //       this.purchaseTableList = res.data
+  //       this.total = res.total
+  //       this.loading = true// 关闭遮罩
+  //     })
+  //   },
+  //   // 条件查询
+  //   handleQuery() {
+  //     this.getPurchaseList()
+  //   },
+  //   // 重置查询条件
+  //   resetQuery() {
+  //     this.resetForm('queryForm')
+  //     // 刷新页面
+  //     this.getPurchaseList()
+  //   },
+  //   // 数据表格的多选择框选择时触发
+  //   handleSelectionChnage(selection) {
+  //     this.ids = selection.map(item => item.purchaseId)
+  //     this.single = selection.length !== 1
+  //     this.multiple = !selection.length
+  //   },
+  //   // 分页pageSize变化时触发
+  //   handleSizeChange(val) {
+  //     this.queryParams.pageSize = val
+  //     // 重新查询
+  //     this.getPurchaseList()
+  //   },
+  //   // 点击上一页  下一页，跳转到哪一页面时触发
+  //   handleCurrentChange(val) {
+  //     this.queryParams.pageNum = val
+  //     // 重新查询
+  //     this.getPurchaseList()
+  //   },
+  //   // 翻译状态
+  //   statusFormatter(row) {
+  //     return this.selectDictLabel(this.statusOptions, row.status)
+  //   },
+  //   // 翻译供应商
+  //   providerFormatter(row) {
+  //     // 供应商名称
+  //     let name = ''
+  //     // 遍历供应商列表
+  //     this.providerOptions.filter(item => {
+  //       if (parseInt(row.providerId) === parseInt(item.providerId)) {
+  //         name = item.providerName
+  //       }
+  //     })
+  //     return name
+  //   },
+  //   // 提交审核
+  //   handleDoAudit() {
+  //     // 获取当前审核单据ID
+  //     const purchaseId = this.ids[0]
+  //     this.$confirm('确定要提交审核单据号为【' + purchaseId + '】的采购单吗?', '提示', {
+  //       confirmButtonText: '确定',
+  //       cancelButtonText: '取消',
+  //       type: 'warning'
+  //     }).then(() => {
+  //       doAudit(purchaseId).then(res => {
+  //         this.msgSuccess('提交成功')
+  //         // 刷新
+  //         this.getPurchaseList()
+  //       }).catch(() => {
+  //         this.msgError('提交失败')
+  //       })
+  //     }).catch(() => {
+  //       this.msgError('提交已取消')
+  //     })
+  //   },
+  //   // 作废
+  //   handleDoInvalid(row) {
+  //     // 获取当前审核单据ID
+  //     const purchaseId = this.ids[0]
+  //     this.$confirm('确定要作废单据号为【' + purchaseId + '】的采购单吗?', '提示', {
+  //       confirmButtonText: '确定',
+  //       cancelButtonText: '取消',
+  //       type: 'warning'
+  //     }).then(() => {
+  //       doInvalid(purchaseId).then(res => {
+  //         this.msgSuccess('作废成功')
+  //         // 刷新
+  //         this.getPurchaseList()
+  //       }).catch(() => {
+  //         this.msgError('作废失败')
+  //       })
+  //     }).catch(() => {
+  //       this.msgError('作废已取消')
+  //     })
+  //   },
+  //   // 提交入库
+  //   handleDoInventory() {
+  //     // 获取要入库的采购单ID
+  //     const purchaseId = this.ids[0]
+  //     // 为了防止this冲突所以将this赋值给tx
+  //     const tx = this
+  //     tx.$confirm('确定要入库单据号为【' + purchaseId + '】的采购单吗?', '提示', {
+  //       confirmButtonText: '确定',
+  //       cancelButtonText: '取消',
+  //       type: 'warning'
+  //     }).then(() => {
+  //       doInventory(purchaseId).then(res => {
+  //         tx.msgSuccess('入库成功')
+  //         // 刷新
+  //         tx.getPurchaseList()
+  //       }).catch(() => {
+  //         tx.msgError('入库失败')
+  //       })
+  //     }).catch(() => {
+  //       tx.msgError('入库已取消')
+  //     })
+  //   },
+  //   // 新增采购
+  //   handleToNewPurchase() {
+  //     // 跳转到新增采购的路由页面
+  //     this.$router.replace('/erp/purchase/newPurchase')
+  //   }
+  // }
+
+
+
+}
+
 </script>
 
-<style lang="stylus-loader" rel="stylesheet/stylus">
+<style scoped>
 /*.putInStorage{*/
 /*  max-width:800px*/
 /*}*/
+a {
+  text-decoration: none;
+}
+.router-link-active {
+  text-decoration: none;
+}
 
+.el-card{
+  margin-top: 50px;
+
+}
+.block{
+  margin-left: 350px;
+}
+.fy_div{
+  margin-top:20px;
+  margin-left: -200px;
+}
 </style>
