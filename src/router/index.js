@@ -129,6 +129,11 @@ const routes=[
                 name:'zyjs',
                 component:()=>import('/src/components/TYH/zyjs.vue'),
             },
+            {
+                path: '/zyyz',
+                name:'zyyz',
+                component:()=>import('/src/components/TYH/zyyz.vue'),
+            },
 
         // {
         //     path: "/tyh",
