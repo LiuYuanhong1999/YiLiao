@@ -6,7 +6,7 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>手术管理</el-breadcrumb-item>
-            <el-breadcrumb-item>手术项目管理</el-breadcrumb-item>
+            <el-breadcrumb-item>手术治疗</el-breadcrumb-item>
         </el-breadcrumb>
 
 
@@ -29,27 +29,22 @@
             >
                 <el-table-column
                         prop="eId"
-                        label="编号"
+                        label="手术号"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eName"
-                        label="姓名"
+                        label="病人姓名"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eSex"
-                        label="性别"
+                        label="主刀医生"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="ePhone"
-                        label="电话"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="入职日期"
+                        label="总金额"
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
@@ -85,32 +80,140 @@
 
         </el-card>
         <el-dialog
-                title="提示"
+                title="新增手术治疗"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
             <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工姓名" prop="eName">
-                            <el-input v-model="ruleForm.eName"></el-input>
-
+                        <el-form-item label="手术号" prop="eName">
+                            <el-input v-model="ruleForm.eName" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="员工性别" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
+                        <el-form-item label="状态" prop="eSex">
+                            <el-select v-model="value" disabled placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="挂号日期" prop="eSex">
+                            <el-date-picker
+                                    v-model="value1"
+                                    type="date"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="手术类型" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="手术室" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="住院号" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="科室" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="病人姓名" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="主刀医生" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="总金额" prop="eName">
+                            <el-input v-model="ruleForm.ePhone"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
 
                 <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="员工电话" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
-
-                        </el-form-item>
-                    </el-col>
+                    <el-tabs v-model="activeName" @tab-click="handleClick">
+                        <el-tab-pane label="收费项目" name="first">
+                            <el-table
+                                    :data="tableData"
+                                    style="width: 100%">
+                                <el-table-column
+                                        prop="date"
+                                        label="项目编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="项目名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="项目类型">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单位">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="数量">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="单价">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="name"
+                                        label="金额">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                    </el-tabs>
                 </el-row>
             </el-form>
 

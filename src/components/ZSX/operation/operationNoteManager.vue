@@ -19,7 +19,7 @@
 
                 <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
                 <!--打印导入导出-->
-                <el-button type="primary" @click="dialogVisible = true">增加</el-button>
+
             </el-row>
             <el-table
 
@@ -29,32 +29,28 @@
             >
                 <el-table-column
                         prop="eId"
-                        label="编号"
+                        label="手术号"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eName"
-                        label="姓名"
+                        label="病人姓名"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eSex"
-                        label="性别"
+                        label="主刀医生"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="ePhone"
-                        label="电话"
+                        label="总金额"
                         width="180">
                 </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="入职日期"
-                        width="180">
-                </el-table-column>
+
                 <el-table-column  label="操作" width="130px">
                     <template  #default="scope">
-                        <el-tooltip content="编辑" placement="top">
+                        <el-tooltip content="详情" placement="top">
                             <el-button
                                     icon="el-icon-edit" size="mini"
                                     @click="editEmp(scope.row)"></el-button>

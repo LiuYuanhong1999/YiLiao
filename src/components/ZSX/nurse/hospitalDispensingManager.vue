@@ -14,7 +14,7 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入审批单号" v-model="eaaOrderNumber"  ></el-input>
+                    <el-input placeholder="请输入住院发药号" v-model="eaaOrderNumber"  ></el-input>
                 </el-col>
 
                 <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
@@ -29,27 +29,47 @@
             >
                 <el-table-column
                         prop="eId"
-                        label="编号"
+                        label="住院发药编号"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eName"
-                        label="姓名"
+                        label="状态"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eSex"
-                        label="性别"
+                        label="住院号"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="ePhone"
-                        label="电话"
+                        label="发药日期"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eDate"
-                        label="入职日期"
+                        label="处方号"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="药房"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="总金额"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="操作人"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="住院状态"
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
@@ -85,33 +105,98 @@
 
         </el-card>
         <el-dialog
-                title="提示"
+                title="住院部发药"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
             <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工姓名" prop="eName">
-                            <el-input v-model="ruleForm.eName"></el-input>
-
+                        <el-form-item label="发药编号" prop="eName">
+                            <el-input v-model="ruleForm.eName" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="员工性别" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
+                        <el-form-item label="状态" prop="eSex">
+                            <el-select v-model="value" disabled placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
                         </el-form-item>
                     </el-col>
-                </el-row>
-
-                <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工电话" prop="eName">
+                        <el-form-item label="发药日期" prop="eSex">
+                            <el-date-picker
+                                    v-model="value1"
+                                    type="date"
+                                    placeholder="选择日期">
+                            </el-date-picker>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="发药类型" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="住院号" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="操作人" prop="eName">
+                            <el-input v-model="ruleForm.ePhone" :disabled="true"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="药房" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="处方" prop="eName">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="总金额" prop="eName">
                             <el-input v-model="ruleForm.ePhone"></el-input>
-
                         </el-form-item>
                     </el-col>
                 </el-row>
+
             </el-form>
 
             <template #footer>
