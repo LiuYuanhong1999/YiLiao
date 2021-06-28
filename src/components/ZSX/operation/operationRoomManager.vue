@@ -6,7 +6,7 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>手术管理</el-breadcrumb-item>
-            <el-breadcrumb-item>手术室安排</el-breadcrumb-item>
+            <el-breadcrumb-item>手术室管理</el-breadcrumb-item>
         </el-breadcrumb>
 
 
@@ -14,12 +14,13 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入审批单号" v-model="eaaOrderNumber"  ></el-input>
+                    <el-input placeholder="请输入手术室编号" v-model="eaaOrderNumber"  ></el-input>
                 </el-col>
 
                 <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
                 <!--打印导入导出-->
                 <el-button type="primary" @click="dialogVisible = true">增加</el-button>
+<!--                <el-button type="primary" @click="dialogVisible = true">手术室分类</el-button>-->
             </el-row>
             <el-table
 
@@ -29,27 +30,37 @@
             >
                 <el-table-column
                         prop="eId"
-                        label="编号"
-                        width="180">
+                        label="手术室编号"
+                        width="120">
                 </el-table-column>
                 <el-table-column
                         prop="eName"
-                        label="姓名"
-                        width="180">
+                        label="手术室名称"
+                        width="100">
                 </el-table-column>
                 <el-table-column
                         prop="eSex"
-                        label="性别"
+                        label="手术类型"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="ePhone"
-                        label="电话"
+                        label="科室"
+                        width="100">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="位置"
                         width="180">
                 </el-table-column>
                 <el-table-column
                         prop="eDate"
-                        label="入职日期"
+                        label="负责人"
+                        width="180">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="维护人"
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
@@ -85,20 +96,56 @@
 
         </el-card>
         <el-dialog
-                title="提示"
+                title="新增手术室"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
             <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="员工姓名" prop="eName">
+                        <el-form-item label="编号" prop="eName">
                             <el-input v-model="ruleForm.eName"></el-input>
-
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="员工性别" prop="eSex">
+                        <el-form-item label="名称" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="手术类型" prop="eSex">
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="分类" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="科室" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="位置" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="负责人" prop="eSex">
+                            <el-input v-model="ruleForm.eSex"></el-input>
+                        </el-form-item>
+                    </el-col>
+                    <el-col :span="10">
+                        <el-form-item label="维护人" prop="eSex">
                             <el-input v-model="ruleForm.eSex"></el-input>
                         </el-form-item>
                     </el-col>
