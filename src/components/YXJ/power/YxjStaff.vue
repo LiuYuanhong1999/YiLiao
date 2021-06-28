@@ -18,17 +18,16 @@
         <el-button icon="el-icon-search" type="primary"
                    @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
 
-        <el-button @click="dialogVisible = true" icon="el-icon-circle-plus" type="success"
+        <router-link :to="{path:'/YxjStaffXz'}">
+        <el-button  icon="el-icon-circle-plus" type="success"
                    style="float: left;margin-left: 800px">
           新增员工
         </el-button>
-
+        </router-link>
       </el-row>
 
 
       <el-table
-
-
           :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           border stripe style="width: 100%;margin-top: 10px"
           :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"
@@ -42,43 +41,61 @@
 
         <el-table-column
             prop="eName"
-            label="体检人"
+            label="姓名"
         >
         </el-table-column>
 
         <el-table-column
             prop="eName"
-            label="类别"
+            label="身份证号"
         >
         </el-table-column>
 
         <el-table-column
             prop="eDate"
-            label="规格"
+            label="性别"
         >
         </el-table-column>
 
         <el-table-column
             prop="eDate"
-            label="负责院"
+            label="联系电话"
         >
         </el-table-column>
 
         <el-table-column
             prop="eDate"
-            label="单价（元）"
+            label="所属部门"
         >
         </el-table-column>
 
         <el-table-column
             prop="eName"
-            label="执行人"
+            label="工作岗位"
+        >
+        </el-table-column>
+
+        <el-table-column
+            prop="eName"
+            label="入职时间"
+        >
+        </el-table-column>
+
+        <el-table-column
+            prop="eName"
+            label="状态"
+        >
+        </el-table-column>
+
+        <el-table-column
+            prop="eName"
+            label="登录权限"
         >
         </el-table-column>
 
         <el-table-column label="操作" >
           <template #default="scope">
-            <el-tooltip content="查看" placement="top">
+            <el-tooltip content="重置密码" placement="top">
               <el-button
                   icon="el-icon-view" size="mini"
                   @click="editEmp(scope.row)"></el-button>
@@ -88,6 +105,8 @@
 
       </el-table>
       <br>
+
+
       <!--分页-->
       <div class="fy_div">
         <el-pagination
@@ -105,43 +124,7 @@
 
 
     <!--   新增按钮表单   -->
-    <el-dialog
-        title="提示"
-        v-model="dialogVisible"
-        width="60%"
-        :before-close="handleClose">
-      <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-row>
-          <el-col :span="10">
-            <el-form-item label="类别名字" prop="eName">
-              <el-input v-model="ruleForm.eName"></el-input>
 
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="规格" prop="eSex">
-              <el-input v-model="ruleForm.eSex"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-        <el-row>
-          <el-col :span="10">
-            <el-form-item label="负责院" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
-
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-form>
-
-      <template #footer>
-      <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-      </span>
-      </template>
-    </el-dialog>
 
 
     <!--   新增按钮表单 结束！！！  -->
