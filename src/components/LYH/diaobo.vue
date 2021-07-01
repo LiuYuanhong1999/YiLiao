@@ -91,6 +91,7 @@
           </template>
         </el-table-column>
         <el-table-column label="申请时间" prop="status" align="center" :formatter="statusFormatter" />
+        <el-table-column label="药品数量" align="center" prop="storageOptUser" />
         <el-table-column label="申请人" align="center" prop="applyUserName" />
         <el-table-column label="状态" align="center" prop="storageOptUser" />
         <el-table-column label="出库时间" align="center" prop="storageOptTime" show-overflow-tooltip />
@@ -98,7 +99,7 @@
       <!-- 数据表格结束 -->
       <!-- 分页控件开始 -->
       <el-pagination
-          v-show="total>0"
+          v-show="total>0"      rr 
           :current-page="queryParams.pageNum"
           :page-sizes="[5, 10, 20, 30]"
           :page-size="queryParams.pageSize"

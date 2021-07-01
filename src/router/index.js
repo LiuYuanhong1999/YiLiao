@@ -135,19 +135,6 @@ const routes=[
                 component:()=>import('/src/components/TYH/zyyz.vue'),
             },
 
-        // {
-        //     path: "/tyh",
-        //         name: 'HomePage',
-        //         component:()=>import('/src/components/HomePage.vue'),
-        //         children:[
-        //             {
-        //                 path: '/zytz',
-        //                 name:'zytz',
-        //                 component:()=>import('/src/components/tyh/zytz.vue'),
-        //             },
-        //         ],
-        // }
-
             //药房
             {
               path:'/recipe',

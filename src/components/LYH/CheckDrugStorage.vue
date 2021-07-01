@@ -64,8 +64,8 @@
             width="120">
         </el-table-column>
         <el-table-column
-            prop="规格"
-            label="厂家"
+            prop=""
+            label="规格"
             width="100">
         </el-table-column>
         <el-table-column
@@ -93,11 +93,11 @@
             label="质管员"
             width="80">
         </el-table-column>
-        <el-table-column
-            prop="eDate"
-            label="仓库员"
-            width="80">
-        </el-table-column>
+<!--        <el-table-column-->
+<!--            prop="eDate"-->
+<!--            label="仓库员"-->
+<!--            width="80">-->
+<!--        </el-table-column>-->
         <el-table-column
             prop="eDate"
             label="进药方式"

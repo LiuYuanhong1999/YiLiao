@@ -63,6 +63,7 @@
         <el-table-column label="年龄" prop="status" align="center" :formatter="statusFormatter" />
         <el-table-column label="地址" align="center" prop="applyUserName" />
         <el-table-column label="联系方式	" align="center" prop="storageOptUser" />
+        <el-table-column label="发药时间	" align="center" prop="storageOptUser" />
         <el-table-column label="发药药师	" align="center" prop="storageOptTime" show-overflow-tooltip />
 <!--        <el-table-column  label="操作" width="80px">-->
 <!--          <template  #default="scope">-->

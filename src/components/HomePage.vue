@@ -3,7 +3,7 @@
 
     <el-header class="home-header" >
       <div>
-        <img src="../assets/64.gif" alt=""/>
+<!--        <img src="../assets/logo.png" style="height: 230px"/>-->
         <span style="color: gray">医疗管理系统</span>
       </div>
       <div style="margin-left: 1040px">
