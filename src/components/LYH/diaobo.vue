@@ -77,7 +77,7 @@
       <!-- 数据表格开始 -->
       <el-table v-loading="loading" border :data="purchaseTableList">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="单据ID" align="center" width="200" prop="purchaseId">
+        <el-table-column label="单据ID" align="c enter" width="200" prop="purchaseId">
           <template slot-scope="scope">
             <router-link :to="'/erp/purchase/editPurchase/'+scope.row.purchaseId" class="link-type">
               <span>{{scope.row.purchaseId}}</span>
@@ -99,7 +99,7 @@
       <!-- 数据表格结束 -->
       <!-- 分页控件开始 -->
       <el-pagination
-          v-show="total>0"      rr 
+          v-show="total>0"      rr
           :current-page="queryParams.pageNum"
           :page-sizes="[5, 10, 20, 30]"
           :page-size="queryParams.pageSize"

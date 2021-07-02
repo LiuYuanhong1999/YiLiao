@@ -2,6 +2,7 @@
   <div>
     <el-button @click="dialogVisible=true" type="primary">增加</el-button>
     <el-button class="small" type="warning" size="small" @click="update()">批量修改</el-button>
+    <el-button class="small" type="warning" size="small" @click="deletes()">批量删除</el-button>
     <el-table
         :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
         @selection-change="selectionLineChangeHandle"
@@ -160,6 +161,21 @@ export default {
         })
             .then((v) => {
              this.initData();
+            });
+      }
+
+    },
+
+    deletes(userId) {
+      for (var i = 0; i < this.dataonLineListSelections.length; i++) {
+        this.axios.get("http://localhost:8088/deleteById", {
+          params: {
+            userId: this.dataonLineListSelections[i].userId
+          }
+        })
+            .then((v) => {
+              alert("1")
+              this.initData();
             });
       }
 
