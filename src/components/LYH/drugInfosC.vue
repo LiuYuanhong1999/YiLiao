@@ -13,10 +13,10 @@
 
   <el-row>
     <el-col :span="4">
-      <el-input placeholder="请输入药品名" v-model="eaaOrderNumber"  ></el-input>
+      <el-input placeholder="请输入药品名" v-model="ruleFrom.pharmacyName"  ></el-input>
     </el-col>
 
-    <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
+    <el-button  icon="el-icon-search" type="primary" @click="findByName(ruleFrom.pharmacyName)"></el-button>
   </el-row>
 
 
@@ -25,56 +25,50 @@
 
       :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
       border stripe style="width: 100%;margin-top: 10px"
-      :header-cell-style="{'text-align':'center','background':'#DAE2EF'}"
+      :header-cell-style="{'text-align':'center'}"
       :cell-style="{'text-align':'center'}"
   >
     <el-table-column
-        prop="eId"
+        prop="pharmacyId"
         label="编号"
         width="80">
     </el-table-column>
     <el-table-column
-        prop="eName"
+        prop="pharmacyState"
         label="类别"
         width="80">
     </el-table-column>
     <el-table-column
-        prop="date"
+        prop="pharmacyName"
         label="药品名称"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="ePhone"
-        label="OTC"
-        width="80">
-    </el-table-column>
-    <el-table-column
-        prop="eDate"
+        prop="pharmacySpecifications"
         label="规格"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="eDate"
+        prop="pharmacyDosage"
         label="剂型"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="eDate"
+        prop="pharmacyDate"
         label="有效期至"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="eDate"
-        label="厂家"
-        width="180">
+        prop="pharmacyManufacturer"
+        label="厂家">
     </el-table-column>
     <el-table-column
-        prop="eDate"
+        prop="pharmacyNumber"
         label="库存（件/克）"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="eDate"
+        prop="pharmacyPrice"
         label="单价（元）"
         width="120">
     </el-table-column>
@@ -165,30 +159,14 @@ export default {
 name: "drugInfosC",
   data(){
       return{
-        tableData:[
-
-          {
-            date: '2016-05-02',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1518 弄'
-          }, {
-            date: '2016-05-04',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1517 弄'
-          }, {
-            date: '2016-05-01',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1519 弄'
-          }, {
-            date: '2016-05-03',
-            name: '王小虎',
-            address: '上海市普陀区金沙江路 1516 弄'
-          }
-
-        ],
+        tableData:[],
         dialogVisible: false,
         currentPage:1, //初始页
         pagesize:10,    //    每页的数据
+
+        ruleFrom:{
+          pharmacyName:'',
+        },
       }
   },
   methods:{
@@ -197,12 +175,21 @@ name: "drugInfosC",
         this.dialogVisible=true;
       },
 
-    // initData(){
-    //   this.axios.get("http://localhost:8088/emp")
-    //       .then((v) => {
-    //         this.tableData = v.data;
-    //       })
-    // },
+    initData(){
+      this.axios.get("http://localhost:8088/find-pharmacy")
+          .then((v) => {
+            this.tableData = v.data;
+          })
+    },
+
+    findByName(pharmacyName){
+      this.axios.get("http://localhost:8088/find-pharmacyName",{params:{pharmacyName:pharmacyName}})
+      .then((v)=>{
+        this.tableData=v.data;
+      })
+    },
+
+
 
     // 初始页currentPage、初始每页数据数pagesize和数据data
     handleSizeChange: function (size) {
@@ -214,10 +201,10 @@ name: "drugInfosC",
       console.log(this.currentPage)  //点击第几页
     },
   },
-  // created() {
-  //   this.initData();
-  //
-  // },
+  created() {
+    this.initData();
+
+  },
 }
 </script>
 

@@ -1,7 +1,8 @@
 <template>
   <div>
-    <el-button @click="dialogVisible=true" type="primary">增加</el-button>
+    <el-button @click="dialogTableVisible=true" type="primary">增加</el-button>
     <el-button class="small" type="warning" size="small" @click="update()">批量修改</el-button>
+    <el-button class="small" type="warning" size="small" @click="update2()">批量修改2</el-button>
     <el-button class="small" type="warning" size="small" @click="deletes()">批量删除</el-button>
     <el-table
         :data="tableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
@@ -26,7 +27,11 @@
           label="性别"
          >
       </el-table-column>
-
+      <el-table-column
+          prop="numbers"
+          label="数量"
+      >
+      </el-table-column>
       <el-table-column  label="操作" width="130px">
         <template #default  ="scope">
           <el-tooltip content="编辑" placement="top">
@@ -69,33 +74,13 @@
     </div>
 
 
-    <el-dialog
-        title="员工信息"
-        :visible.sync="dialogVisible"
-        width="60%"
-    >
-      <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
-        <el-row>
-          <el-col :span="10">
-            <el-form-item label="员工姓名" prop="eName">
-              <el-input v-model="ruleForm.eName"></el-input>
-
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="员工性别" prop="eSex">
-              <el-input v-model="ruleForm.eSex"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-
-
-      </el-form>
-      <el-button @click="ClearFrom()">取 消</el-button>
-      <el-button type="primary" @click="addEmp()">确 定</el-button>
-
+    <el-dialog title="收货地址" v-model="dialogTableVisible">
+      <el-table :data="gridData">
+        <el-table-column property="date" label="日期" width="150"></el-table-column>
+        <el-table-column property="name" label="姓名" width="200"></el-table-column>
+        <el-table-column property="address" label="地址"></el-table-column>
+      </el-table>
     </el-dialog>
-
 
 
   </div>
@@ -106,7 +91,23 @@ import qs from "qs";
 export default {
   name: "Test",
   data() {
-    return {
+    return {gridData: [{
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }],
       msg:'',//记录每一条的信息，便于取id
       multipleSelection:[],//多选的数据
       tableData: [],
@@ -121,7 +122,8 @@ export default {
         userId:'',
         userName:'',
         userPass:'',
-      }
+        numbers:''
+      },
 
 
     }
@@ -129,7 +131,12 @@ export default {
   methods:{
 
     selectionLineChangeHandle (val) {
-      this.dataonLineListSelections = val
+      this.dataonLineListSelections = val;
+      console.log(this.dataonLineListSelections);
+      for(var i = 0; i< this.dataonLineListSelections.length; i++){
+        console.log('id:'+this.dataonLineListSelections[i].userId)
+        console.log('number:'+this.dataonLineListSelections[i].numbers)
+      }
     },
 
     //提交
@@ -137,6 +144,7 @@ export default {
       console.log(this.dataonLineListSelections);
       for(var i = 0; i< this.dataonLineListSelections.length; i++){
         console.log('id:'+this.dataonLineListSelections[i].userId)
+        console.log('id:'+this.dataonLineListSelections[i].numbers)
       }
     },
 
@@ -147,9 +155,23 @@ export default {
             this.tableData = v.data;
           })
     },
+    update2() {
+      for (var i = 0; i < this.dataonLineListSelections.length; i++) {
 
+        this.axios.get("http://localhost:8088/updateState2", {
+          params: {
+           numbers:this.dataonLineListSelections[i].numbers,
+            userId: this.dataonLineListSelections[i].userId
+          }
+        })
+            .then((v) => {
+              this.initData();
+            });
+      }
 
-    update(userName,userPass,userId) {
+    },
+
+    update() {
       for (var i = 0; i < this.dataonLineListSelections.length; i++) {
 
         this.axios.get("http://localhost:8088/updateState", {

@@ -80,7 +80,7 @@
               <span>药房</span>
             </template>
             <el-menu-item-group>
-              <template #title>中药房</template>
+<!--              <template #title>中药房</template>-->
 
               <router-link to="/recipe"><el-menu-item index="5-1"> 处理处方 </el-menu-item></router-link>
 
@@ -89,15 +89,15 @@
 <!--              <router-link to="/drugApplyC"><el-menu-item index="5-3">药品调拨</el-menu-item></router-link>-->
             </el-menu-item-group>
 
-            <el-menu-item-group>
-              <template #title>西药房</template>
-              <router-link to="/Xrecipe"><el-menu-item index="5-4"> 处理处方 </el-menu-item></router-link>
+<!--            <el-menu-item-group>-->
+<!--              <template #title>西药房</template>-->
+<!--              <router-link to="/Xrecipe"><el-menu-item index="5-4"> 处理处方 </el-menu-item></router-link>-->
 
 
-              <router-link to="/XdrugInfosC"><el-menu-item index="5-5">药品库存</el-menu-item></router-link>
-<!--              <router-link to="/XdrugApplyC"><el-menu-item index="5-6">药品调拨</el-menu-item></router-link>-->
-              <router-link to="/s"><el-menu-item index="5-7">s</el-menu-item></router-link>
-            </el-menu-item-group>
+<!--              <router-link to="/XdrugInfosC"><el-menu-item index="5-5">药品库存</el-menu-item></router-link>-->
+<!--&lt;!&ndash;              <router-link to="/XdrugApplyC"><el-menu-item index="5-6">药品调拨</el-menu-item></router-link>&ndash;&gt;-->
+<!--              <router-link to="/s"><el-menu-item index="5-7">s</el-menu-item></router-link>-->
+<!--            </el-menu-item-group>-->
           </el-submenu>
 
           <el-submenu index="6">
