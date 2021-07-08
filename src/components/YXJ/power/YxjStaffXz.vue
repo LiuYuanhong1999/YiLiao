@@ -4,7 +4,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>权限管理</el-breadcrumb-item>
-      <el-breadcrumb-item>员工管理</el-breadcrumb-item>
+      <el-breadcrumb-item>新增员工</el-breadcrumb-item>
     </el-breadcrumb>
 
     <div style="margin: 40px; border: 1px solid #b9b9b9">

@@ -42,7 +42,7 @@
 
         <el-table-column
             prop="eName"
-            label="体检人"
+            label="部门名称"
         >
         </el-table-column>
 
