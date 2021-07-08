@@ -18,9 +18,9 @@
         >
           <el-option
               v-for="provider in providerOptions"
-              :key="provider.providerId"
-              :label="provider.providerName"
-              :value="provider.providerId"
+              :key="provider.supplierId"
+              :label="provider.supplierName"
+              :value="provider.supplierId"
           />
         </el-select>
       </el-form-item>
@@ -117,34 +117,46 @@
         <div style="margin-top: -30px">—————————————————————<span style="color:red">采购入库</span>———————————————————————</div>
         <div style="margin-top: 10px">
           <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+
             <el-row >
 
               <el-col :span="10">
-                <el-form-item label="供应商:" prop="salesId"
+                <el-form-item label="采购编号:">
+                  <el-input v-model="ruleForm.procurementId"></el-input>
+                </el-form-item>
+              </el-col>
+
+
+              <el-col :span="10">
+                <el-form-item label="供应商:" prop="procurementId"
                               :rules="[
-                 {required: true,message: '供应商不能为空'},
+                 {required: true,message: '供应商不能为空', trigger: 'blur'},
               ]"
                 >
-                  <el-select v-model="ruleForm.salesId">
+                  <el-select v-model="ruleForm.supplierId" @change="findById(ruleForm.supplierId)">
 
-                    <el-option>
-
-                    </el-option>
+                    <el-option
+                        v-for="provider in providerOptions"
+                        :key="provider.supplierId"
+                        :label="provider.supplierName"
+                        :value="provider.supplierId"
+                    />
 
                   </el-select>
                 </el-form-item>
               </el-col>
 
               <el-col :span="10">
-                <el-form-item label="预计金额:" prop='salesTitle'
+                <el-form-item label="预计金额:" prop='drugPrice'
                               :rules="[
-                 {required: true,message: '预计金额不能为空'},
+                 {required: true,message: '总金额不能为空'},
               ]"
 
                 >
-                  <el-input ty v-model="ruleForm.salesTitle" autocomplete="off" style="width: 200px;"></el-input>
+                  <el-input ty v-model="ruleForm.drugPrice" autocomplete="off" style="width: 200px;"></el-input>
                 </el-form-item>
               </el-col>
+
             </el-row>
 
 
@@ -154,22 +166,25 @@
                 :data="gridData"
                       style="width: 100%;"
                       max-height="200"
+                    @selection-change="selectionLineChangeHandle"
                       :cell-style="{'text-align':'center'}"
                       :header-cell-style="{background:'#D6E9FC',color:'#606266','text-align':'center'}">
 
               <el-table-column width="50" type="selection"></el-table-column>
-              <el-table-column property="date" label="药品名" width="150"></el-table-column>
-              <el-table-column property="name" label="单价" width="200"></el-table-column>
-              <el-table-column property="address" label="生产日期"></el-table-column>
-              <el-table-column label="剂型"></el-table-column>
+              <el-table-column property="drugName" label="药品名" width="150"></el-table-column>
+              <el-table-column property="drugPrice" label="单价" width="200"></el-table-column>
+              <el-table-column property="drugDate" label="生产日期"></el-table-column>
+              <el-table-column label="剂型">
+                <el-input v-model="ruleForm.procurementId"></el-input>
+              </el-table-column>
               <el-table-column property="" label="数量">
                 <template #default="scope" style="text-align: center">
-                  <el-input-number style="width: 100px;text-align: center" v-model="scope.row.number" controls-position="right" @change="handleChange" :min="1" :max="20"></el-input-number>
+                  <el-input-number style="width: 100px;text-align: center" v-model="scope.row.numbers" controls-position="right" @change="handleChange" :min="1" :max="20"></el-input-number>
                 </template>
               </el-table-column>
               <el-table-column property="" label="参考价格">
                 <template #default="scope" style="text-align: center">
-                  {{scope.row.number *scope.row.name}}
+                  {{ scope.row.numbers==null?0 : scope.row.numbers*scope.row.drugPrice}}
                 </template>
               </el-table-column>
             </el-table>
@@ -183,7 +198,7 @@
         <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="insertProcurementDetails()">确 定</el-button>
     </span>
         </template>
 
@@ -208,34 +223,15 @@ export default {
   // 定义页面数据
   data() {
     return {
-      gridData: [{
-        date: '2016-05-02',
-        name: 12,
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-04',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-01',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }, {
-        date: '2016-05-03',
-        name: '王小虎',
-        address: '上海市普陀区金沙江路 1518 弄'
-      }],
+      gridData: [],
       dialogVisible:false,
       ruleForm: {
-        salesId:'',
-        customerId:'',
-        salesTitle:'',
-        salesMoney:0,
+        procurementId:'',
+        supplierId:'',
+        drugPrice:'',
 
-        salesState:'',
-        salesKene:'20%',
-        salesJieduan:'初期沟通',
-        userId:"",
+
+        lyhProcurementDetailsEntities:[],
       },
       // 是否启用遮罩层
       loading: false,
@@ -252,23 +248,74 @@ export default {
       // 状态数据字典
       statusOptions: [],
       // 供应商列表
+      lyhProcurementDetailsEntities:[],
       providerOptions: [],
       // 查询参数
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        providerId: undefined,
+        supplierId: undefined,
         applyUserName: undefined,
         status: undefined
       }
     }
   },
   methods:{
-
+    selectionLineChangeHandle (val) {
+      this.lyhProcurementDetailsEntities = val;
+      console.log(this.lyhProcurementDetailsEntities);
+      for(var i = 0; i< this.lyhProcurementDetailsEntities.length; i++){
+        console.log('id:'+this.lyhProcurementDetailsEntities[i].drugId)
+        console.log('number:'+this.lyhProcurementDetailsEntities[i].drugName)
+        console.log('编号:'+this.lyhProcurementDetailsEntities[i].procurementId)
+        console.log('数量:'+this.lyhProcurementDetailsEntities[i].numbers)
+      }
+    },
     handleChange(value) {
       console.log(value);
     },
+    //提交
+    fromCommit  () {
+      console.log(this.lyhProcurementDetailsEntities);
+      for(var i = 0; i< this.lyhProcurementDetailsEntities.length; i++){
+        console.log('id:'+this.lyhProcurementDetailsEntities[i].userId)
+        console.log('id:'+this.lyhProcurementDetailsEntities[i].numbers)
+      }
+    },
+
+    insertProcurementDetails(){
+      this.ruleForm.lyhProcurementDetailsEntities=this.lyhProcurementDetailsEntities;
+      alert(this.ruleForm.lyhProcurementDetailsEntities)
+        this.axios.post("http://localhost:8088/add-procurement",this.ruleForm)
+
+            .then((v) => {
+             console.log(this.dataonLineListSelections)
+            })
+
+    },
+
+
+
+
+
+    findById(supplierId){
+      this.axios.get("http://localhost:8088/find-name",{params:{supplierId:supplierId}})
+          .then((v) => {
+            this.gridData = v.data;
+          })
+    },
   },
+
+
+
+  created() {
+    this.axios.get("http://localhost:8088/find-supplier")
+    .then((v) => {
+      this.providerOptions = v.data;
+    })
+  },
+
+
   // // 勾子
   // created() {
   //   // 使用全局的根据字典类型查询字典数据的方法查询字典数据

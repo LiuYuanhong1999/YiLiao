@@ -29,67 +29,69 @@
           :cell-style="{'text-align':'center'}"
       >
         <el-table-column
-            prop="eId"
+            prop="drugstoreId"
             label="编号"
             width="60">
         </el-table-column>
         <el-table-column
-            prop="eName"
+            prop="lyhDrugEntity.drugName"
             label="药品名称"
             width="120">
         </el-table-column>
         <el-table-column
-            prop="eSex"
-            label="数目"
+            prop="drugstoreNumber"
+            label="库存"
             width="50">
         </el-table-column>
         <el-table-column
-            prop="ePhone"
+            prop="drugstoreDate"
             label="进药时间"
-            width="70">
+           >
         </el-table-column>
         <el-table-column
-            prop="eDate"
+            prop="lyhDrugEntity.lyhSupplierEntity.supplierName"
             label="厂家"
             width="120">
         </el-table-column>
+<!--        <el-table-column-->
+<!--            prop="eDate"-->
+<!--            label="种类"-->
+<!--            width="50">-->
+<!--        </el-table-column>-->
         <el-table-column
-            prop="eDate"
-            label="种类"
-            width="50">
-        </el-table-column>
-        <el-table-column
-            prop="eDate"
+            prop="lyhDrugEntity.drugDate"
             label="生产日期"
             width="120">
         </el-table-column>
+<!--        <el-table-column-->
+<!--            prop=""-->
+<!--            label="规格"-->
+<!--            width="100">-->
+<!--        </el-table-column>-->
+<!--        <el-table-column-->
+<!--            prop="eDate"-->
+<!--            label="剂型"-->
+<!--            width="50">-->
+<!--        </el-table-column>-->
+
+<!--        <el-table-column-->
+<!--            prop="eDate"-->
+<!--            label="储存温度	"-->
+<!--            width="80">-->
+<!--        </el-table-column>-->
         <el-table-column
-            prop=""
-            label="规格"
-            width="100">
+            prop="lyhProcurementEntity.procurementName"
+            label="经手人"
+            width="70"
+           >
         </el-table-column>
         <el-table-column
-            prop="eDate"
-            label="剂型"
-            width="50">
-        </el-table-column>
-        <el-table-column
-            prop="eDate"
+            prop="lyhDrugEntity.drugPrice"
             label="单价（元）"
             width="90">
         </el-table-column>
         <el-table-column
-            prop="eDate"
-            label="储存温度	"
-            width="80">
-        </el-table-column>
-        <el-table-column
-            prop="eDate"
-            label="经手人"
-           >
-        </el-table-column>
-        <el-table-column
-            prop="eDate"
+            prop="lyhAuditEntity.auditUser"
             label="质管员"
             width="80">
         </el-table-column>
@@ -149,7 +151,7 @@ export default {
   },
   methods:{
     initData(){
-      this.axios.get("http://localhost:8088/emp")
+      this.axios.get("http://localhost:8088/find-drugstore")
           .then((v) => {
             this.tableData = v.data;
           })
