@@ -58,13 +58,13 @@
         <el-button type="primary" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">新增采购</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoAudit">提交审核</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(1)">提交审核</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="handleDoInvalid">作废</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="deleteById()">作废</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoInventory">提交入库</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3)">提交入库</el-button>
       </el-col>
     </el-row>
     <!-- 表格工具按钮结束 -->
@@ -72,7 +72,7 @@
     <!-- 数据表格开始 -->
     <el-table
               :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-              @selection-change="handleSelectionChnage">
+              @selection-change="selectionLineChangeHandle2">
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="单据ID" align="center" width="200" prop="procurementId">
 
@@ -91,7 +91,11 @@
           </template>
 
           <template v-if="scope.row.procurementState =='2'">
-           已审核
+           已作废
+          </template>
+
+          <template v-if="scope.row.procurementState =='3'">
+            提交入库审核
           </template>
         </template>
       </el-table-column>
@@ -215,6 +219,8 @@
 </template>
 <script>
 
+import {ElMessage} from "element-plus";
+
 export default {
   // 过滤器
   filters: {
@@ -251,6 +257,8 @@ export default {
       currentPage:1, //初始页
       pagesize:10,   //    每页的数据
 
+      putlnStorageOptions:[],
+
 
       // 供应商列表
       lyhProcurementDetailsEntities:[],
@@ -259,20 +267,32 @@ export default {
     }
   },
   methods:{
+    //小表格
     selectionLineChangeHandle (val) {
       this.lyhProcurementDetailsEntities = val;
       console.log(this.lyhProcurementDetailsEntities);
       for(var i = 0; i< this.lyhProcurementDetailsEntities.length; i++){
         console.log('id:'+this.lyhProcurementDetailsEntities[i].drugId)
-        console.log('number:'+this.lyhProcurementDetailsEntities[i].drugName)
+        console.log('number:'+this.lyhProcurementDetailsEntities[i])
         console.log('编号:'+this.lyhProcurementDetailsEntities[i].procurementId)
         console.log('数量:'+this.lyhProcurementDetailsEntities[i].numbers)
+      }
+    },
+    //大表格
+    selectionLineChangeHandle2 (val) {
+      this.putlnStorageOptions = val;
+      console.log(this.putlnStorageOptions);
+      for(var i = 0; i< this.putlnStorageOptions.length; i++){
+        console.log('id:'+this.putlnStorageOptions[i].drugId)
+        console.log('number:'+this.putlnStorageOptions[i].procurementId)
+        console.log('编号:'+this.putlnStorageOptions[i])
+        console.log('数量:'+this.putlnStorageOptions[i])
       }
     },
     handleChange(value) {
       console.log(value);
     },
-    //提交
+    //小表格提交
     fromCommit  () {
       console.log(this.lyhProcurementDetailsEntities);
       for(var i = 0; i< this.lyhProcurementDetailsEntities.length; i++){
@@ -280,25 +300,72 @@ export default {
         console.log('id:'+this.lyhProcurementDetailsEntities[i].numbers)
       }
     },
+    //大表格提交
+    fromCommit2  () {
+      console.log(this.putlnStorageOptions);
+      for(var i = 0; i< this.putlnStorageOptions.length; i++){
+        console.log('id:'+this.putlnStorageOptions[i])
+        console.log('id:'+this.putlnStorageOptions[i])
+      }
+    },
+
+
+deleteById(){
+  for (var i = 0; i < this.putlnStorageOptions.length; i++) {
+    this.axios.get("http://localhost:8088/delete-procurement",{params:{
+      procurementId:this.putlnStorageOptions[i].procurementId
+      }} )
+        .then((v) => {
+          this.$message("删除成功");
+          this.initDate();
+        });
+  }
+},
+
+
+    open1() {
+      ElMessage.success({
+        message: '新增成功',
+        type: 'success'
+      });
+      this.dialogVisible=false;
+      this.initDate();
+    },
+
 
     insertProcurementDetails(){
       this.ruleForm.lyhProcurementDetailsEntities=this.lyhProcurementDetailsEntities;
       alert(this.ruleForm.lyhProcurementDetailsEntities)
         this.axios.post("http://localhost:8088/add-procurement",this.ruleForm)
-
             .then((v) => {
-             console.log(this.dataonLineListSelections)
+            this.open1();
             })
 
     },
-    initDate(){
 
+
+    initDate(){
       this.axios.get("http://localhost:8088/find-procurement")
           .then((v) => {
            this.tableDate=v.data;
           })
     },
+    updateById(procurementState){
+      for (var i = 0; i < this.putlnStorageOptions.length; i++) {
 
+        this.axios.get("http://localhost:8088/update-procurement", {
+          params: {
+            procurementState:procurementState,
+            procurementId: this.putlnStorageOptions[i].procurementId
+          }
+        })
+            .then((v) => {
+              this.$message("修改成功");
+              this.initDate();
+            });
+      }
+
+    },
     // 初始页currentPage、初始每页数据数pagesize和数据data
     handleSizeChange: function (size) {
       this.pagesize = size;
@@ -317,10 +384,6 @@ export default {
   },
 
 
-
-
-
-
   created() {
     this.initDate();
     this.axios.get("http://localhost:8088/find-supplier")
@@ -328,147 +391,6 @@ export default {
       this.providerOptions = v.data;
     })
   },
-
-
-  // // 勾子
-  // created() {
-  //   // 使用全局的根据字典类型查询字典数据的方法查询字典数据
-  //   this.getDataByType('his_order_status').then(res => {
-  //     this.statusOptions = res.data
-  //   })
-  //   // 查询表格数据
-  //   this.getPurchaseList()
-  //   // 查询供应商列表
-  //   selectAllProvider().then(res => {
-  //     this.providerOptions = res.data
-  //   })
-  // },
-  // // 方法
-  // methods: {
-  //   // 查询表格数据
-  //   getPurchaseList() {
-  //     this.loading = false // 打开遮罩
-  //     listPurchaseForPage(this.queryParams).then(res => {
-  //       this.purchaseTableList = res.data
-  //       this.total = res.total
-  //       this.loading = true// 关闭遮罩
-  //     })
-  //   },
-  //   // 条件查询
-  //   handleQuery() {
-  //     this.getPurchaseList()
-  //   },
-  //   // 重置查询条件
-  //   resetQuery() {
-  //     this.resetForm('queryForm')
-  //     // 刷新页面
-  //     this.getPurchaseList()
-  //   },
-  //   // 数据表格的多选择框选择时触发
-  //   handleSelectionChnage(selection) {
-  //     this.ids = selection.map(item => item.purchaseId)
-  //     this.single = selection.length !== 1
-  //     this.multiple = !selection.length
-  //   },
-  //   // 分页pageSize变化时触发
-  //   handleSizeChange(val) {
-  //     this.queryParams.pageSize = val
-  //     // 重新查询
-  //     this.getPurchaseList()
-  //   },
-  //   // 点击上一页  下一页，跳转到哪一页面时触发
-  //   handleCurrentChange(val) {
-  //     this.queryParams.pageNum = val
-  //     // 重新查询
-  //     this.getPurchaseList()
-  //   },
-  //   // 翻译状态
-  //   statusFormatter(row) {
-  //     return this.selectDictLabel(this.statusOptions, row.status)
-  //   },
-  //   // 翻译供应商
-  //   providerFormatter(row) {
-  //     // 供应商名称
-  //     let name = ''
-  //     // 遍历供应商列表
-  //     this.providerOptions.filter(item => {
-  //       if (parseInt(row.providerId) === parseInt(item.providerId)) {
-  //         name = item.providerName
-  //       }
-  //     })
-  //     return name
-  //   },
-  //   // 提交审核
-  //   handleDoAudit() {
-  //     // 获取当前审核单据ID
-  //     const purchaseId = this.ids[0]
-  //     this.$confirm('确定要提交审核单据号为【' + purchaseId + '】的采购单吗?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       doAudit(purchaseId).then(res => {
-  //         this.msgSuccess('提交成功')
-  //         // 刷新
-  //         this.getPurchaseList()
-  //       }).catch(() => {
-  //         this.msgError('提交失败')
-  //       })
-  //     }).catch(() => {
-  //       this.msgError('提交已取消')
-  //     })
-  //   },
-  //   // 作废
-  //   handleDoInvalid(row) {
-  //     // 获取当前审核单据ID
-  //     const purchaseId = this.ids[0]
-  //     this.$confirm('确定要作废单据号为【' + purchaseId + '】的采购单吗?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       doInvalid(purchaseId).then(res => {
-  //         this.msgSuccess('作废成功')
-  //         // 刷新
-  //         this.getPurchaseList()
-  //       }).catch(() => {
-  //         this.msgError('作废失败')
-  //       })
-  //     }).catch(() => {
-  //       this.msgError('作废已取消')
-  //     })
-  //   },
-  //   // 提交入库
-  //   handleDoInventory() {
-  //     // 获取要入库的采购单ID
-  //     const purchaseId = this.ids[0]
-  //     // 为了防止this冲突所以将this赋值给tx
-  //     const tx = this
-  //     tx.$confirm('确定要入库单据号为【' + purchaseId + '】的采购单吗?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       doInventory(purchaseId).then(res => {
-  //         tx.msgSuccess('入库成功')
-  //         // 刷新
-  //         tx.getPurchaseList()
-  //       }).catch(() => {
-  //         tx.msgError('入库失败')
-  //       })
-  //     }).catch(() => {
-  //       tx.msgError('入库已取消')
-  //     })
-  //   },
-  //   // 新增采购
-  //   handleToNewPurchase() {
-  //     // 跳转到新增采购的路由页面
-  //     this.$router.replace('/erp/purchase/newPurchase')
-  //   }
-  // }
-
-
-
 }
 
 </script>
