@@ -20,37 +20,37 @@
                 <el-button type="primary" style="margin-left: 800px" @click="dialogVisible = true">新增</el-button>
             </el-row>
             <el-table
-
+                    :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                     stripe
                     style="width: 100%"
             >
                 <el-table-column
-                        prop=""
+                        prop="cashNum"
                         label="押金收取号"
                         width="120">
                 </el-table-column>
                 <el-table-column
-                        prop=""
+                        prop="cashDate"
                         label="缴纳日期"
                         width="120">
                 </el-table-column>
                 <el-table-column
-                        prop=""
+                        prop="tyhHosregEntity.hosregNum"
                         label="住院号"
                         width="120">
                 </el-table-column>
                 <el-table-column
-                        prop=""
+                        prop="cashPrice"
                         label="收取金额"
                         width="120">
                 </el-table-column>
                 <el-table-column
-                        prop=""
+                        prop="tyhHosregEntity.tyhPatientEntity.patientName"
                         label="病人姓名"
                         width="120">
                 </el-table-column>
                 <el-table-column
-                        prop=""
+                        prop="tyhHosregEntity.tyhPatientEntity.patientYue"
                         label="押金余额"
                         width="100">
                 </el-table-column>
@@ -119,7 +119,17 @@
             </template>
         </el-dialog>
 
-
+        <div class="fy_div">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[5, 10, 20, 40]"
+                    :page-size="pagesize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="tableData.length">
+            </el-pagination>
+        </div>
 
     </div>
 </template>
@@ -133,13 +143,29 @@
         data() {
             return {
                 dialogVisible: false,
+                tableData:[],
+                currentPage:1, //初始页
+                pagesize:10,    //    每页的数据
             }
         },
         methods:{
 
+            initData() {
+                this.axios.get("http://localhost:8088/findAll-cash")
+                    .then((v) => {
+                        this.tableData = v.data;
+                        console.log(this.tableData)
+                    })
+            },
 
-
-            // 初始页currentPage、初始每页数据数pagesize和数据data
+            handleSizeChange: function (size) {
+                this.pagesize = size;
+                console.log(this.pagesize)  //每页下拉显示数据
+            },
+            handleCurrentChange: function(currentPage){
+                this.currentPage = currentPage;
+                console.log(this.currentPage)  //点击第几页
+            },
 
 
 
@@ -152,6 +178,7 @@
             }
         },
         created() {
+            this.initData();
         },
     }
 
@@ -177,6 +204,6 @@
     }
     .fy_div{
         margin-top:20px;
-        margin-left: 450px;
+        margin-left: -200px;
     }
 </style>
