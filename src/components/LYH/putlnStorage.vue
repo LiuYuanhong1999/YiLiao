@@ -6,16 +6,17 @@
       <el-breadcrumb-item>采购入库</el-breadcrumb-item>
     </el-breadcrumb>
     <el-card>
+
     <!-- 查询条件开始 -->
-    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="98px">
-      <el-form-item label="供应商名称" prop="providerId">
-        <el-select
-            v-model="queryParams.providerId"
-            placeholder="供应商名称"
-            clearable
-            size="small"
-            style="width:240px"
-        >
+    <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
+      <el-form-item label="供应商名称" prop="providerId" >
+        <el-select v-model="ruleForm.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName">
+<!--            v-model="queryParams.providerId"-->
+<!--            placeholder="供应商名称"-->
+<!--            clearable-->
+<!--            size="small"-->
+<!--            style="width:240px"-->
+<!--        >-->
           <el-option
               v-for="provider in providerOptions"
               :key="provider.supplierId"
@@ -25,28 +26,22 @@
         </el-select>
       </el-form-item>
       <el-form-item label="申请人" prop="applyUserName">
-        <el-input
-            v-model="queryParams.applyUserName"
-            placeholder="请输入申请人"
-            clearable
-            size="small"
-            style="width:180px"
-        />
+<!--      -->
       </el-form-item>
       <el-form-item label="单据状态" prop="status">
-        <el-select
-            v-model="queryParams.status"
-            placeholder="单据状态"
-            clearable
-            size="small"
-            style="width:240px"
-        >
-          <el-option
-              v-for="dict in statusOptions"
-              :key="dict.dictValue"
-              :label="dict.dictLabel"
-              :value="dict.dictValue"
-          />
+        <el-select>
+<!--            v-model="queryParams.status"-->
+<!--            placeholder="单据状态"-->
+<!--            clearable-->
+<!--            size="small"-->
+<!--            style="width:240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--              v-for="dict in statusOptions"-->
+<!--              :key="dict.dictValue"-->
+<!--              :label="dict.dictLabel"-->
+<!--              :value="dict.dictValue"-->
+<!--          />-->
         </el-select>
       </el-form-item>
 
@@ -75,40 +70,51 @@
     <!-- 表格工具按钮结束 -->
 
     <!-- 数据表格开始 -->
-    <el-table v-loading="loading" border :data="purchaseTableList" @selection-change="handleSelectionChnage">
+    <el-table
+              :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              @selection-change="handleSelectionChnage">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="单据ID" align="center" width="200" prop="purchaseId">
-        <template slot-scope="scope">
-          <router-link :to="'/erp/purchase/editPurchase/'+scope.row.purchaseId" class="link-type">
-            <span>{{scope.row.purchaseId}}</span>
-          </router-link>
+      <el-table-column label="单据ID" align="center" width="200" prop="procurementId">
+
+      </el-table-column>
+      <el-table-column label="供应商" width="200" align="center" prop="lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"/>
+
+
+      <el-table-column label="状态" prop="procurementState" align="center"  >
+        <template #default="scope">
+          <template v-if="scope.row.procurementState =='0'">
+            未审核
+          </template>
+
+          <template v-if="scope.row.procurementState =='1'">
+            审核中
+          </template>
+
+          <template v-if="scope.row.procurementState =='2'">
+           已审核
+          </template>
         </template>
       </el-table-column>
-      <el-table-column label="供应商" width="200" align="center" prop="providerId" :formatter="providerFormatter" />
-      <el-table-column label="采购批发总额" align="center" prop="purchaseTradeTotalAmount">
-        <template slot-scope="scope">
-          <span>{{ scope.row.purchaseTradeTotalAmount|rounding }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" prop="status" align="center" :formatter="statusFormatter" />
-      <el-table-column label="申请人" align="center" prop="applyUserName" />
-      <el-table-column label="入库操作人" align="center" prop="storageOptUser" />
-      <el-table-column label="入库时间" align="center" prop="storageOptTime" show-overflow-tooltip />
-      <el-table-column label="审核信息" align="center" prop="examine" />
-      <el-table-column label="创建时间" align="center" prop="createTime" show-overflow-tooltip />
+      <el-table-column label="申请人" align="center" prop="userName" />
+      <el-table-column label="入库操作人" align="center" prop="procurementName"/>
+      <el-table-column label="入库时间" align="center" prop="procurementDate"  />
+
+      <el-table-column label="创建时间" align="center" prop="procurementFirstdate" />
     </el-table>
     <!-- 数据表格结束 -->
     <!-- 分页控件开始 -->
-    <el-pagination
-        v-show="total>0"
-        :current-page="queryParams.pageNum"
-        :page-sizes="[5, 10, 20, 30]"
-        :page-size="queryParams.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-    />
+      <!--分页-->
+      <div class="fy_div">
+        <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 20, 40]"
+            :page-size="pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="tableDate.length">
+        </el-pagination>
+      </div>
       <el-dialog
 
           v-model="dialogVisible"
@@ -208,9 +214,7 @@
   </div>
 </template>
 <script>
-// 引入api
-// import { listPurchaseForPage, doAudit, doInvalid,doInventory } from '@/api/erp/purchase'
-// import { selectAllProvider } from '@/api/erp/provider'
+
 export default {
   // 过滤器
   filters: {
@@ -223,41 +227,35 @@ export default {
   // 定义页面数据
   data() {
     return {
+      tableDate:[],
       gridData: [],
       dialogVisible:false,
       ruleForm: {
+        procurementState:'0',
         procurementId:'',
         supplierId:'',
         drugPrice:'',
+        lyhProcurementDetailsEntities:[
+          {
+
+            drugEntity:{
+              lyhSupplierEntity:{
+                supplierName:'',
+              }
+            }
 
 
-        lyhProcurementDetailsEntities:[],
+          }
+        ],
       },
-      // 是否启用遮罩层
-      loading: false,
-      // 选中数组
-      ids: [],
-      // 非单个禁用
-      single: false,
-      // 非多个禁用
-      multiple: true,
-      // 分页数据总条数
-      total: 0,
-      // 字典表格数据
-      purchaseTableList: [],
-      // 状态数据字典
-      statusOptions: [],
+      currentPage:1, //初始页
+      pagesize:10,   //    每页的数据
+
+
       // 供应商列表
       lyhProcurementDetailsEntities:[],
       providerOptions: [],
-      // 查询参数
-      queryParams: {
-        pageNum: 1,
-        pageSize: 10,
-        supplierId: undefined,
-        applyUserName: undefined,
-        status: undefined
-      }
+
     }
   },
   methods:{
@@ -293,11 +291,23 @@ export default {
             })
 
     },
+    initDate(){
 
+      this.axios.get("http://localhost:8088/find-procurement")
+          .then((v) => {
+           this.tableDate=v.data;
+          })
+    },
 
-
-
-
+    // 初始页currentPage、初始每页数据数pagesize和数据data
+    handleSizeChange: function (size) {
+      this.pagesize = size;
+      console.log(this.pagesize)  //每页下拉显示数据
+    },
+    handleCurrentChange: function(currentPage){
+      this.currentPage = currentPage;
+      console.log(this.currentPage)  //点击第几页
+    },
     findById(supplierId){
       this.axios.get("http://localhost:8088/find-name",{params:{supplierId:supplierId}})
           .then((v) => {
@@ -308,7 +318,11 @@ export default {
 
 
 
+
+
+
   created() {
+    this.initDate();
     this.axios.get("http://localhost:8088/find-supplier")
     .then((v) => {
       this.providerOptions = v.data;
