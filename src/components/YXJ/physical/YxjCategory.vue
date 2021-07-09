@@ -34,52 +34,70 @@
           :cell-style="{'text-align':'center'}"
       >
         <el-table-column
-            prop="eId"
+            prop="phId"
             label="编号"
             >
         </el-table-column>
         <el-table-column
-            prop="eName"
+            prop="phName"
             label="类别"
             >
         </el-table-column>
 
         <el-table-column
-            prop="eDate"
+            prop="phType"
             label="规格"
             >
         </el-table-column>
 
         <el-table-column
-            prop="eDate"
+            prop="phCharge"
             label="负责院"
             >
         </el-table-column>
 
         <el-table-column
-            prop="eDate"
+            prop="phPrice"
             label="单价（元）"
             >
         </el-table-column>
 
-        <el-table-column label="操作" >
-          <template #default="scope">
-            <el-tooltip content="查看" placement="top">
+        <el-table-column label="操作"  align="center">
+
+          <template  #default="scope">
+
+            <el-tooltip content="编辑" placement="top">
               <el-button
-                  icon="el-icon-view" size="mini"
-                  @click="editEmp(scope.row)"></el-button>
+                  icon="el-icon-scissors" size="mini"
+                  @click="updatePhysical(scope.row),dialogVisible=true">编辑</el-button>
             </el-tooltip>
+
+            <el-tooltip content="删除" placement="top">
+              <el-button
+                  icon="el-icon-close" size="mini"
+                  @click="delPhysical(scope.row)">删除</el-button>
+            </el-tooltip>
+
           </template>
+
+<!--          <template>-->
+<!--          <el-button icon="el-icon-scissors">-->
+
+<!--          </el-button>-->
+<!--          </template>-->
+
+<!--          <el-button icon="el-icon-close" @click="delPhysical()">-->
+
+<!--          </el-button>-->
+
         </el-table-column>
+
       </el-table>
 
       <!--  主页面表格结束！！！    -->
 
-
-
-
-
       <br>
+
 
       <!--分页-->
       <div class="fy_div">
@@ -99,21 +117,22 @@
 
     <!--   新增按钮表单   -->
     <el-dialog
+        @close="clearPhysical()"
         title="提示"
         v-model="dialogVisible"
         width="60%"
         :before-close="handleClose">
-      <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      <el-form :model="Physical" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-row>
           <el-col :span="10">
             <el-form-item label="类别名字" prop="eName">
-              <el-input v-model="ruleForm.eName"></el-input>
+              <el-input v-model="Physical.phName"></el-input>
 
             </el-form-item>
           </el-col>
           <el-col :span="10">
             <el-form-item label="规格" prop="eSex">
-              <el-input v-model="ruleForm.eSex"></el-input>
+              <el-input v-model="Physical.phType"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -121,17 +140,27 @@
         <el-row>
           <el-col :span="10">
             <el-form-item label="负责院" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
+              <el-input v-model="Physical.phCharge"></el-input>
 
             </el-form-item>
           </el-col>
         </el-row>
+
+        <el-row>
+          <el-col :span="10">
+            <el-form-item label="单价" prop="eName">
+              <el-input v-model="Physical.phPrice"></el-input>
+
+            </el-form-item>
+          </el-col>
+        </el-row>
+
       </el-form>
 
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button @click="clearPhysical(),dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addPhysical(),dialogVisible = false">确 定</el-button>
       </span>
       </template>
     </el-dialog>
@@ -154,20 +183,24 @@ export default {
       currentPage: 1, //初始页
       pagesize: 10,    //    每页的数据
       dialogVisible: false,
-      ruleForm:{
-        eId:'',
-        eName:'',
-        eSex:'',
-        ePhone:'',
-        eDate:''
-      }
+
+      // 主页表格对象
+      Physical:{
+        phId:'',
+        phName:'',
+        phType:'',
+        phCharge:'',
+        phPrice:'',
+      },
+
 
     }
 
   },
+
   methods: {
     initData() {
-      this.axios.get("http://localhost:8088/emp")
+      this.axios.get("http://localhost:8088/findPhysical")
           .then((v) => {
             this.tableData = v.data;
           })
@@ -190,16 +223,56 @@ export default {
             done();
           })
           .catch(_ => {});
-    }
+    },
 
+    // 新增体检类别
+    addPhysical(){
+      this.axios.post("http://localhost:8088/addPhysical",this.Physical)
+          .then((v)=>{
+            this.initData()
+          })
+    },
+
+    // 修改类别
+    updatePhysical(physical){
+      this.Physical = {
+        phId:physical.phId,
+        phName:physical.phName,
+        phType:physical.phType,
+        phCharge:physical.phCharge,
+        phPrice:physical.phPrice,
+      }
+
+    },
+
+    // 根据id删除
+    delPhysical(row){
+      this.Physical.phId=row.phId
+      this.axios.post("http://localhost:8088/delPhysical",this.Physical)
+          .then((v)=>{
+            this.initData()
+          })
+    },
+
+
+
+    // 清空表单
+    clearPhysical(){
+      this.Physical = {
+        phId:'',
+        phName:'',
+        phType:'',
+        phCharge:'',
+        phPrice:'',
+      }
+    },
 
   },
-
-
   created() {
     this.initData();
 
   },
+
 }
 </script>
 
