@@ -28,30 +28,36 @@
                     :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             >
                 <el-table-column
-                        prop="eId"
-                        label="编号"
+                        prop="chargeId"
+                        label="收费编号"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eName"
-                        label="姓名"
+                        prop="chargeTime"
+                        label="收费日期"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eSex"
-                        label="性别"
+                        prop="chargePatientName"
+                        label="病人姓名"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="ePhone"
-                        label="电话"
+                        prop="chargeOperatorId"
+                        label="经办人编号"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eDate"
-                        label="入职日期"
+                        prop="dotor"
+                        label="医生编号"
                         width="180">
                 </el-table-column>
+                <el-table-column
+                        prop="chargeMoney"
+                        label="收费金额"
+                        width="180">
+                </el-table-column>
+
                 <el-table-column  label="操作" width="130px">
                     <template  #default="scope">
                         <el-tooltip content="编辑" placement="top">
@@ -261,27 +267,18 @@
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
                 ruleForm:{
-                    eId:'',
-                    eName:'',
-                    eSex:'',
-                    ePhone:'',
-                    eDate:''
+                    chargeId:'',
+                    chargeTime:'',
+                    chargePatientName:'',
+                    chargeOperatorId:'',
+                    dotor:'',
+                    chargeMoney:''
                 }
             }
         },
         methods:{
-
-            // initData(page,size){
-            //   this.axios.get("http://localhost:8088/emp-mgr", {params: {pageNum: page, size: size}})
-            //       .then((v) => {
-            //         this.tableData = v.data.rows;
-            //         this.totalSize = v.data.total;
-            //
-            //       })
-            // },
-
             initData(){
-                this.axios.get("http://localhost:8088/emp")
+                this.axios.get("http://localhost:8088/charge")
                     .then((v) => {
                         this.tableData = v.data;
                     })

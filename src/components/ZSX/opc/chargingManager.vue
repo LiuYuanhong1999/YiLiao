@@ -13,7 +13,7 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入审批单号" v-model="eaaOrderNumber"  ></el-input>
+                    <el-input placeholder="请输入划价单编号" v-model="eaaOrderNumber"  ></el-input>
                 </el-col>
 
                 <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
@@ -28,28 +28,43 @@
             >
                 <el-table-column
                         prop="eId"
-                        label="编号"
-                        width="180">
+                        label="划价单编号">
                 </el-table-column>
                 <el-table-column
                         prop="eName"
-                        label="姓名"
-                        width="180">
+                        label="状态">
                 </el-table-column>
                 <el-table-column
                         prop="eSex"
-                        label="性别"
-                        width="180">
+                        label="门诊号">
                 </el-table-column>
                 <el-table-column
                         prop="ePhone"
-                        label="电话"
-                        width="180">
+                        label="病人姓名">
                 </el-table-column>
                 <el-table-column
                         prop="eDate"
-                        label="入职日期"
-                        width="180">
+                        label="总金额">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="应收金额">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="划价日期">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="机台号">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="处方号">
+                </el-table-column>
+                <el-table-column
+                        prop="eDate"
+                        label="凭证单号">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
                     <template  #default="scope">
@@ -211,136 +226,136 @@
                                 </el-table-column>
                             </el-table>
                         </el-tab-pane>
-                        <el-tab-pane label="检验">
-                            <el-table
-                                    :data="tableData"
-                                    style="width: 100%">
-                                <el-table-column
-                                        prop="date"
-                                        label="检验项目编号">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="检验项目名称">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="数量">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="单价">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="金额">
-                                </el-table-column>
-                            </el-table>
-                        </el-tab-pane>
-                        <el-tab-pane label="治疗">
-                        <el-table
-                                :data="tableData"
-                                style="width: 100%">
-                            <el-table-column
-                                    prop="date"
-                                    label="收费项目编号">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="name"
-                                    label="收费项目名称">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="name"
-                                    label="数量">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="name"
-                                    label="单价">
-                            </el-table-column>
-                            <el-table-column
-                                    prop="name"
-                                    label="金额">
-                            </el-table-column>
-                        </el-table>
-                    </el-tab-pane>
-                        <el-tab-pane label="设备">
-                            <el-table
-                                    :data="tableData"
-                                    style="width: 100%">
-                                <el-table-column
-                                        prop="date"
-                                        label="设备编号">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="设备名称">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="数量">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="单价">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="金额">
-                                </el-table-column>
-                            </el-table>
-                        </el-tab-pane>
-                        <el-tab-pane label="耗材">
-                            <el-table
-                                    :data="tableData"
-                                    style="width: 100%">
-                                <el-table-column
-                                        prop="date"
-                                        label="耗材编号">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="耗材名称">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="数量">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="单价">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="金额">
-                                </el-table-column>
-                            </el-table>
-                        </el-tab-pane>
-                        <el-tab-pane label="手术">
-                            <el-table
-                                    :data="tableData"
-                                    style="width: 100%">
-                                <el-table-column
-                                        prop="date"
-                                        label="项目编号">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="项目名称">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="数量">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="单价">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="金额">
-                                </el-table-column>
-                            </el-table>
-                        </el-tab-pane>
+<!--                        <el-tab-pane label="检验">-->
+<!--                            <el-table-->
+<!--                                    :data="tableData"-->
+<!--                                    style="width: 100%">-->
+<!--                                <el-table-column-->
+<!--                                        prop="date"-->
+<!--                                        label="检验项目编号">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="检验项目名称">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="数量">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="单价">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="金额">-->
+<!--                                </el-table-column>-->
+<!--                            </el-table>-->
+<!--                        </el-tab-pane>-->
+<!--                        <el-tab-pane label="治疗">-->
+<!--                        <el-table-->
+<!--                                :data="tableData"-->
+<!--                                style="width: 100%">-->
+<!--                            <el-table-column-->
+<!--                                    prop="date"-->
+<!--                                    label="收费项目编号">-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                                    prop="name"-->
+<!--                                    label="收费项目名称">-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                                    prop="name"-->
+<!--                                    label="数量">-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                                    prop="name"-->
+<!--                                    label="单价">-->
+<!--                            </el-table-column>-->
+<!--                            <el-table-column-->
+<!--                                    prop="name"-->
+<!--                                    label="金额">-->
+<!--                            </el-table-column>-->
+<!--                        </el-table>-->
+<!--                    </el-tab-pane>-->
+<!--                        <el-tab-pane label="设备">-->
+<!--                            <el-table-->
+<!--                                    :data="tableData"-->
+<!--                                    style="width: 100%">-->
+<!--                                <el-table-column-->
+<!--                                        prop="date"-->
+<!--                                        label="设备编号">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="设备名称">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="数量">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="单价">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="金额">-->
+<!--                                </el-table-column>-->
+<!--                            </el-table>-->
+<!--                        </el-tab-pane>-->
+<!--                        <el-tab-pane label="耗材">-->
+<!--                            <el-table-->
+<!--                                    :data="tableData"-->
+<!--                                    style="width: 100%">-->
+<!--                                <el-table-column-->
+<!--                                        prop="date"-->
+<!--                                        label="耗材编号">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="耗材名称">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="数量">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="单价">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="金额">-->
+<!--                                </el-table-column>-->
+<!--                            </el-table>-->
+<!--                        </el-tab-pane>-->
+<!--                        <el-tab-pane label="手术">-->
+<!--                            <el-table-->
+<!--                                    :data="tableData"-->
+<!--                                    style="width: 100%">-->
+<!--                                <el-table-column-->
+<!--                                        prop="date"-->
+<!--                                        label="项目编号">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="项目名称">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="数量">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="单价">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="金额">-->
+<!--                                </el-table-column>-->
+<!--                            </el-table>-->
+<!--                        </el-tab-pane>-->
                     </el-tabs>
                 </el-row>
 

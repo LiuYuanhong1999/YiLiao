@@ -152,12 +152,7 @@
                 </el-row>
 
                 <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="员工电话" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
 
-                        </el-form-item>
-                    </el-col>
                 </el-row>
             </el-form>
 
