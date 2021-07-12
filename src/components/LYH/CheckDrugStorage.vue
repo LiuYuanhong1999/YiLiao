@@ -21,13 +21,17 @@
 
 
       <el-table
-
-
           :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           border stripe style="width: 100%;margin-top: 10px"
           :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"
           :cell-style="{'text-align':'center'}"
       >
+        <el-table-column type="expand">
+          <template #default="props">
+            <el-form label-position="left" inline class="demo-table-expand">
+            </el-form>
+          </template>
+        </el-table-column>
         <el-table-column
             prop="drugstoreId"
             label="编号"

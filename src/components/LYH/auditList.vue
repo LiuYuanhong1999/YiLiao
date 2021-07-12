@@ -40,7 +40,7 @@
     <!-- 表格工具按钮开始 -->
     <el-row :gutter="10" style="margin-bottom: 8px;">
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini"  @click="update(1);update2(4)">审核通过</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini"  @click="update(1);update2(4);update3()">审核通过</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="danger" icon="el-icon-delete" size="mini"  @click="update(2);update2(5)">审核不通过</el-button>
@@ -56,6 +56,20 @@
                @selection-change="selectionLineChangeHandle">
       <el-table-column type="selection" width="55" align="center" />
 <!--      <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" />-->
+      <el-table-column type="expand">
+        <template #default="props">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="药品名称">
+              <span>{{ props.row.lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.drugName }}</span>
+            </el-form-item>
+          </el-form>
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="药品名称">
+              <span>{{ props.row.lyhProcurementEntity.lyhProcurementDetailsEntities[1].drugEntity.drugName }}</span>
+            </el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column label="供应商" width="200" align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"  />
       <el-table-column label="采购批发总额" align="center" prop="lyhProcurementEntity.procurementPrice">
       </el-table-column>
@@ -103,12 +117,12 @@
     <!-- 详情弹出框开始 -->
     <el-dialog
         :title="title"
-        :visible.sync="open"
+        :visible.sync="dialogVisible"
         width="1000px"
         center
         append-to-body
     >
-      <el-table v-loading="loading" border :data="purchaseItemTableList">
+      <el-table v-loading="loading" border :data="lyhProcurementEntity.lyhProcurementDetailsEntities">
         <el-table-column label="详情ID" width="180" align="center" prop="itemId" />
         <el-table-column label="单据ID" width="200" align="center" prop="purchaseId" />
         <el-table-column label="采购数量" align="center" prop="purchaseNumber" />
@@ -148,7 +162,7 @@ export default {
   // 定义页面数据
   data() {
     return {
-
+      dialogVisible:false,
       currentPage: 1, //初始页
       pagesize: 10,   //    每页的数据
       tableDate: [],
@@ -168,9 +182,8 @@ export default {
       this.tableDetails = val;
       console.log(this.tableDetails);
       for (var i = 0; i < this.tableDetails.length; i++) {
-        console.log('id:' + this.tableDetails[i].drugId)
-        console.log('number:' + this.tableDetails[i])
-        console.log('编号:' + this.tableDetails[i].auditId)
+        console.log('number:' + this.tableDetails[i].numbers)
+        console.log('编号:' + this.tableDetails[i].lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugId)
         console.log('数量:' +this.tableDetails[i].procurementId)
       }
     },
@@ -185,7 +198,6 @@ export default {
     },
     update(auditState) {
       for (var i = 0; i < this.tableDetails.length; i++) {
-        alert( this.tableDetails[i].auditId)
         this.axios.get("http://localhost:8088/update-audit", {
           params: {
             auditState: auditState,
@@ -215,6 +227,25 @@ export default {
           });
     }
   },
+
+
+    update3(){
+
+        this.axios.get("http://localhost:8088/update-drugstore", {
+          params: {
+            numbers: this.tableDetails[0].lyhProcurementEntity.lyhProcurementDetailsEntities[0].numbers,
+            procurementId: this.tableDetails[0].procurementId,
+            drugId:this.tableDetails[0].lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugId
+          }
+        })
+            .then((v) => {
+              this.$message("操作成功");
+              this.initDate();
+            });
+
+
+
+    },
 
 
   // 初始页currentPage、初始每页数据数pagesize和数据data
