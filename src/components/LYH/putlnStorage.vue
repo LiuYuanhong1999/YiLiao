@@ -64,7 +64,7 @@
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="deleteById()">作废</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3)">提交入库</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3);insertAudit()">提交入库</el-button>
       </el-col>
     </el-row>
     <!-- 表格工具按钮结束 -->
@@ -96,6 +96,12 @@
 
           <template v-if="scope.row.procurementState =='3'">
             提交入库审核
+          </template>
+          <template v-if="scope.row.procurementState =='4'">
+            入库审核通过
+          </template>
+          <template v-if="scope.row.procurementState =='5'">
+            入库审核不通过
           </template>
         </template>
       </el-table-column>
@@ -132,7 +138,7 @@
 
               <el-col :span="10">
                 <el-form-item label="采购编号:">
-                  <el-input v-model="ruleForm.procurementId"></el-input>
+                  <el-input v-model="ruleForm.procurementId" :disabled="true"></el-input>
                 </el-form-item>
               </el-col>
 
@@ -155,25 +161,33 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-
               <el-col :span="10">
                 <el-form-item label="预计金额:" prop='drugPrice'
                               :rules="[
                  {required: true,message: '总金额不能为空'},
               ]"
-
                 >
                   <el-input ty v-model="ruleForm.drugPrice" autocomplete="off" style="width: 200px;"></el-input>
                 </el-form-item>
               </el-col>
 
+
+              <el-col :span="10">
+                <el-form-item label="搜索">
+
+                  <el-input>
+                    111111sdsdsdsd
+                  </el-input>
+
+                </el-form-item>
+              </el-col>
             </el-row>
 
 
 
 
             <el-table
-                :data="gridData"
+                :data="gridData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                       style="width: 100%;"
                       max-height="200"
                     @selection-change="selectionLineChangeHandle"
@@ -184,9 +198,9 @@
               <el-table-column property="drugName" label="药品名" width="150"></el-table-column>
               <el-table-column property="drugPrice" label="单价" width="200"></el-table-column>
               <el-table-column property="drugDate" label="生产日期"></el-table-column>
-              <el-table-column label="剂型">
-                <el-input v-model="ruleForm.procurementId"></el-input>
-              </el-table-column>
+<!--              <el-table-column label="剂型">-->
+<!--                <el-input v-model="ruleForm.procurementId"></el-input>-->
+<!--              </el-table-column>-->
               <el-table-column property="" label="数量">
                 <template #default="scope" style="text-align: center">
                   <el-input-number style="width: 100px;text-align: center" v-model="scope.row.numbers" controls-position="right" @change="handleChange" :min="1" :max="20"></el-input-number>
@@ -199,7 +213,18 @@
               </el-table-column>
             </el-table>
 
-
+            <!--分页-->
+            <div class="fy_div">
+              <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page="currentPage"
+                  :page-sizes="[5, 10, 20, 40]"
+                  :page-size="pagesize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="gridData.length">
+              </el-pagination>
+            </div>
           </el-form>
 
 
@@ -207,8 +232,8 @@
         </div>
         <template #footer>
     <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="insertProcurementDetails()">确 定</el-button>
+      <el-button @click="clearFrom()">取 消</el-button>
+      <el-button type="primary" @click="insertProcurementDetails(),clearFrom()">确 定</el-button>
     </span>
         </template>
 
@@ -233,8 +258,11 @@ export default {
   // 定义页面数据
   data() {
     return {
+
       tableDate:[],
-      gridData: [],
+      gridData: [
+
+      ],
       dialogVisible:false,
       ruleForm: {
         procurementState:'0',
@@ -328,7 +356,6 @@ deleteById(){
         message: '新增成功',
         type: 'success'
       });
-      this.dialogVisible=false;
       this.initDate();
     },
 
@@ -342,12 +369,25 @@ deleteById(){
             })
 
     },
+    insertAudit(){
 
+      this.axios.post("http://localhost:8088/add-audit",this.putlnStorageOptions)
+          .then((v) => {
+            this.open1();
+          })
 
+    },
+  clearFrom(){
+  this.gridData=[],
+      this.ruleForm.supplierId="";
+  this.ruleForm.drugPrice="";
+   this.dialogVisible=false;
+},
     initDate(){
       this.axios.get("http://localhost:8088/find-procurement")
           .then((v) => {
            this.tableDate=v.data;
+            this.ruleForm.procurementId=this.getProjectNum()+ Math.floor(Math.random() * 10000)
           })
     },
     updateById(procurementState){
@@ -381,10 +421,31 @@ deleteById(){
             this.gridData = v.data;
           })
     },
+    // 获取当前日期的方法
+    getProjectNum () {
+      const projectTime = new Date() // 当前中国标准时间
+      const Year = projectTime.getFullYear() // 获取当前年份 支持IE和火狐浏览器.
+      const Month = projectTime.getMonth() + 1 // 获取中国区月份
+      const Day = projectTime.getDate() // 获取几号
+      var CurrentDate = Year
+      if (Month >= 10) { // 判断月份和几号是否大于10或者小于10
+        CurrentDate += Month
+      } else {
+        CurrentDate += '0' + Month
+      }
+      if (Day >= 10) {
+        CurrentDate += Day
+      } else {
+        CurrentDate += '0' + Day
+      }
+      return CurrentDate
+    },
+
   },
 
 
   created() {
+
     this.initDate();
     this.axios.get("http://localhost:8088/find-supplier")
     .then((v) => {

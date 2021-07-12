@@ -200,6 +200,14 @@ const routes=[
               component:()=>import('/src/components/LYH/diaobo.vue')
             },
 
+
+            {
+              path: '/supplier',
+              name: 'supplier',
+              component:()=>import('/src/components/LYH/supplier.vue')
+            },
+
+
             {
               path: '/return',
               name:'return',

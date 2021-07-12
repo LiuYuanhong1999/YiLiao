@@ -110,7 +110,7 @@
             <router-link to="/CheckDrugStorage"><el-menu-item index="6-3">查看药库</el-menu-item></router-link>
             <router-link to="/diaobo"><el-menu-item index="6-4">药库调拨</el-menu-item></router-link>
             <router-link to="/return"><el-menu-item index="6-5">药库退货</el-menu-item></router-link>
-
+            <router-link to="/supplier"><el-menu-item index="6-6">供应商管理</el-menu-item></router-link>
 
 
           </el-submenu>
