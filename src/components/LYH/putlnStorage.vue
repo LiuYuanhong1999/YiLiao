@@ -77,8 +77,16 @@
       <el-table-column label="单据ID" align="center" width="200" prop="procurementId">
 
       </el-table-column>
-      <el-table-column label="供应商" width="200" align="center" prop="lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"/>
+      <el-table-column label="供应商" width="200" align="center" prop="lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName">
+      <template #default="scope">
+        <router-link :to="{path: '/Test2',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
+        {{scope.row.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName}}
+        </router-link>
+      </template>
 
+
+
+</el-table-column>
 
       <el-table-column label="状态" prop="procurementState" align="center"  >
         <template #default="scope">

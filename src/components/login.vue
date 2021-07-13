@@ -60,9 +60,9 @@ name: "login",
 
               this.$message.error(res.data);
             }else{
-              
+
               window.sessionStorage.setItem("token",JSON.stringify(res.data));
-              this.$router.push("/s");
+              this.$router.push("/registration");
             }
           });
     },

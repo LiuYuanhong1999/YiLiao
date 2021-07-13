@@ -7,7 +7,7 @@ const routes=[
         component:()=>import('/src/components/login.vue'),
     },
     {
-    path: '/s',
+    path: '/registration',
         name: 'HomePage',
         component:()=>import('/src/components/HomePage.vue'),
         children:[
@@ -213,7 +213,11 @@ const routes=[
               name:'return',
               component:()=>import('/src/components/LYH/return.vue')
             },
-
+            {
+                path: '/Test2',
+                name:'putlnTest',
+                component:()=>import('/src/components/LYH/putlnTest.vue')
+            },
 
 
             //yxj-体检管理

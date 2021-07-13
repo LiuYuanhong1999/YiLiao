@@ -56,21 +56,16 @@
                @selection-change="selectionLineChangeHandle">
       <el-table-column type="selection" width="55" align="center" />
 <!--      <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" />-->
-      <el-table-column type="expand">
-        <template #default="props">
-          <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="药品名称">
-              <span>{{ props.row.lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.drugName }}</span>
-            </el-form-item>
-          </el-form>
-          <el-form label-position="left" inline class="demo-table-expand">
-            <el-form-item label="药品名称">
-              <span>{{ props.row.lyhProcurementEntity.lyhProcurementDetailsEntities[1].drugEntity.drugName }}</span>
-            </el-form-item>
-          </el-form>
-        </template>
-      </el-table-column>
-      <el-table-column label="供应商" width="200" align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"  />
+
+          <el-table-column label="供应商" width="200" align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"  >
+            <template  #default="scope">
+              <router-link :to="{path: '/s',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
+                {{scope.row.lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName}}
+              </router-link>
+            </template>
+          </el-table-column>
+
+
       <el-table-column label="采购批发总额" align="center" prop="lyhProcurementEntity.procurementPrice">
       </el-table-column>
       <el-table-column label="状态" prop="auditState" align="center"  >
@@ -162,6 +157,10 @@ export default {
   // 定义页面数据
   data() {
     return {
+      user:{
+        userId:'',
+        userName:'',
+      },
       dialogVisible:false,
       currentPage: 1, //初始页
       pagesize: 10,   //    每页的数据
@@ -171,7 +170,7 @@ export default {
       },
       providerOptions: [],
 
-
+        number1:[],
       //表格数据
       tableDetails: [],
     }
@@ -197,51 +196,62 @@ export default {
       }
     },
     update(auditState) {
-      for (var i = 0; i < this.tableDetails.length; i++) {
-        this.axios.get("http://localhost:8088/update-audit", {
-          params: {
-            auditState: auditState,
-            auditId: this.tableDetails[i].auditId
-          }
-        })
-            .then((v) => {
-              this.$message("操作成功");
-              this.initDate();
-            });
-      }
+      // for (var i = 0; i < this.tableDetails.length; i++) {
+      //   this.axios.get("http://localhost:8088/update-audit", {
+      //     params: {
+      //       auditState: auditState,
+      //       auditId: this.tableDetails[i].auditId
+      //     }
+      //   })
+      //       .then((v) => {
+      //         this.$message("操作成功");
+      //         this.initDate();
+      //       });
+      // }
     },
 
 
 
   update2(procurementState) {
-    for (var i = 0; i < this.tableDetails.length; i++) {
-      this.axios.get("http://localhost:8088/update-procurement", {
-        params: {
-          procurementState: procurementState,
-          procurementId: this.tableDetails[i].procurementId
-        }
-      })
-          .then((v) => {
-            this.$message("操作成功");
-            this.initDate();
-          });
-    }
+    // for (var i = 0; i < this.tableDetails.length; i++) {
+    //   this.axios.get("http://localhost:8088/update-procurement", {
+    //     params: {
+    //       procurementState: procurementState,
+    //       procurementId: this.tableDetails[i].procurementId
+    //     }
+    //   })
+    //       .then((v) => {
+    //         this.$message("操作成功");
+    //         this.initDate();
+    //       });
+    // }
   },
 
 
     update3(){
 
-        this.axios.get("http://localhost:8088/update-drugstore", {
-          params: {
-            numbers: this.tableDetails[0].lyhProcurementEntity.lyhProcurementDetailsEntities[0].numbers,
-            procurementId: this.tableDetails[0].procurementId,
-            drugId:this.tableDetails[0].lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugId
-          }
-        })
-            .then((v) => {
-              this.$message("操作成功");
-              this.initDate();
-            });
+      this.axios.post("http://localhost:8088/update-drugstore",this.tableDetails)
+          .then((v) => {
+            this.$message("操作成功");
+            this.initDate();
+          });
+
+
+      // for (var i = 0; i < this.tableDetails.length; i++) {
+      //   alert(this.tableDetails[0].lyhProcurementEntity.lyhProcurementDetailsEntities[i].numbers)
+      // }
+
+        // this.axios.get("http://localhost:8088/update-drugstore", {
+        //   params: {
+        //     numbers: this.tableDetails[0].lyhProcurementEntity.lyhProcurementDetailsEntities[0].numbers,
+        //     procurementId: this.tableDetails[0].procurementId,
+        //     drugId:this.tableDetails[0].lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugId
+        //   }
+        // })
+        //     .then((v) => {
+        //       this.$message("操作成功");
+        //       this.initDate();
+        //     });
 
 
 
@@ -266,6 +276,7 @@ export default {
   },
 },
   created() {
+    this.user = eval("("+window.sessionStorage.getItem("token")+")");
     this.initDate();
     this.axios.get("http://localhost:8088/find-supplier")
         .then((v) => {

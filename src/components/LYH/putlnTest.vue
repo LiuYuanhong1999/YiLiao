@@ -1,33 +1,34 @@
-<template  xmlns:el-form-item="http://www.w3.org/1999/xhtml">
+<template>
+
   <el-form ref="ruleFrom" :model="ruleFrom"  label-width="100px">
     <el-page-header content="详情页" @back="goBack" />
     <el-row style="margin-top: 30px">
       <!--基本输入框-->
       <el-col :span="5">
         <el-form-item label="采购编号" prop="name1">
-        {{ruleFrom.procurementId}}
+          {{ruleFrom.procurementId}}
         </el-form-item>
       </el-col>
       <!--基本单选框-->
       <el-col :span="5">
         <el-form-item label="创建人：" prop="name2">
-         {{ruleFrom.lyhProcurementEntity.userName}}
+          {{ruleFrom.userName}}
         </el-form-item>
       </el-col>
       <!--基本多选框-->
       <el-col :span="8">
         <el-form-item label="创建日期" placeholder="" prop="subjectId">
-         {{ruleFrom.lyhProcurementEntity.procurementFirstdate}}
+          {{ruleFrom.procurementFirstdate}}
         </el-form-item>
       </el-col>
     </el-row>
     <!--上传文件-->
     <el-row>
-        <el-col :span="20">
-          <el-form-item label="药品数据" prop="fileName">
+      <el-col :span="20">
+        <el-form-item label="药品数据" prop="fileName">
 
-          </el-form-item>
-        </el-col>
+        </el-form-item>
+      </el-col>
 
 
     </el-row>
@@ -36,7 +37,7 @@
       <el-col :span="24">
         <el-form-item>
           <el-table
-              :data="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities"
+              :data="ruleFrom.lyhProcurementDetailsEntities"
               border
               style="width: 100%">
             <el-table-column
@@ -88,106 +89,36 @@
 
   </el-form>
 
-
-
 </template>
 
 <script>
-
-import qs from "qs";
-
 export default {
+  name: "putlnTest",
   data() {
     return {
-      reverse: true,
-
-
-      customerData: [],
       ruleFrom:{
-        procurementId:"",
-        lyhProcurementEntity:{
-          lyhProcurementDetailsEntities:[],
-        }
-      },
-
-      id: '',
-      options: [],
-      guideFileIsChange: '',
-      guideFile: { file: '', name: '' },
-      listLoading: false,
-      addBt: true,
 
 
+
+}
     }
-
-
   },
-
-  methods: {
+  methods:{
     // 跳转返回指定的页面
     goBack() {
       this.$router.push({
-        path: '/auditList'
+        path: '/putlnStorage'
       })
     },
-
   },
-
   created() {
+    this.ruleFrom=JSON.parse(this.$route.query.value);
+    console.log(this.ruleFrom)
 
-      this.ruleFrom=JSON.parse(this.$route.query.value);
-   console.log(this.ruleFrom)
   }
-
 }
 </script>
 
-
 <style scoped>
-.whiteSelectBg .el-input.is-disabled .el-input__inner{
-  background-color: white;
-  color:#606266;
-}
-*{
-  margin: 0px;
-  padding: 0px;
-}
-.xq{
-  width: 100%;
-
-  background-color:#E9EEF3;
-  padding-top:100px;
-  padding-bottom: 100px;
-}
-.max_box{
-  width:100%;
-  height:500px;
-  margin:auto;
-  background-color: #E9EEF3;
-}
-.xia_box{
-  width:850px;
-  height:500px;
-  background: white;
-  margin-left: 360px;
-  margin-top: 10px;
-
-}
-
 
 </style>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
