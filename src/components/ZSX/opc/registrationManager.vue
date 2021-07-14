@@ -25,20 +25,20 @@
 
                     stripe
                     style="width: 100%"
-                    :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                    :data="registrationTableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             >
                 <el-table-column
-                        prop="eId"
+                        prop="registrationId"
                         label="门诊号"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eName"
+                        prop="room"
                         label="科室"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eSex"
+                        prop="patient.patientDataName"
                         label="病人姓名"
                         width="180">
                 </el-table-column>
@@ -53,7 +53,7 @@
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eDate"
+                        prop="registrationTime"
                         label="挂号日期"
                         width="180">
                 </el-table-column>
@@ -84,7 +84,7 @@
                         :page-sizes="[5, 10, 20, 40]"
                         :page-size="pagesize"
                         layout="total, sizes, prev, pager, next, jumper"
-                        :total="tableData.length">
+                        :total="registrationTableData.length">
                 </el-pagination>
             </div>
 
@@ -317,10 +317,27 @@
         data() {
             return {
                 value1:'',
-                tableData:[],
+                registrationTableData:[],
                 dialogVisible: false,
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
+
+                //挂号对象
+                registration:{
+                  registrationId:'',
+                  room:'',
+                  doctot:'',
+                  registrationTime:'',
+                  registrationFee:'',
+                  patient:{
+                    patientDataId:'',
+                    patientDataCard:'',
+                    patientDataName:'',
+                    patientDataPhone:'',
+                    patientDataSex:'',
+                    medicalCardNumber:''
+                  }
+                },
                 ruleForm:{
                     eId:'',
                     eName:'',
@@ -351,9 +368,9 @@
             // },
 
             initData(){
-                this.axios.get("http://localhost:8088/emp")
+                this.axios.get("http://localhost:8088/registration")
                     .then((v) => {
-                        this.tableData = v.data;
+                        this.registrationTableData = v.data;
                     })
             },
 
