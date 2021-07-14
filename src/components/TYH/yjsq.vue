@@ -14,7 +14,7 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入押金收取号"></el-input>
+                    <el-input v-model="findmohu" @input="initData"></el-input>
                 </el-col>
                 <!--打印导入导出-->
                 <el-button type="primary" style="margin-left: 800px" @click="dialogVisible = true">新增</el-button>
@@ -27,46 +27,41 @@
                 <el-table-column
                         prop="cashNum"
                         label="押金收取号"
-                        width="120">
+                        width="">
                 </el-table-column>
                 <el-table-column
                         prop="cashDate"
                         label="缴纳日期"
-                        width="120">
+                        width="">
                 </el-table-column>
                 <el-table-column
                         prop="tyhHosregEntity.hosregNum"
                         label="住院号"
-                        width="120">
+                        width="">
                 </el-table-column>
                 <el-table-column
                         prop="cashPrice"
                         label="收取金额"
-                        width="120">
+                        width="">
                 </el-table-column>
                 <el-table-column
                         prop="tyhHosregEntity.tyhPatientEntity.patientName"
                         label="病人姓名"
-                        width="120">
+                        width="">
                 </el-table-column>
                 <el-table-column
                         prop="tyhHosregEntity.tyhPatientEntity.patientYue"
                         label="押金余额"
-                        width="100">
+                        width="">
                 </el-table-column>
-                <el-table-column  label="操作" width="130px">
+                <el-table-column  label="操作">
                     <template  #default="scope">
-                        <el-tooltip content="编辑" placement="top">
+                        <el-tooltip content="撤销" placement="top">
                             <el-button
-                                    icon="el-icon-edit" size="mini"
-                                    @click=""></el-button>
-                        </el-tooltip>
+                                    @click="delcas(scope.row)"
+                                    icon="el-icon-delete" size="mini">
 
-
-                        <el-tooltip content="删除" placement="top">
-                            <el-button
-                                    icon="el-icon-delete" size="mini"
-                                    @click=""></el-button>
+                            </el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -80,41 +75,56 @@
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
-            <el-form status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form status-icon  ref="hosregFrom" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="押金收取号" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="住院号:" prop="procurementId" >
+                            <el-select v-model="hosregFrom.hosregNum" filterable @change="numpi(hosregFrom.hosregNum)">
 
+                                <el-option
+                                        v-for="provider in tableData2"
+                                        :key="provider.hosregNum"
+                                        :label="provider.hosregNum"
+                                        :value="provider.hosregNum"
+                                />
+
+                            </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="收取日期" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="病人姓名">
+                            <el-input v-model="hosregFrom.tyhPatientEntity.patientName" disabled></el-input>
+
                         </el-form-item>
                     </el-col>
                 </el-row>
 
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="住院号" prop="">
-                            <el-input></el-input>
-
+                        <el-form-item label="收取日期">
+                            <el-date-picker
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                    v-model="cashFrom.cashDate"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>
                         </el-form-item>
                     </el-col>
+
                     <el-col :span="10">
-                        <el-form-item label="病人姓名" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="收取金额">
+                            <el-input v-model="cashFrom.cashPrice"></el-input>
 
                         </el-form-item>
                     </el-col>
+
                 </el-row>
             </el-form>
 
             <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="dialogVisible = false,addcash()">确 定</el-button>
     </span>
             </template>
         </el-dialog>
@@ -144,27 +154,123 @@
             return {
                 dialogVisible: false,
                 tableData:[],
+                tableData2:[],
+                tableData3:[],
+                findmohu:'',
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
+                cashFrom:{
+                    cashNum:'',
+                    cashDate:'',
+                    hosregNum:'',
+                    cashPrice:'',
+                    tyhHosregEntity:{
+                        hosregNum:'',
+                        hosregDate:'',
+                        hosnotNum:'',
+                        patientId:'',
+                        tyhPatientEntity:{
+                            patientId:'',
+                            patientName:'',
+                            patientSex:'',
+                            patientYue:''
+                        }
+                    }
+                },
+                hosregFrom:{
+                    hosregNum:'',
+                    hosregDate:'',
+                    hosnotNum:'',
+                    patientId:'',
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:''
+                    }
+                }
             }
         },
         methods:{
+            delcas(s){
+                this.axios.post("http://localhost:8088/del-cash2",s)
+                    .then((v) => {
+                        alert("撤销成功")
+                        this.initData()
+                    })
+            },
+
+            addcash(){
+                this.cashFrom.hosregNum=this.hosregFrom.hosregNum
+                console.log(this.cashFrom)
+                this.axios.post("http://localhost:8088/add-cash",this.cashFrom)
+                    .then((v) => {
+                        alert("缴纳成功")
+                        this.initData()
+                        this.clearFrom()
+                    })
+            },
+
+            numpi(num){
+                this.axios.get("http://localhost:8088/find-num2",{params:{num:num}})
+                    .then((v) => {
+                        this.hosregFrom = v.data;
+                        console.log(this.hosregFrom)
+                    })
+            },
+
+            clearFrom() {
+                this.hosregFrom={
+                    cashNum:'',
+                    cashDate:'',
+                    hosregNum:'',
+                    cashPrice:'',
+                    tyhHosregEntity:{
+                        hosregNum:'',
+                        hosregDate:'',
+                        hosnotNum:'',
+                        patientId:'',
+                        tyhPatientEntity:{
+                            patientId:'',
+                            patientName:'',
+                            patientSex:'',
+                            patientYue:''
+                        }
+                    }
+                }
+                this.cashFrom={
+                    hosregNum:'',
+                    hosregDate:'',
+                    hosnotNum:'',
+                    patientId:'',
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:''
+                    }
+                }
+            },
 
             initData() {
-                this.axios.get("http://localhost:8088/findAll-cash")
+                this.axios.get("http://localhost:8088/findAll-cash",{params:{cha:this.findmohu}})
                     .then((v) => {
                         this.tableData = v.data;
-                        console.log(this.tableData)
+                    })
+            },
+
+            initData2() {
+                this.axios.get("http://localhost:8088/find-num")
+                    .then((v) => {
+                        this.tableData2 = v.data;
                     })
             },
 
             handleSizeChange: function (size) {
                 this.pagesize = size;
-                console.log(this.pagesize)  //每页下拉显示数据
             },
             handleCurrentChange: function(currentPage){
                 this.currentPage = currentPage;
-                console.log(this.currentPage)  //点击第几页
             },
 
 
@@ -179,6 +285,7 @@
         },
         created() {
             this.initData();
+            this.initData2();
         },
     }
 
