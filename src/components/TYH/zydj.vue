@@ -14,60 +14,87 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入住院登记号"></el-input>
+                    <el-input v-model="findmohu" @input="initData"></el-input>
+                </el-col>&nbsp;&nbsp;&nbsp;
+                <el-col :span="4">
+                        <el-select v-model="value" clearable placeholder="请选择" @change="initData" >
+                            <el-option
+                                    v-for="item in options"
+                                    :key="item.value"
+                                    :label="item.label"
+                                    :value="item.value">
+                            </el-option>
+                        </el-select>
                 </el-col>
                 <!--打印导入导出-->
                 <el-button type="primary" style="margin-left: 800px" @click="dialogVisible = true">新增</el-button>
             </el-row>
             <el-table
-
+                    :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                     stripe
                     style="width: 100%"
             >
                 <el-table-column
-                        prop=""
-                        label="住院号"
-                        width="120">
+                        prop="hosregNum"
+                        label="住院号">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="入院日期"
-                        width="120">
+                        prop="hosregDate"
+                        label="入院日期">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="病床号"
-                        width="120">
+                        prop="tyhHosnotEntity.tyhHospitalEntity.tyhInpatientEntity.inpName"
+                        label="所在病房">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="临床医生"
-                        width="120">
+                        prop="tyhHosnotEntity.tyhHospitalEntity.hospitalName"
+                        label="病床号">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="病人姓名"
-                        width="120">
+                        prop="tyhPatientEntity.patientName"
+                        label="病人姓名">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="押金余额"
-                        width="100">
+                        prop="tyhPatientEntity.patientYue"
+                        label="押金余额">
                 </el-table-column>
-                <el-table-column  label="操作" width="130px">
+                <el-table-column label="状态" prop="hosregZt" align="center"  >
+                    <template #default="scope">
+                        <template v-if="scope.row.hosregZt =='1'">
+                            住院中
+                        </template>
+                        <template v-if="scope.row.hosregZt =='2'">
+                            已申请出院
+                        </template>
+                        <template v-if="scope.row.hosregZt =='3'">
+                            已出院
+                        </template>
+                        <template v-if="scope.row.hosregZt =='4'">
+                            锁定中
+                        </template>
+                    </template>
+                </el-table-column>
+                <el-table-column  label="操作">
                     <template  #default="scope">
                         <el-tooltip content="编辑" placement="top">
                             <el-button
                                     icon="el-icon-edit" size="mini"
                                     @click=""></el-button>
                         </el-tooltip>
-
-
-                        <el-tooltip content="删除" placement="top">
-                            <el-button
-                                    icon="el-icon-delete" size="mini"
-                                    @click=""></el-button>
-                        </el-tooltip>
+                        <template v-if="scope.row.hosregZt !='4'">
+                            <el-tooltip content="锁定" placement="top">
+                                <el-button
+                                        icon="el-icon-lock" size="mini"
+                                        @click=""></el-button>
+                            </el-tooltip>
+                        </template>
+                        <template v-if="scope.row.hosregZt =='4'">
+                            <el-tooltip content="解锁" placement="top">
+                                <el-button
+                                        icon="el-icon-unlock" size="mini"
+                                        @click=""></el-button>
+                            </el-tooltip>
+                        </template>
                     </template>
                 </el-table-column>
             </el-table>
@@ -80,54 +107,40 @@
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
-            <el-form status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form status-icon  ref="tyhHosnotEntity" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="住院号" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="住院通知号:" prop="procurementId" >
+                            <el-select v-model="tyhHosnotEntity.hosnotNum" filterable @change="findreg(tyhHosnotEntity.hosnotNum)">
 
+                                <el-option
+                                        v-for="provider in tableData2"
+                                        :key="provider.hosnotNum"
+                                        :label="provider.hosnotNum"
+                                        :value="provider.hosnotNum"
+                                />
+
+                            </el-select>
+
+                        </el-form-item>
+
+                        <el-form-item label="入院日期" prop="">
+                            <el-date-picker
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                    v-model="regFrom.hosregDate"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="入院日期日期" prop="">
-                            <el-input></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
 
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="住院通知号" prop="">
-                            <el-input></el-input>
-
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="病床号" prop="">
-                            <el-input></el-input>
-
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="押金收取金额" prop="">
-                            <el-input></el-input>
-
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="押金收取日期" prop="">
-                            <el-input></el-input>
-
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-
-                <el-row>
-                    <el-col :span="10">
                         <el-form-item label="病人姓名" prop="">
+                            <el-input v-model="tyhHosnotEntity.tyhHospitalEntity"></el-input>
+
+                        </el-form-item>
+
+                        <el-form-item disabled label="病床号" prop="">
                             <el-input></el-input>
 
                         </el-form-item>
@@ -143,7 +156,17 @@
             </template>
         </el-dialog>
 
-
+        <div class="fy_div">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[5, 10, 20, 40]"
+                    :page-size="pagesize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="tableData.length">
+            </el-pagination>
+        </div>
 
     </div>
 </template>
@@ -156,11 +179,105 @@
 
         data() {
             return {
+                options: [{
+                    value: '1',
+                    label: '住院中'
+                }, {
+                    value: '2',
+                    label: '已申请出院'
+                }, {
+                    value: '3',
+                    label: '已出院'
+                }, {
+                    value: '4',
+                    label: '锁定中'
+                }],
+                value: '',
                 dialogVisible: false,
+                tableData:[],
+                tableData2:[],
+                currentPage:1, //初始页
+                pagesize:10,    //    每页的数据
+                findmohu:"",
+                regFrom:{
+                    hosregNum:'',
+                    hosregDate:'',
+                    hosregZt:'',
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:'',
+                    },
+                    tyhHosnotEntity:{
+                        hosnotNum:'',
+                        hosnotDate:'',
+                        hosnotPrice:'',
+                        hosnotCash:'',
+                        hosnotWar:'',
+                        hosnotZt:'',
+                        tyhHospitalEntity:{
+                            hospitalId:'',
+                            hospitalName:'',
+                            hospitalPrice:'',
+                            tyhInpatientEntity:{
+                                inpId:'',
+                                inpName:''
+                            }
+                        }
+                    },
+                },
+
+
+                tyhHosnotEntity: {
+                    hosnotNum: '',
+                    hosnotDate: '',
+                    hosnotPrice: '',
+                    hosnotCash: '',
+                    hosnotWar: '',
+                    hosnotZt: '',
+                    tyhHospitalEntity:{
+                        hospitalId:'',
+                        hospitalName:'',
+                        hospitalPrice:'',
+                        tyhInpatientEntity:{
+                            inpId:'',
+                            inpName:''
+                        }
+                    }
+                }
             }
         },
         methods:{
+            findreg(num){
+                this.axios.get("http://localhost:8088/find-reg",{params:{num:num}})
+                    .then((v) => {
+                        this.tyhHosnotEntity = v.data
+                    })
+            },
 
+            initData() {
+                this.axios.get("http://localhost:8088/findAll-reg",{params:{cha:this.findmohu,cha2:this.value}})
+                    .then((v) => {
+                        this.tableData = v.data;
+                    })
+            },
+
+            initData2() {
+                this.axios.get("http://localhost:8088/find-not")
+                    .then((v) => {
+                        this.tableData2 = v.data;
+                    })
+            },
+
+            handleSizeChange: function (size) {
+                this.pagesize = size;
+                console.log(this.pagesize)  //每页下拉显示数据
+            },
+            handleCurrentChange: function(currentPage){
+                this.currentPage = currentPage;
+                console.log(this.currentPage)  //点击第几页
+            },
 
 
             // 初始页currentPage、初始每页数据数pagesize和数据data
@@ -176,6 +293,8 @@
             }
         },
         created() {
+            this.initData()
+            this.initData2()
         },
     }
 
@@ -201,6 +320,6 @@
     }
     .fy_div{
         margin-top:20px;
-        margin-left: 450px;
+        margin-left: -250px;
     }
 </style>
