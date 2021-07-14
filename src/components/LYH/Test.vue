@@ -4,7 +4,7 @@
     <el-row style="margin-top: 30px">
       <!--基本输入框-->
       <el-col :span="5">
-        <el-form-item label="采购编号" prop="name1">
+        <el-form-item label="采购编号:" prop="name1">
         {{ruleFrom.procurementId}}
         </el-form-item>
       </el-col>
@@ -16,7 +16,7 @@
       </el-col>
       <!--基本多选框-->
       <el-col :span="8">
-        <el-form-item label="创建日期" placeholder="" prop="subjectId">
+        <el-form-item label="创建日期:" prop="subjectId">
          {{ruleFrom.lyhProcurementEntity.procurementFirstdate}}
         </el-form-item>
       </el-col>
@@ -36,9 +36,11 @@
       <el-col :span="24">
         <el-form-item>
           <el-table
-              :data="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities"
+              :data="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              @selection-change="selectionLineChangeHandle"
               border
               style="width: 100%">
+            <el-table-column type="selection" width="55" align="center" />
             <el-table-column
                 prop="drugEntity.drugName"
                 label="药品名"
@@ -47,6 +49,14 @@
             <el-table-column
                 prop="numbers"
                 label="药品数量">
+              <template #default="scope">
+
+                <el-input placeholder="请输入内容" v-show="scope.row.show" v-model.number="scope.row.numbers"></el-input>
+<!--                <span v-show="!scope.row.show">{{scope.row.numbers}}</span>-->
+
+              </template>
+
+
             </el-table-column>
 
             <el-table-column
@@ -81,7 +91,61 @@
                 label="采购编号">
             </el-table-column>
 
+
+            <el-table-column label="操作">
+              <template #default="scope">
+                <el-tooltip content="保存" placement="top">
+                  <el-button
+                      style="width: 40px"
+                      icon="el-icon-edit  "
+                      @click="scope.row.show =false;update(scope.row.numbers,scope.row.proId)"
+                  ></el-button>
+
+                </el-tooltip>
+              </template>
+            </el-table-column>
           </el-table>
+<!--          &lt;!&ndash;分页&ndash;&gt;-->
+<!--          <div class="fy_div">-->
+<!--            <el-pagination-->
+<!--                @size-change="handleSizeChange"-->
+<!--                @current-change="handleCurrentChange"-->
+<!--                :current-page="currentPage"-->
+<!--                :page-sizes="[5, 10, 20, 40]"-->
+<!--                :page-size="pagesize"-->
+<!--                layout="total, sizes, prev, pager, next, jumper"-->
+<!--                :total="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities.length">-->
+<!--            </el-pagination>-->
+<!--          </div>-->
+
+          <el-dialog
+              title="修改"
+              v-model="dialogVisible"
+              width="30%"
+              :before-close="handleClose">
+            <el-form :model="ruleFrom2">
+
+              <el-row>
+                <el-col :span="7">
+                  <el-form-item label="数量：">
+                    <el-input v-model="ruleFrom2.numbers"></el-input>
+                  </el-form-item>
+                </el-col>
+              </el-row>
+
+
+            </el-form>
+
+
+
+            <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+            </template>
+          </el-dialog>
+
         </el-form-item>
       </el-col>
     </el-row>
@@ -109,15 +173,15 @@ export default {
           lyhProcurementDetailsEntities:[],
         }
       },
+      currentPage:1, //初始页
+      pagesize:10,    //    每页的数据
+      ruleFrom2:{
+        numbers:'',
+      },
 
-      id: '',
-      options: [],
-      guideFileIsChange: '',
-      guideFile: { file: '', name: '' },
-      listLoading: false,
-      addBt: true,
+      dialogVisible: false,
 
-
+      tableDetails:[],
     }
 
 
@@ -131,6 +195,41 @@ export default {
       })
     },
 
+    update(numbers,proId){
+
+      this.axios.get("http://localhost:8088/update-details",{params:{numbers:numbers,proId:proId}})
+          .then((v) => {
+          this.$message("修改成功");
+          })
+    },
+    // 初始页currentPage、初始每页数据数pagesize和数据data
+    handleSizeChange: function (size) {
+      this.pagesize = size;
+      console.log(this.pagesize)  //每页下拉显示数据
+    },
+    handleCurrentChange: function(currentPage){
+      this.currentPage = currentPage;
+      console.log(this.currentPage)  //点击第几页
+    },
+
+
+    selectionLineChangeHandle(val) {
+      this.tableDetails = val;
+      console.log(this.tableDetails);
+      for (var i = 0; i < this.tableDetails.length; i++) {
+        console.log('number:' + this.tableDetails[i].numbers)
+        // console.log('编号:' + this.tableDetails[i].lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugId)
+        // console.log('数量:' +this.tableDetails[i].procurementId)
+      }
+    },
+    //小表格提交
+    fromCommit() {
+      console.log(this.tableDetails);
+      for (var i = 0; i < this.tableDetails.length; i++) {
+        console.log('id:' + this.tableDetails[i])
+        console.log('id:' + this.tableDetails[i])
+      }
+    },
   },
 
   created() {

@@ -370,7 +370,7 @@ deleteById(){
 
     insertProcurementDetails(){
       this.ruleForm.lyhProcurementDetailsEntities=this.lyhProcurementDetailsEntities;
-      alert(this.ruleForm.lyhProcurementDetailsEntities)
+    
         this.axios.post("http://localhost:8088/add-procurement",this.ruleForm)
             .then((v) => {
             this.open1();
