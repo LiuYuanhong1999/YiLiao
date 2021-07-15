@@ -27,6 +27,7 @@
 
 
       <!--  主页面表格Table    -->
+
       <el-table
           :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           border stripe style="width: 100%;margin-top: 10px"
@@ -79,16 +80,6 @@
             </el-tooltip>
 
           </template>
-
-<!--          <template>-->
-<!--          <el-button icon="el-icon-scissors">-->
-
-<!--          </el-button>-->
-<!--          </template>-->
-
-<!--          <el-button icon="el-icon-close" @click="delPhysical()">-->
-
-<!--          </el-button>-->
 
         </el-table-column>
 
@@ -266,6 +257,8 @@ export default {
         phPrice:'',
       }
     },
+
+
 
   },
   created() {
