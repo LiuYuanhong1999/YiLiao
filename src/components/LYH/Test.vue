@@ -35,6 +35,7 @@
     <el-row>
       <el-col :span="24">
         <el-form-item>
+          <el-button style="width:80px;margin-left: 90%" type="primary" @click="updateById()">提交库存</el-button>
           <el-table
               :data="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities.slice((currentPage-1)*pagesize,currentPage*pagesize)"
               @selection-change="selectionLineChangeHandle"
@@ -105,6 +106,7 @@
               </template>
             </el-table-column>
           </el-table>
+
 <!--          &lt;!&ndash;分页&ndash;&gt;-->
 <!--          <div class="fy_div">-->
 <!--            <el-pagination-->
@@ -118,42 +120,12 @@
 <!--            </el-pagination>-->
 <!--          </div>-->
 
-          <el-dialog
-              title="修改"
-              v-model="dialogVisible"
-              width="30%"
-              :before-close="handleClose">
-            <el-form :model="ruleFrom2">
-
-              <el-row>
-                <el-col :span="7">
-                  <el-form-item label="数量：">
-                    <el-input v-model="ruleFrom2.numbers"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
 
 
-            </el-form>
-
-
-
-            <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-    </span>
-            </template>
-          </el-dialog>
-
-        </el-form-item>
+</el-form-item>
       </el-col>
     </el-row>
-
   </el-form>
-
-
-
 </template>
 
 <script>
@@ -202,6 +174,21 @@ export default {
           this.$message("修改成功");
           })
     },
+
+    updateById() {
+      var json=JSON.stringify(this.tableDetails);
+
+        this.axios.post("http://localhost:8088/update-drugstore",json,{headers:{"Content-Type":"application/x-www-from-urlencoded"}})
+
+            .then((v) => {
+
+              this.$message("修改成功");
+            })
+      }
+    ,
+
+
+
     // 初始页currentPage、初始每页数据数pagesize和数据data
     handleSizeChange: function (size) {
       this.pagesize = size;
@@ -217,7 +204,7 @@ export default {
       this.tableDetails = val;
       console.log(this.tableDetails);
       for (var i = 0; i < this.tableDetails.length; i++) {
-        console.log('number:' + this.tableDetails[i].numbers)
+        console.log('number:' + this.tableDetails[i])
         // console.log('编号:' + this.tableDetails[i].lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugId)
         // console.log('数量:' +this.tableDetails[i].procurementId)
       }
