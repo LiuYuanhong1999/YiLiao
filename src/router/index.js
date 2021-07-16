@@ -217,6 +217,12 @@ const routes=[
                 path: '/Test2',
                 name:'putlnTest',
                 component:()=>import('/src/components/LYH/putlnTest.vue')
+            },{
+                path: '/Test3',
+                name: 'DrugTest',
+                component:()=>import('/src/components/LYH/DrugTest.vue')
+
+
             },
 
 

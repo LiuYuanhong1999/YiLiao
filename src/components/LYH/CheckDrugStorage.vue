@@ -32,15 +32,26 @@
             </el-form>
           </template>
         </el-table-column>
-        <el-table-column
-            prop="drugstoreId"
-            label="编号"
-            width="60">
-        </el-table-column>
+<!--        <el-table-column-->
+<!--            prop="drugstoreId"-->
+<!--            label="编号"-->
+<!--            width="60">-->
+<!--        </el-table-column>-->
         <el-table-column
             prop="lyhDrugEntity.drugName"
             label="药品名称"
             width="120">
+          <template #default="scope">
+            <router-link :to="{path:'/Test3',query:{key:scope.row.drugId,value:JSON.stringify(scope.row)}}">
+              {{scope.row.lyhDrugEntity.drugName}}
+            </router-link>
+
+
+          </template>
+
+
+
+
         </el-table-column>
         <el-table-column
             prop="drugstoreNumber"
