@@ -45,6 +45,12 @@ const routes=[
                 component:()=>import('/src/components/ZSX/opc/relieveManager.vue')
                 // meta:'门诊解锁'
             },
+            {
+                path: '/therapy',
+                name:'therapyManager',
+                component:()=>import('/src/components/ZSX/opc/therapyManager.vue')
+                // meta:'诊疗卡管理'
+            },
             //护士工作站
             {
                 path:'/dispensing',

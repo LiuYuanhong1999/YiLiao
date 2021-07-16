@@ -385,10 +385,7 @@
             },
             editEmp(row){
                 this.dialogVisible=true;
-                this.ruleForm.eName=row.eName;
-                this.ruleForm.ePhone=row.ePhone;
-                this.ruleForm.eId=row.eId;
-                this.ruleForm.eSex=row.eSex;
+                this.ruleForm={...row}
             },
 
             ClearFrom(){
