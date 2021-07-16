@@ -51,6 +51,10 @@
                         label="病床号">
                 </el-table-column>
                 <el-table-column
+                        prop="tyhHosnotEntity.yxjDeskEntity.deskName"
+                        label="所属科室">
+                </el-table-column>
+                <el-table-column
                         prop="tyhPatientEntity.patientName"
                         label="病人姓名">
                 </el-table-column>
@@ -64,35 +68,30 @@
                             住院中
                         </template>
                         <template v-if="scope.row.hosregZt =='2'">
-                            已申请出院
+                            锁定中
                         </template>
                         <template v-if="scope.row.hosregZt =='3'">
-                            已出院
+                            已申请出院
                         </template>
                         <template v-if="scope.row.hosregZt =='4'">
-                            锁定中
+                            已出院
                         </template>
                     </template>
                 </el-table-column>
                 <el-table-column  label="操作">
                     <template  #default="scope">
-                        <el-tooltip content="编辑" placement="top">
-                            <el-button
-                                    icon="el-icon-edit" size="mini"
-                                    @click=""></el-button>
-                        </el-tooltip>
-                        <template v-if="scope.row.hosregZt !='4'">
+                        <template v-if="scope.row.hosregZt =='1'">
                             <el-tooltip content="锁定" placement="top">
                                 <el-button
                                         icon="el-icon-lock" size="mini"
-                                        @click=""></el-button>
+                                        @click="suoding(scope.row.hosregNum)"></el-button>
                             </el-tooltip>
                         </template>
-                        <template v-if="scope.row.hosregZt =='4'">
+                        <template v-if="scope.row.hosregZt =='2'">
                             <el-tooltip content="解锁" placement="top">
                                 <el-button
                                         icon="el-icon-unlock" size="mini"
-                                        @click=""></el-button>
+                                        @click="jiesuo(scope.row.hosregNum)"></el-button>
                             </el-tooltip>
                         </template>
                     </template>
@@ -126,7 +125,6 @@
 
                         <el-form-item label="入院日期" prop="">
                             <el-date-picker
-                                    format="YYYY-MM-DD HH:mm:ss"
                                     v-model="regFrom.hosregDate"
                                     type="datetime"
                                     placeholder="选择日期时间">
@@ -136,22 +134,38 @@
                     <el-col :span="10">
 
                         <el-form-item label="病人姓名" prop="">
-                            <el-input v-model="tyhHosnotEntity.tyhHospitalEntity"></el-input>
+                            <el-input v-model="tyhHosnotEntity.tyhPatientEntity.patientName" disabled></el-input>
 
                         </el-form-item>
 
-                        <el-form-item disabled label="病床号" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="所属科室" prop="">
+                            <el-input disabled v-model="tyhHosnotEntity.yxjDeskEntity.deskName"></el-input>
 
                         </el-form-item>
                     </el-col>
+                </el-row>
+                <el-row>
+                    <el-col :span="10">
+                        <el-form-item label="所属病房">
+                            <el-input v-model="tyhHosnotEntity.tyhHospitalEntity.hospitalName" disabled></el-input>
+
+                        </el-form-item>
+                    </el-col>
+
+                    <el-col :span="10">
+                        <el-form-item label="所属病床">
+                            <el-input v-model="tyhHosnotEntity.tyhHospitalEntity.tyhInpatientEntity.inpName" disabled></el-input>
+
+                        </el-form-item>
+                    </el-col>
+
                 </el-row>
             </el-form>
 
             <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="dialogVisible = false,addreg()">确 定</el-button>
     </span>
             </template>
         </el-dialog>
@@ -184,13 +198,13 @@
                     label: '住院中'
                 }, {
                     value: '2',
-                    label: '已申请出院'
+                    label: '锁定中'
                 }, {
                     value: '3',
-                    label: '已出院'
+                    label: '已申请出院'
                 }, {
                     value: '4',
-                    label: '锁定中'
+                    label: '已出院'
                 }],
                 value: '',
                 dialogVisible: false,
@@ -203,6 +217,8 @@
                     hosregNum:'',
                     hosregDate:'',
                     hosregZt:'',
+                    patientId:'',
+                    hosnotNum:'',
                     tyhPatientEntity:{
                         patientId:'',
                         patientName:'',
@@ -224,6 +240,11 @@
                                 inpId:'',
                                 inpName:''
                             }
+                        },
+                        yxjDeskEntity:{
+                            deskId:"",
+                            deskName:"",
+                            deskTime:"",
                         }
                     },
                 },
@@ -236,6 +257,17 @@
                     hosnotCash: '',
                     hosnotWar: '',
                     hosnotZt: '',
+                    yxjDeskEntity:{
+                        deskId:"",
+                        deskName:"",
+                        deskTime:"",
+                    },
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:'',
+                    },
                     tyhHospitalEntity:{
                         hospitalId:'',
                         hospitalName:'',
@@ -249,6 +281,66 @@
             }
         },
         methods:{
+            clearFrom(){
+              this.regFrom={
+
+              }
+              this.tyhHosnotEntity={
+                  hosnotNum: '',
+                  hosnotDate: '',
+                  hosnotPrice: '',
+                  hosnotCash: '',
+                  hosnotWar: '',
+                  hosnotZt: '',
+                  yxjDeskEntity:{
+                      deskId:"",
+                      deskName:"",
+                      deskTime:"",
+                  },
+                  tyhPatientEntity:{
+                      patientId:'',
+                      patientName:'',
+                      patientSex:'',
+                      patientYue:'',
+                  },
+                  tyhHospitalEntity:{
+                      hospitalId:'',
+                      hospitalName:'',
+                      hospitalPrice:'',
+                      tyhInpatientEntity:{
+                          inpId:'',
+                          inpName:''
+                      }
+                  }
+              }
+            },
+
+            suoding(num){
+                this.axios.get("http://localhost:8088/suoding-reg",{params:{num:num}})
+                    .then((v) => {
+                        this.initData()
+                    })
+            },
+
+            jiesuo(num){
+                this.axios.get("http://localhost:8088/jiesuo-reg",{params:{num:num}})
+                    .then((v) => {
+                        this.initData()
+                    })
+            },
+
+            addreg(){
+                this.regFrom.hosnotNum=this.tyhHosnotEntity.hosnotNum
+                this.regFrom.patientId=this.tyhHosnotEntity.tyhPatientEntity.patientId
+                this.axios.post("http://localhost:8088/add-reg",this.regFrom)
+                    .then((v) => {
+                        alert("入院成功")
+                        this.initData()
+                        this.initData2()
+                        this.clearFrom()
+                    })
+            },
+
             findreg(num){
                 this.axios.get("http://localhost:8088/find-reg",{params:{num:num}})
                     .then((v) => {

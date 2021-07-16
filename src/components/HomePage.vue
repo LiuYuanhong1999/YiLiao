@@ -49,15 +49,19 @@
           </el-submenu>
 
           <el-submenu index="2">
-            <i class="el-icon-menu"></i>
-            <template #title>医生工作站</template>
+              <template #title>
+                  <i class="el-icon-user"></i>
+                  <span>医生工作站</span>
+              </template>
             <el-menu-item index="2-1">门诊处方</el-menu-item>
             <router-link to="/zyyz"><el-menu-item index="2-2">住院</el-menu-item></router-link>
           </el-submenu>
 
           <el-submenu index="3">
-            <i class="el-icon-menu"></i>
-            <template #title>住院管理</template>
+              <template #title>
+                  <i class="el-icon-user"></i>
+                  <span>住院管理</span>
+              </template>
             <router-link to="/zytz"><el-menu-item index="3-1">住院通知</el-menu-item></router-link>
             <router-link to="/zydj"><el-menu-item index="3-2">住院登记</el-menu-item></router-link>
             <router-link to="/yjsq"><el-menu-item index="3-3">押金收取</el-menu-item></router-link>

@@ -207,6 +207,7 @@
                     .then((v) => {
                         alert("缴纳成功")
                         this.initData()
+                        this.initData2()
                         this.clearFrom()
                     })
             },
@@ -221,6 +222,18 @@
 
             clearFrom() {
                 this.hosregFrom={
+                    hosregNum:'',
+                    hosregDate:'',
+                    hosnotNum:'',
+                    patientId:'',
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:''
+                    }
+                }
+                this.cashFrom={
                     cashNum:'',
                     cashDate:'',
                     hosregNum:'',
@@ -236,18 +249,6 @@
                             patientSex:'',
                             patientYue:''
                         }
-                    }
-                }
-                this.cashFrom={
-                    hosregNum:'',
-                    hosregDate:'',
-                    hosnotNum:'',
-                    patientId:'',
-                    tyhPatientEntity:{
-                        patientId:'',
-                        patientName:'',
-                        patientSex:'',
-                        patientYue:''
                     }
                 }
             },

@@ -14,74 +14,59 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入出院通知号"></el-input>
+                    <el-input v-model="findmohu" @input="initData"></el-input>
                 </el-col>
                 <!--打印导入导出-->
                 <el-button type="primary" style="margin-left: 800px" @click="dialogVisible = true">新增</el-button>
             </el-row>
             <el-table
-
+                    :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                     stripe
                     style="width: 100%"
             >
                 <el-table-column
-                        prop=""
-                        label="出院通知号"
-                        width="120">
+                        prop="chunotNum"
+                        label="出院通知号">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="通知日期"
-                        width="120">
+                        prop="chunotDate"
+                        label="通知日期">
+                </el-table-column>
+                <el-table-column label="出院类型" prop="chunotType" align="center"  >
+                    <template #default="scope">
+                        <template v-if="scope.row.chunotType =='1'">
+                            痊愈出院
+                        </template>
+                        <template v-if="scope.row.chunotType =='2'">
+                            转院
+                        </template>
+                        <template v-if="scope.row.chunotType =='3'">
+                            放弃治疗
+                        </template>
+                    </template>
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="出院类型"
-                        width="120">
+                        prop="tyhHosregEntity.hosregNum"
+                        label="住院号">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="住院号"
-                        width="120">
+                        prop="tyhPatientEntity.patientName"
+                        label="病人姓名">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="病人姓名"
-                        width="120">
+                        prop="chunotYizhu"
+                        label="医嘱">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="医嘱"
-                        width="100">
-                </el-table-column>
-                <el-table-column
-                        prop=""
-                        label="住院费用合计"
-                        width="100">
-                </el-table-column>
-                <el-table-column
-                        prop=""
-                        label="押金合计"
-                        width="100">
-                </el-table-column>
-                <el-table-column
-                        prop=""
-                        label="备注"
-                        width="100">
+                        prop="tyhPatientEntity.patientYue"
+                        label="押金合计">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
                     <template  #default="scope">
-                        <el-tooltip content="编辑" placement="top">
-                            <el-button
-                                    icon="el-icon-edit" size="mini"
-                                    @click=""></el-button>
-                        </el-tooltip>
-
-
-                        <el-tooltip content="删除" placement="top">
+                        <el-tooltip content="撤销" placement="top">
                             <el-button
                                     icon="el-icon-delete" size="mini"
-                                    @click=""></el-button>
+                                    @click="chexiao(scope.row.chunotNum,scope.row.tyhHosregEntity.hosregNum)"></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -95,17 +80,30 @@
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
-            <el-form status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form status-icon  ref="regFrom" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="出院通知号" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="住院号" prop="">
+                            <el-select v-model="regFrom.hosregNum" filterable @change="numpi(regFrom.hosregNum)">
+
+                                <el-option
+                                        v-for="provider in tableData2"
+                                        :key="provider.hosregNum"
+                                        :label="provider.hosregNum"
+                                        :value="provider.hosregNum"
+                                />
+
+                            </el-select>
 
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
                         <el-form-item label="通知日期" prop="">
-                            <el-input></el-input>
+                            <el-date-picker
+                                    v-model="chunotFrom.chunotDate"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -113,19 +111,29 @@
                 <el-row>
                     <el-col :span="10">
                         <el-form-item label="出院类型" prop="">
-                            <el-input></el-input>
-
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="住院号" prop="">
-                            <el-input></el-input>
+                            <el-select v-model="chunotFrom.chunotType" clearable placeholder="请选择" @change="initData" >
+                                <el-option
+                                        v-for="item in options"
+                                        :key="item.value"
+                                        :label="item.label"
+                                        :value="item.value">
+                                </el-option>
+                            </el-select>
 
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
                         <el-form-item label="病人姓名" prop="">
-                            <el-input></el-input>
+                            <el-input v-model="regFrom.tyhPatientEntity.patientName" style="width: 200px" disabled></el-input>
+
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+
+                <el-row>
+                    <el-col :span="10">
+                        <el-form-item label="医嘱" prop="">
+                            <el-input v-model="chunotFrom.chunotYizhu" style="width: 200px"></el-input>
 
                         </el-form-item>
                     </el-col>
@@ -135,12 +143,22 @@
             <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="dialogVisible = false,addchunot()">确 定</el-button>
     </span>
             </template>
         </el-dialog>
 
-
+        <div class="fy_div">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[5, 10, 20, 40]"
+                    :page-size="pagesize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="tableData.length">
+            </el-pagination>
+        </div>
 
     </div>
 </template>
@@ -150,18 +168,217 @@
         name:"cytz",
         components: {},
 
-
         data() {
             return {
                 dialogVisible: false,
+                tableData:[],
+                tableData2:[],
+                currentPage:1, //初始页
+                pagesize:10,    //    每页的数据
+                findmohu:"",
+                options: [{
+                    value: '1',
+                    label: '痊愈出院'
+                }, {
+                    value: '2',
+                    label: '转院'
+                }, {
+                    value: '3',
+                    label: '放弃治疗'
+                }],
+                value: '',
+                chunotFrom:{
+                    chunotNum:"",
+                    chunotDate:"",
+                    chunotType:"",
+                    hosregNum:"",
+                    patientId:"",
+                    chunotYizhu:"",
+                    chunotPrice:"",
+                    tyhHosregEntity:{
+                        hosregNum:"",
+                        hosregDate:"",
+                        hosregZt:"",
+                        tyhHosnotEntity:{
+                            hosnotNum:'',
+                            hosnotDate:'',
+                            hosnotPrice:'',
+                            hosnotCash:'',
+                            hosnotWar:'',
+                            hosnotZt:'',
+                            tyhHospitalEntity:{
+                                hospitalId:'',
+                                hospitalName:'',
+                                hospitalPrice:'',
+                                tyhInpatientEntity:{
+                                    inpId:'',
+                                    inpName:''
+                                }
+                            }
+                        },
+                    },
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:'',
+                    },
+                },
+
+                regFrom:{
+                    hosregNum:'',
+                    hosregDate:'',
+                    hosregZt:'',
+                    patientId:'',
+                    hosnotNum:'',
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:'',
+                    },
+                    tyhHosnotEntity:{
+                        hosnotNum:'',
+                        hosnotDate:'',
+                        hosnotPrice:'',
+                        hosnotCash:'',
+                        hosnotWar:'',
+                        hosnotZt:'',
+                        tyhHospitalEntity:{
+                            hospitalId:'',
+                            hospitalName:'',
+                            hospitalPrice:'',
+                            tyhInpatientEntity:{
+                                inpId:'',
+                                inpName:''
+                            }
+                        }
+                    },
+                },
             }
         },
         methods:{
+            clearFrom(){
+                this.chunotFrom={
+                    chunotNum:"",
+                    chunotDate:"",
+                    chunotType:"",
+                    hosregNum:"",
+                    patientId:"",
+                    chunotYizhu:"",
+                    chunotPrice:"",
+                    tyhHosregEntity:{
+                        hosregNum:"",
+                        hosregDate:"",
+                        hosregZt:"",
+                        tyhHosnotEntity:{
+                            hosnotNum:'',
+                            hosnotDate:'',
+                            hosnotPrice:'',
+                            hosnotCash:'',
+                            hosnotWar:'',
+                            hosnotZt:'',
+                            tyhHospitalEntity:{
+                                hospitalId:'',
+                                hospitalName:'',
+                                hospitalPrice:'',
+                                tyhInpatientEntity:{
+                                    inpId:'',
+                                    inpName:''
+                                }
+                            }
+                        },
+                    },
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:'',
+                    },
+                }
+
+                this.regFrom={
+                    hosregNum:'',
+                    hosregDate:'',
+                    hosregZt:'',
+                    patientId:'',
+                    hosnotNum:'',
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:'',
+                    },
+                    tyhHosnotEntity:{
+                        hosnotNum:'',
+                        hosnotDate:'',
+                        hosnotPrice:'',
+                        hosnotCash:'',
+                        hosnotWar:'',
+                        hosnotZt:'',
+                        tyhHospitalEntity:{
+                            hospitalId:'',
+                            hospitalName:'',
+                            hospitalPrice:'',
+                            tyhInpatientEntity:{
+                                inpId:'',
+                                inpName:''
+                            }
+                        }
+                    },
+                }
+            },
+
+            chexiao(chuId,zhuId){
+                this.axios.get("http://localhost:8088/del-chunot",{params:{chuId:chuId,zhuId:zhuId}})
+                    .then((v) => {
+                        alert("撤销成功")
+                        this.initData()
+                    })
+            },
+
+            addchunot(){
+                this.chunotFrom.hosregNum=this.regFrom.hosregNum
+                this.chunotFrom.patientId=this.regFrom.tyhPatientEntity.patientId
+                this.axios.post("http://localhost:8088/add-chunot",this.chunotFrom)
+                    .then((v) => {
+                        alert("出院通知成功")
+                        this.initData()
+                        this.initData2()
+                        this.clearFrom()
+                    })
+            },
+
+            numpi(num){
+                this.axios.get("http://localhost:8088/find-xreg",{params:{num:num}})
+                    .then((v) => {
+                        this.regFrom = v.data
+                    })
+            },
+
+            initData2() {
+                this.axios.get("http://localhost:8088/find-chureg")
+                    .then((v) => {
+                        this.tableData2 = v.data;
+                    })
+            },
 
 
+            initData() {
+                this.axios.get("http://localhost:8088/find-chunot",{params:{cha:this.findmohu}})
+                    .then((v) => {
+                        this.tableData = v.data;
+                    })
+            },
 
-            // 初始页currentPage、初始每页数据数pagesize和数据data
-
+            handleSizeChange: function (size) {
+                this.pagesize = size;
+                console.log(this.pagesize)  //每页下拉显示数据
+            },
+            handleCurrentChange: function(currentPage){
+                this.currentPage = currentPage;
+                console.log(this.currentPage)  //点击第几页
+            },
 
 
             handleClose(done) {
@@ -173,6 +390,8 @@
             }
         },
         created() {
+            this.initData()
+            this.initData2()
         },
     }
 
@@ -198,6 +417,5 @@
     }
     .fy_div{
         margin-top:20px;
-        margin-left: 450px;
     }
 </style>
