@@ -38,7 +38,7 @@
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="chargePatientName"
+                        prop="patient.patientDataName"
                         label="病人姓名"
                         width="180">
                 </el-table-column>
@@ -63,7 +63,7 @@
                         <el-tooltip content="编辑" placement="top">
                             <el-button
                                     icon="el-icon-edit" size="mini"
-                                    @click="editEmp(scope.row)"></el-button>
+                                    @click="editCharge(scope.row)"></el-button>
                         </el-tooltip>
 
 
@@ -95,71 +95,76 @@
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
-            <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="charge" status-icon  ref="charge" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="门诊收费号" prop="eName">
-                            <el-input v-model="ruleForm.eName" :disabled="true"></el-input>
+                        <el-form-item label="门诊收费号" prop="chargeId">
+                            <el-input v-model="charge.chargeId" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
+<!--                    <el-col :span="10">-->
+<!--                        <el-form-item label="状态" prop="eSex">-->
+<!--                            <el-select v-model="value" disabled placeholder="请选择">-->
+<!--                                <el-option-->
+<!--                                        v-for="item in options"-->
+<!--                                        :key="item.value"-->
+<!--                                        :label="item.label"-->
+<!--                                        :value="item.value">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                    </el-col>-->
                     <el-col :span="10">
-                        <el-form-item label="状态" prop="eSex">
-                            <el-select v-model="value" disabled placeholder="请选择">
-                                <el-option
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="收费日期" prop="eSex">
+                        <el-form-item label="收费日期" >
                             <el-date-picker
-                                    v-model="value1"
+                                    v-model="charge.chargeTime"
                                     type="date"
                                     placeholder="选择日期">
                             </el-date-picker>
                         </el-form-item>
                     </el-col>
+<!--                    <el-col :span="10">-->
+<!--                        <el-form-item label="门诊号" prop="eSex">-->
+<!--                            <el-input v-model="chargeForm.eSex" :disabled="true"></el-input>-->
+<!--                        </el-form-item>-->
+<!--                    </el-col>-->
+<!--                    <el-col :span="10">-->
+<!--                        <el-form-item label="病人姓名" prop="patient.patientDataName">-->
+<!--                            <el-select v-model="chargeForm.patient.patientDataName" placeholder="请选择" value-key="patientDataId">-->
+<!--                                <el-option-->
+<!--                                        v-for="item in tableData"-->
+<!--                                        :key="item.patient.patientDataId"-->
+<!--                                        :label="item.patient.patientDataName"-->
+<!--                                        :value="item.patient.patientDataName">-->
+<!--                                </el-option>-->
+<!--                            </el-select>-->
+<!--                        </el-form-item>-->
+<!--                    </el-col>-->
                     <el-col :span="10">
-                        <el-form-item label="门诊号" prop="eSex">
-                            <el-input v-model="ruleForm.eSex" :disabled="true"></el-input>
+                        <el-form-item label="应收金额" prop="chargeMoney">
+                            <el-input v-model="charge.chargeMoney"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="处方号" prop="eName">
-                            <el-select v-model="value" placeholder="请选择">
-                                <el-option
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="病人姓名" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="应收金额" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="实收金额" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="应退金额" prop="eName">
-                            <el-input v-model="ruleForm.ePhone"></el-input>
-                        </el-form-item>
-                    </el-col>
+<!--                    <el-col :span="10">-->
+<!--                        <el-form-item label="实收金额" prop="eName">-->
+<!--                            <el-input v-model="chargeForm.ePhone"></el-input>-->
+<!--                        </el-form-item>-->
+<!--                    </el-col>-->
+<!--                    <el-col :span="10">-->
+<!--                        <el-form-item label="应退金额" prop="eName">-->
+<!--                            <el-input v-model="chargeForm.ePhone"></el-input>-->
+<!--                        </el-form-item>-->
+<!--                    </el-col>-->
+                  <el-col :span="10">
+                    <el-form-item label="医生" prop="dotor">
+                      <el-input v-model="charge.dotor"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="10">
+                    <el-form-item label="经办人" prop="chargeOperatorId">
+                      <el-input v-model="charge.chargeOperatorId"></el-input>
+                    </el-form-item>
+                  </el-col>
                 </el-row>
 
                 <el-row>
@@ -242,8 +247,8 @@
 
             <template #footer>
     <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button @click="ClearFrom">取 消</el-button>
+      <el-button type="primary" @click="saveCharge()">确 定</el-button>
     </span>
             </template>
         </el-dialog>
@@ -267,13 +272,20 @@
                 dialogVisible: false,
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
-                ruleForm:{
+                charge:{
                     chargeId:'',
                     chargeTime:'',
-                    chargePatientName:'',
                     chargeOperatorId:'',
                     dotor:'',
-                    chargeMoney:''
+                    chargeMoney:'',
+                    patient:{
+                      patientDataId:'',
+                      patientDataCard:'',
+                      patientDataName:'',
+                      patientDataPhone:'',
+                      patientDataSex:'',
+                      medicalCardNumber:''
+                  }
                 }
             }
         },
@@ -294,38 +306,51 @@
                 this.currentPage = currentPage;
                 console.log(this.currentPage)  //点击第几页
             },
-            editEmp(row){
+            editCharge(row){
                 this.dialogVisible=true;
-                this.ruleForm.eName=row.eName;
-                this.ruleForm.ePhone=row.ePhone;
-                this.ruleForm.eId=row.eId;
-                this.ruleForm.eSex=row.eSex;
+                this.charge={...row}
             },
 
             ClearFrom(){
-                this.ruleForm='';
+                this.charge={
+                    chargeId:'',
+                    chargeTime:'',
+                    chargePatientName:'',
+                    chargeOperatorId:'',
+                    dotor:'',
+                    chargeMoney:'',
+                    patient:{
+                      patientDataId:'',
+                      patientDataCard:'',
+                      patientDataName:'',
+                      patientDataPhone:'',
+                      patientDataSex:'',
+                      medicalCardNumber:''
+                    }
+                };
                 this.dialogVisible=false;
             },
-            addEmp(){
-                this.axios.post("http://localhost:8088/add-emp",this.ruleForm)
+            saveCharge(){
+              console.log(this.charge)
+                this.axios.post("http://localhost:8088/saveCharge",this.charge)
                     .then((v) => {
                         this.dialogVisible=false;
                         this.$message('操作成功！');
-                        this.initData(this.currPage, this.pageSize);
-
+                        this.initData(this.currentPage, this.pageSize);
+                        console.log(this.charge.chargeId)
                     })
             },
 
-            deleteEmp(id){
+            deleteCharge(id){
                 this.$confirm('你确定要删除该条信息吗？', '提示', {
                         confirmButtonText: '确定',
                         cancelButtonText: '取消',
                         type: 'warning'},
-                    this.axios.post("http://localhost:8088/del-emp",qs.stringify({eId: id
+                    this.axios.post("http://localhost:8088/delCharge",qs.stringify({eId: id
                     })))
                     .then((v) => {
                         this.$message('删除成功！');
-                        this.initData(this.currPage, this.pageSize);
+                        this.initData(this.currentPage, this.pageSize);
                     })
             },
 

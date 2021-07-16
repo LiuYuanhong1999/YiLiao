@@ -25,30 +25,30 @@
 
           stripe
           style="width: 100%"
-          :data="registrationTableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          :data="medicalCardTableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
       >
         <el-table-column
-            prop="registrationId"
+            prop="medicalCard.medicalCardNumber"
             label="诊疗卡号"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="room"
+            prop="patientDataName"
             label="卡号所属人"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="room"
+            prop="medicalCard.medicalCardBalance"
             label="余额"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="patient.patientDataName"
+            prop="medicalCard.medicalCardLock"
             label="状态"
             width="180">
         </el-table-column>
         <el-table-column
-            prop="ePhone"
+            prop="medicalCard.medicalCardRecords.medicalCardTime"
             label="充值时间"
             width="180">
         </el-table-column>
@@ -57,7 +57,7 @@
             <el-tooltip content="编辑" placement="top">
               <el-button
                   icon="el-icon-edit" size="mini"
-                  @click="editEmp(scope.row)"></el-button>
+                  @click="editTherapy(scope.row)"></el-button>
             </el-tooltip>
 
 
@@ -79,220 +79,63 @@
             :page-sizes="[5, 10, 20, 40]"
             :page-size="pagesize"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="registrationTableData.length">
+            :total="medicalCardTableData.length">
         </el-pagination>
       </div>
 
     </el-card>
     <el-dialog
-        title="新增挂号"
+        title="新增诊疗卡"
         v-model="dialogVisible"
         width="60%"
         :before-close="handleClose">
-      <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      <el-form :model="patientData" status-icon  ref="patientData" label-width="100px" class="demo-ruleForm">
         <el-row>
           <el-col :span="10">
-            <el-form-item label="门诊号" prop="eName">
-              <el-input v-model="ruleForm.eName" :disabled="true"></el-input>
+            <el-form-item label="诊疗卡号" prop="medicalCardNumber">
+              <el-input v-model="patientData.medicalCard.medicalCardNumber" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="状态" prop="eSex">
-              <el-select v-model="value" disabled placeholder="请选择">
+            <el-form-item label="状态" prop="medicalCardLock">
+              <el-select v-model="patientData.medicalCard.medicalCardLock" placeholder="请选择" value-key="medicalCardId">
                 <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
+                    v-for="item in medicalCardTableData"
+                    :key="item.medicalCard.medicalCardId"
+                    :label="item.medicalCard.medicalCardLock"
+                    :value="item.medicalCard.medicalCardLock">
                 </el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="挂号日期" prop="eSex">
-              <el-date-picker
-                  v-model="value1"
-                  type="date"
-                  placeholder="选择日期">
-              </el-date-picker>
+            <el-form-item label="病人姓名" prop="patientDataName">
+              <el-input v-model="patientData.patientDataName"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="流水号" prop="eSex">
-              <el-input v-model="ruleForm.eSex" :disabled="true"></el-input>
+            <el-form-item label="身份证号码" prop="patientDataCard">
+              <el-input v-model="patientData.patientDataCard"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="挂号类型" prop="eName">
-              <el-select v-model="value" placeholder="请选择">
-                <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-              </el-select>
+            <el-form-item label="病人电话" prop="patientDataPhone">
+              <el-input v-model="patientData.patientDataPhone"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="挂号时间" prop="eName">
-              <el-input v-model="ruleForm.ePhone" :disabled="true"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="病例号" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="科室" prop="eName">
-              <el-select v-model="value" placeholder="请选择">
-                <el-option
-                    v-for="item in options"
-                    :key="item.value"
-                    :label="item.label"
-                    :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="经办人" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="病人姓名" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="社会保障卡号" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
-            <el-form-item label="身份证号码" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
+            <el-form-item label="病人性别" prop="patientDataSex">
+              <el-input v-model="patientData.patientDataSex"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-row>
-          <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane label="收费项目" name="first">
-              <el-table
-                  :data="tableData"
-                  style="width: 100%">
-                <el-table-column
-                    prop="date"
-                    label="收费项目编号"
-                    width="180">
-                </el-table-column>
-                <el-table-column
-                    prop="name"
-                    label="收费项目名称"
-                    width="180">
-                </el-table-column>
-              </el-table>
-            </el-tab-pane>
-            <el-tab-pane label="收费记录" name="second">
-              <el-form-item label="收费项目" prop="eName">
-                <el-input v-model="ruleForm.ePhone"></el-input>
-              </el-form-item>
-              <el-form-item label="收挂号费" prop="eName">
-                <el-input v-model="ruleForm.ePhone"></el-input>
-              </el-form-item>
-              <el-form-item label="退挂号费" prop="eName">
-                <el-input v-model="ruleForm.ePhone"></el-input>
-              </el-form-item>
-              <el-button @click="dialogVisible = false">收挂号费</el-button>
-              <el-button @click="dialogVisible = false">退挂号费</el-button>
-              <el-button @click="dialogVisible = false">删除</el-button>
-            </el-tab-pane>
-            <el-tab-pane label="病人资料" name="third">
-              <el-form-item label="病人性别" prop="eName">
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="病人年龄" prop="eName">
-                <el-input v-model="ruleForm.ePhone"></el-input>
-              </el-form-item>
-              <el-form-item label="婚姻状况" prop="eName">
-                <el-select v-model="value" placeholder="请选择">
-                  <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-            </el-tab-pane>
-            <el-tab-pane label="历史门诊" name="fourth">
-              <el-form-item label="查询方式" prop="eName">
-                <el-select v-model="value" filterable placeholder="请选择">
-                  <el-option
-                      v-for="item in options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                  </el-option>
-                </el-select>
-              </el-form-item>
-              <el-form-item label="查询区间" prop="eName">
-                <el-date-picker
-                    v-model="value1"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期">
-                </el-date-picker>
-              </el-form-item>
-              <el-button @click="dialogVisible = false">查询</el-button>
-              <el-table
-                  :data="tableData"
-                  style="width: 100%">
-                <el-table-column
-                    prop="date"
-                    label="门诊号"
-                    width="180">
-                </el-table-column>
-                <el-table-column
-                    prop="name"
-                    label="流水号"
-                    width="180">
-                </el-table-column>
-                <el-table-column
-                    prop="date"
-                    label="挂号日期"
-                    width="180">
-                </el-table-column>
-                <el-table-column
-                    prop="name"
-                    label="挂号类型"
-                    width="180">
-                </el-table-column>
-                <el-table-column
-                    prop="date"
-                    label="科室">
-                </el-table-column>
-              </el-table>
-            </el-tab-pane>
-          </el-tabs>
-        </el-row>
       </el-form>
 
       <template #footer>
     <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button @click="ClearFrom">取 消</el-button>
+      <el-button type="primary" @click="addTherapy">确 定</el-button>
     </span>
       </template>
     </el-dialog>
@@ -312,41 +155,30 @@ export default {
   data() {
     return {
       value1:'',
-      registrationTableData:[],
+      medicalCardTableData:[],
       dialogVisible: false,
       currentPage:1, //初始页
       pagesize:10,    //    每页的数据
 
-      //挂号对象
-      registration:{
-        registrationId:'',
-        room:'',
-        doctot:'',
-        registrationTime:'',
-        registrationFee:'',
-        patient:{
-          patientDataId:'',
-          patientDataCard:'',
-          patientDataName:'',
-          patientDataPhone:'',
-          patientDataSex:'',
-          medicalCardNumber:''
+      //病人及诊疗卡号
+      patientData:{
+        patientDataId:'',
+        patientDataCard:'',
+        patientDataName:'',
+        patientDataPhone:'',
+        patientDataSex:'',
+        medicalCard:{
+          medicalCardId:'',
+          medicalCardNumber:'',
+          medicalCardPassword:'',
+          medicalCardBalance:'',
+          medicalCardLock:'',
+          medicalCardRecords:{
+            medicalCardRecordId:'',
+            medicalCardTime:''
+          }
         }
       },
-      ruleForm:{
-        eId:'',
-        eName:'',
-        eSex:'',
-        ePhone:'',
-        eDate:''
-      },
-      options: [{
-        value: '选项1',
-        label: '普通'
-      }, {
-        value: '选项2',
-        label: '急诊'
-      }],
       value: '',
       activeName: 'second'
     }
@@ -363,9 +195,11 @@ export default {
     // },
 
     initData(){
-      this.axios.get("http://localhost:8088/registration")
+      this.axios.get("http://localhost:8088/medicalCard")
           .then((v) => {
-            this.registrationTableData = v.data;
+            this.medicalCardTableData = v.data;
+            this.patientData.medicalCard.medicalCardNumber= 'ZL'+ this.getProjectNum()+ Math.floor(Math.random() * 10000);
+            console.log(v.data);
           })
     },
 
@@ -378,24 +212,38 @@ export default {
       this.currentPage = currentPage;
       console.log(this.currentPage)  //点击第几页
     },
-    editEmp(row){
+    editTherapy(row){
       this.dialogVisible=true;
-      this.ruleForm.eName=row.eName;
-      this.ruleForm.ePhone=row.ePhone;
-      this.ruleForm.eId=row.eId;
-      this.ruleForm.eSex=row.eSex;
+      this.patientData={...row}
     },
 
     ClearFrom(){
-      this.ruleForm='';
+      this.patientData={
+            patientDataId:'',
+            patientDataCard:'',
+            patientDataName:'',
+            patientDataPhone:'',
+            patientDataSex:'',
+            medicalCard:{
+              medicalCardId:'',
+              medicalCardNumber:'',
+              medicalCardPassword:'',
+              medicalCardBalance:'',
+              medicalCardLock:'',
+              medicalCardRecords:{
+                medicalCardRecordId:'',
+                medicalCardTime:''
+              }
+            }
+      };
       this.dialogVisible=false;
     },
-    addEmp(){
-      this.axios.post("http://localhost:8088/add-emp",this.ruleForm)
+    addTherapy(){
+      this.axios.post("http://localhost:8088/",this.patientData)
           .then((v) => {
             this.dialogVisible=false;
             this.$message('操作成功！');
-            this.initData(this.currPage, this.pageSize);
+            this.initData(this.currentPage, this.pageSize);
 
           })
     },
@@ -425,7 +273,26 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event);
-    }
+    },
+    // 获取当前日期的方法
+    getProjectNum () {
+      const projectTime = new Date() // 当前中国标准时间
+      const Year = projectTime.getFullYear() // 获取当前年份 支持IE和火狐浏览器.
+      const Month = projectTime.getMonth() + 1 // 获取中国区月份
+      const Day = projectTime.getDate() // 获取几号
+      var CurrentDate = Year
+      if (Month >= 10) { // 判断月份和几号是否大于10或者小于10
+        CurrentDate += Month
+      } else {
+        CurrentDate += '0' + Month
+      }
+      if (Day >= 10) {
+        CurrentDate += Day
+      } else {
+        CurrentDate += '0' + Day
+      }
+      return CurrentDate
+    },
   },
   created() {
     this.initData();
