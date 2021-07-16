@@ -27,63 +27,47 @@
 
 
       <el-table
-
-
           :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           border stripe style="width: 100%;margin-top: 10px"
           :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"
           :cell-style="{'text-align':'center'}"
       >
         <el-table-column
-            prop="eId"
+            prop="deskId"
             label="编号"
         >
         </el-table-column>
 
         <el-table-column
-            prop="eName"
-            label="体检人"
+            prop="deskName"
+            label="科室名称"
         >
         </el-table-column>
 
         <el-table-column
-            prop="eName"
-            label="类别"
+            prop="deskTime"
+            label="科室成立时间"
         >
         </el-table-column>
 
-        <el-table-column
-            prop="eDate"
-            label="规格"
-        >
-        </el-table-column>
+        <el-table-column label="操作"  align="center">
 
-        <el-table-column
-            prop="eDate"
-            label="负责院"
-        >
-        </el-table-column>
+          <template  #default="scope">
 
-        <el-table-column
-            prop="eDate"
-            label="单价（元）"
-        >
-        </el-table-column>
-
-        <el-table-column
-            prop="eName"
-            label="执行人"
-        >
-        </el-table-column>
-
-        <el-table-column label="操作" >
-          <template #default="scope">
-            <el-tooltip content="查看" placement="top">
+            <el-tooltip content="编辑" placement="top">
               <el-button
-                  icon="el-icon-view" size="mini"
-                  @click="editEmp(scope.row)"></el-button>
+                  icon="el-icon-scissors" size="mini"
+                  @click="updateDesk(scope.row),dialogVisible=true">编辑</el-button>
             </el-tooltip>
+
+            <el-tooltip content="删除" placement="top">
+              <el-button
+                  icon="el-icon-close" size="mini"
+                  @click="delDesk(scope.row)">删除</el-button>
+            </el-tooltip>
+
           </template>
+
         </el-table-column>
 
       </el-table>
@@ -106,39 +90,37 @@
 
     <!--   新增按钮表单   -->
     <el-dialog
+        @close="clearDesk()"
         title="提示"
         v-model="dialogVisible"
         width="60%"
         :before-close="handleClose">
-      <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      <el-form :model="desk" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-row>
           <el-col :span="10">
-            <el-form-item label="类别名字" prop="eName">
-              <el-input v-model="ruleForm.eName"></el-input>
+            <el-form-item label="科室名字" prop="eName">
+              <el-input v-model="desk.deskName"></el-input>
 
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="规格" prop="eSex">
-              <el-input v-model="ruleForm.eSex"></el-input>
+            <el-form-item label="科室成立时间">
+              <el-date-picker
+                  format="YYYY-MM-DD HH:mm:ss"
+                  v-model="desk.deskTime"
+                  type="datetime"
+                  placeholder="选择日期时间" :disabled="is">
+              </el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
 
-        <el-row>
-          <el-col :span="10">
-            <el-form-item label="负责院" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
-
-            </el-form-item>
-          </el-col>
-        </el-row>
       </el-form>
 
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button @click="clearDesk(),dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDesk(),dialogVisible = false">确 定</el-button>
       </span>
       </template>
     </el-dialog>
@@ -161,18 +143,17 @@ export default {
       currentPage: 1, //初始页
       pagesize: 10,    //    每页的数据
       dialogVisible: false,
-      ruleForm:{
-        eId:'',
-        eName:'',
-        eSex:'',
-        ePhone:'',
-        eDate:''
-      }
+      is:false,
+      desk:{
+        deskId:'',
+        deskName:'',
+        deskTime:''
+      },
     }
   },
   methods: {
     initData() {
-      this.axios.get("http://localhost:8088/emp")
+      this.axios.get("http://localhost:8088/selDesk")
           .then((v) => {
             this.tableData = v.data;
           })
@@ -195,7 +176,44 @@ export default {
             done();
           })
           .catch(_ => {});
-    }
+    },
+
+    // 新增所有科室
+    addDesk(){
+      this.axios.post("http://localhost:8088/addDesk",this.desk)
+          .then((v)=>{
+            this.initData()
+          })
+    },
+
+    // 修改科室
+    updateDesk(desk){
+      this.is=true;
+      this.desk.deskId = desk.deskId
+      this.desk.deskName = desk.deskName
+      this.desk.deskTime = desk.deskTime
+    },
+
+    // 根据id删除科室
+    delDesk(row){
+      this.desk.deskId = row.deskId
+      this.axios.post("http://localhost:8088/delDesk",this.desk)
+          .then((v)=>{
+            this.initData()
+          })
+    },
+
+
+
+    // 清空表单
+    clearDesk(){
+      this.desk = {
+        deskId:'',
+        deskName:'',
+        deskTime:''
+      }
+    },
+
 
   },
   created() {

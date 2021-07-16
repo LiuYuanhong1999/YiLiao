@@ -282,7 +282,7 @@ export default {
 
     // 新增体检记录
     addRecord(){
-      console.log(this.record)
+      // console.log(this.record)
       this.record.phId=this.record.yxjPhysical.phId
       this.axios.post("http://localhost:8088/addRecord",this.record)
           .then((v)=>{
