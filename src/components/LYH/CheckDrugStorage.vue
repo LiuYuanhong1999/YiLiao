@@ -3,7 +3,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>药库</el-breadcrumb-item>
-      <el-breadcrumb-item>药品库存</el-breadcrumb-item>
+      <el-breadcrumb-item>药品库存详情</el-breadcrumb-item>
     </el-breadcrumb>
 
 

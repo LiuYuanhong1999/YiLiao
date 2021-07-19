@@ -183,6 +183,9 @@ export default {
             .then((v) => {
 
               this.$message("修改成功");
+              this.$router.push({
+                path: '/CheckDrugStorage'
+              })
             })
       }
     ,

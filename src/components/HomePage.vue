@@ -45,6 +45,7 @@
               <router-link to="/charge"> <el-menu-item index="1-3">门诊收费</el-menu-item></router-link>
               <router-link to="/lock"><el-menu-item index="1-4">门诊锁定</el-menu-item></router-link>
               <router-link to="/relieve"><el-menu-item index="1-5">门诊解锁</el-menu-item></router-link>
+              <router-link to="/therapy"><el-menu-item index="1-6">门诊解锁</el-menu-item></router-link>
             </el-menu-item-group>
           </el-submenu>
 
@@ -70,6 +71,8 @@
             <router-link to="/yjtf"><el-menu-item index="3-7">押金退费</el-menu-item></router-link>
             <router-link to="/cyjl"><el-menu-item index="3-8">出院记录</el-menu-item></router-link>
             <router-link to="/zysd"><el-menu-item index="3-9">住院锁定与解锁</el-menu-item></router-link>
+
+
           </el-submenu>
 
 <!--          <el-menu-item index="4" >-->

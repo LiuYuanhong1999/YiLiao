@@ -18,7 +18,15 @@
 
     <el-button  icon="el-icon-search" type="primary" @click="findByName(ruleFrom.pharmacyName)"></el-button>
   </el-row>
-
+  <!-- 表格工具按钮开始 -->
+  <el-row :gutter="10" style="margin-bottom: 8px;margin-top: 10px">
+    <el-col :span="1.5">
+      <el-button type="primary" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">提交申请</el-button>
+    </el-col>
+    <el-col :span="1.5">
+      <el-button type="success" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">申请记录</el-button>
+    </el-col>
+  </el-row>
 
   <el-table
 
@@ -27,39 +35,50 @@
       border stripe style="width: 100%;margin-top: 10px"
       :header-cell-style="{'text-align':'center'}"
       :cell-style="{'text-align':'center'}"
+      @selection-change="selectionLineChangeHandle2"
   >
+
+    <el-table-column width="50" type="selection"></el-table-column>
+
     <el-table-column
-        prop="pharmacyId"
-        label="编号"
-        width="80">
-    </el-table-column>
-    <el-table-column
-        prop="pharmacyState"
+        prop="lyhDrugEntity.drugState"
         label="类别"
         width="80">
+
+      <template #default="scope">
+        <template v-if="scope.row.lyhDrugEntity.drugState =='1'">
+          中药
+        </template>
+
+        <template v-if="scope.row.lyhDrugEntity.drugState =='2'">
+          西药
+        </template>
+      </template>
+
+
     </el-table-column>
     <el-table-column
-        prop="pharmacyName"
+        prop="lyhDrugEntity.drugName"
         label="药品名称"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="pharmacySpecifications"
+        prop="lyhDrugEntity.drugGuige"
         label="规格"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="pharmacyDosage"
+        prop="lyhDrugEntity.drugJixin"
         label="剂型"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="pharmacyDate"
+        prop="lyhDrugEntity.drugDate"
         label="有效期至"
         width="120">
     </el-table-column>
     <el-table-column
-        prop="pharmacyManufacturer"
+        prop="lyhDrugEntity.lyhSupplierEntity.supplierName"
         label="厂家">
     </el-table-column>
     <el-table-column
@@ -68,7 +87,7 @@
         width="120">
     </el-table-column>
     <el-table-column
-        prop="pharmacyPrice"
+        prop="lyhDrugEntity.drugPrice"
         label="单价（元）"
         width="120">
     </el-table-column>
@@ -99,29 +118,6 @@
           </el-form-item>
         </el-col>
 
-<!--        <el-col :span="8">-->
-<!--          <el-form-item label="申请调拨数量:">-->
-<!--            <el-input-number></el-input-number>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-
-<!--        <el-col :span="8">-->
-<!--          <el-form-item label="申请调拨数量:">-->
-<!--            <el-input-number></el-input-number>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-
-<!--        <el-col :span="8">-->
-<!--          <el-form-item label="申请调拨数量:">-->
-<!--            <el-input-number></el-input-number>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-<!--        <el-col :span="8">-->
-<!--          <el-form-item label="申请调拨数量:">-->
-<!--            <el-input-number></el-input-number>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-
       </el-row>
 
     </el-form>
@@ -148,6 +144,35 @@
     </el-pagination>
   </div>
 
+  <el-dialog
+      v-model="centerDialogVisible"
+      width="40%"
+      center>
+    <div style="margin-top: -10%"><span style="color:black;font-size:16px;font-weight:bold  ">产品参数</span></div>
+    <div style="margin-top: 40px">
+      <el-form :model="ruleFrom">
+        <ul class="T1">
+          <li><span style="color: gray;font-weight:bold">产品名称:</span><span style="margin-left: 40px"></span>{{ruleFrom.lyhDrugEntity.drugName}}</li>
+          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">产品名称:</span><span style="margin-left: 40px"></span>{{ruleFrom.lyhDrugEntity.drugName}}</li>
+          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">生产日期:</span><span style="margin-left: 40px"></span>{{ruleFrom.lyhDrugEntity.drugDate}}</li>
+          <li  style="margin-top: 10px"><span style="color: gray;font-weight:bold">剂型:</span><span style="margin-left:68px"></span>{{ruleFrom.lyhDrugEntity.drugJixin}}</li>
+          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">规格:</span><span style="margin-left: 68px"></span>{{ruleFrom.lyhDrugEntity.drugGuige}}</li>
+<!--          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">药品类型:</span><span style="margin-left: 40px"></span>{{ruleFrom.lyhDrugEntity.drugName}}</li>-->
+          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">供应商:</span><span style="margin-left: 54px"></span>{{ruleFrom.lyhDrugEntity.lyhSupplierEntity.supplierName}}</li>
+        </ul>
+      </el-form>
+
+
+    </div>
+
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="centerDialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
+    </span>
+    </template>
+
+  </el-dialog>
 </el-card>
 </div>
 
@@ -159,20 +184,58 @@ export default {
 name: "drugInfosC",
   data(){
       return{
+        centerDialogVisible:false,
         tableData:[],
         dialogVisible: false,
+        dialogVisible2: false,
         currentPage:1, //初始页
         pagesize:10,    //    每页的数据
 
         ruleFrom:{
           pharmacyName:'',
-        },
+          lyhDrugEntity:{
+            drugName:'',
+            drugJixin:'',
+            drugGuige:'',
+            drugDate:'',
+            lyhSupplierEntity:{
+              supplierName:'',
+            },},},
+        drugInfosC:[],
       }
   },
   methods:{
 
+
+    //大表格
+    selectionLineChangeHandle2 (val) {
+      this.drugInfosC = val;
+      console.log(this.drugInfosC);
+      for(var i = 0; i< this.drugInfosC.length; i++){
+        console.log('id:'+this.drugInfosC[i].drugId)
+        console.log('number:'+this.drugInfosC[i])
+        console.log('编号:'+this.drugInfosC[i].drugId)
+        console.log('数量:'+this.drugInfosC[i])
+      }
+    },
+
+
+
+
+
+
+
+
+
+
     editDrug(row){
-        this.dialogVisible=true;
+        // this.dialogVisible=true;
+      this.ruleFrom.lyhDrugEntity.drugName=row.lyhDrugEntity.drugName;
+      this.ruleFrom.lyhDrugEntity.drugGuige=row.lyhDrugEntity.drugGuige;
+      this.ruleFrom.lyhDrugEntity.drugJixin=row.lyhDrugEntity.drugJixin;
+      this.ruleFrom.lyhDrugEntity.lyhSupplierEntity.supplierName=row.lyhDrugEntity.lyhSupplierEntity.supplierName;
+      this.ruleFrom.lyhDrugEntity.drugDate=row.lyhDrugEntity.drugDate;
+        this.centerDialogVisible=true;
       },
 
     initData(){
@@ -226,5 +289,9 @@ a {
 .fy_div{
   margin-top:20px;
   margin-left: -200px;
+}
+
+.T1{
+  list-style-type: none;
 }
 </style>

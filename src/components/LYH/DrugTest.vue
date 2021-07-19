@@ -6,19 +6,22 @@
       <!--基本输入框-->
       <el-col :span="5">
         <el-form-item label="采购编号" prop="name1">
+<!--          {{detailsDate[0].procurementId}}-->
           {{ruleFrom.procurementId}}
         </el-form-item>
       </el-col>
       <!--基本单选框-->
       <el-col :span="5">
         <el-form-item label="创建人：" prop="name2">
-          {{ruleFrom.userName}}
+<!--          {{detailsDate[0].detailsName}}-->
+          {{ruleFrom.detailsName}}
         </el-form-item>
       </el-col>
       <!--基本多选框-->
       <el-col :span="8">
         <el-form-item label="创建日期" placeholder="" prop="subjectId">
-          {{ruleFrom.procurementFirstdate}}
+<!--          {{detailsDate[0].detailsDate}}-->
+          {{ruleFrom.detailsDate}}
         </el-form-item>
       </el-col>
     </el-row>
@@ -37,11 +40,11 @@
       <el-col :span="24">
         <el-form-item>
           <el-table
-              :data="ruleFrom.lyhProcurementDetailsEntities"
+              :data="detailsDate"
               border
               style="width: 100%">
             <el-table-column
-                prop="drugEntity.drugName"
+                prop="lyhDrugEntity.drugName"
                 label="药品名"
                 width="180">
             </el-table-column>
@@ -51,16 +54,16 @@
             </el-table-column>
 
             <el-table-column
-                prop="drugEntity.lyhSupplierEntity.supplierName"
+                prop="lyhDrugEntity.lyhSupplierEntity.supplierName"
                 label="供应商">
             </el-table-column>
             <el-table-column
-                prop="drugEntity.drugDate"
+                prop="lyhDrugEntity.drugDate"
                 label="生产日期">
             </el-table-column>
 
             <el-table-column
-                prop="drugEntity.drugPrice"
+                prop="lyhDrugEntity.drugPrice"
                 label="单价/元">
             </el-table-column>
 
@@ -69,7 +72,7 @@
                 label="总价格/元">
               <template #default="scope">
 
-                {{scope.row.numbers * scope.row.drugEntity.drugPrice}}
+                {{scope.row.numbers * scope.row.lyhDrugEntity.drugPrice}}
 
 
               </template>
@@ -78,7 +81,7 @@
 
             </el-table-column>
             <el-table-column
-                prop="procurementId"
+                prop="lyhProcurementDetailsEntity.procurementId"
                 label="采购编号">
             </el-table-column>
 
@@ -86,7 +89,7 @@
         </el-form-item>
       </el-col>
     </el-row>
-{{detailsDate}}2121212121
+
   </el-form>
 
 </template>
