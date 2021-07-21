@@ -21,7 +21,7 @@
   <!-- 表格工具按钮开始 -->
   <el-row :gutter="10" style="margin-bottom: 8px;margin-top: 10px">
     <el-col :span="1.5">
-      <el-button type="primary" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">提交申请</el-button>
+      <el-button type="primary" icon="el-icon-plus" size="mini" @click="insertAllot() ">提交申请</el-button>
     </el-col>
     <el-col :span="1.5">
       <el-button type="success" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">申请记录</el-button>
@@ -104,32 +104,6 @@
       </template>
     </el-table-column>
   </el-table>
-  <el-dialog
-      title="提示"
-      v-model="dialogVisible"
-      width="60%"
-      :before-close="handleClose">
-    <el-form>
-      <el-row >
-
-        <el-col :span="8">
-          <el-form-item label="申请调拨数量:">
-            <el-input-number></el-input-number>
-          </el-form-item>
-        </el-col>
-
-      </el-row>
-
-    </el-form>
-
-
-    <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-    </span>
-    </template>
-  </el-dialog>
   <br>
   <!--分页-->
   <div class="fy_div">
@@ -173,6 +147,91 @@
     </template>
 
   </el-dialog>
+
+
+
+
+  <el-dialog
+
+      v-model="dialogVisible"
+      width="80%"
+      :before-close="handleClose">
+    <div style="margin-top: -30px">—————————————————————<span style="color:red">申请药品调拨</span>———————————————————————</div>
+    <div style="margin-top: 10px">
+      <el-form :model="ruleFrom" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+
+        <el-row >
+
+          <el-col :span="10">
+            <el-form-item label="调拨编号:">
+              <el-input v-model="ruleFrom.allotId" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+
+        </el-row>
+
+
+
+
+        <el-table
+            :data="gridData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            style="width: 100%;"
+            max-height="200"
+            :cell-style="{'text-align':'center'}"
+            :header-cell-style="{background:'#D6E9FC',color:'#606266','text-align':'center'}"
+            @selection-change="selectionLineChangeHandle3"
+        >
+
+          <el-table-column width="50" type="selection"></el-table-column>
+          <el-table-column property="lyhDrugEntity.drugName" label="药品名" width="150"></el-table-column>
+          <el-table-column property="lyhDrugEntity.drugJixin" label="单价" width="200"></el-table-column>
+          <el-table-column property="lyhDrugEntity.drugJixin" label="生产日期"></el-table-column>
+
+          <el-table-column property="" label="数量">
+            <template #default="scope">
+              <el-input-number v-model.number="scope.row.numbers"></el-input-number>
+            </template>
+          </el-table-column>
+        </el-table>
+
+        <!--分页-->
+        <div class="fy_div">
+          <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[5, 10, 20, 40]"
+              :page-size="pagesize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="gridData.length">
+          </el-pagination>
+        </div>
+      </el-form>
+
+
+
+    </div>
+    <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible=false">取 消</el-button>
+      <el-button type="primary" @click="insert()">确 定</el-button>
+    </span>
+    </template>
+
+  </el-dialog>
+  <!-- 分页控件结束 -->
+
+
+
+
+
+
+
+
+
+
+
+
 </el-card>
 </div>
 
@@ -190,18 +249,14 @@ name: "drugInfosC",
         dialogVisible2: false,
         currentPage:1, //初始页
         pagesize:10,    //    每页的数据
-
+        gridData:[],
         ruleFrom:{
-          pharmacyName:'',
-          lyhDrugEntity:{
-            drugName:'',
-            drugJixin:'',
-            drugGuige:'',
-            drugDate:'',
-            lyhSupplierEntity:{
-              supplierName:'',
-            },},},
+        allotId:'',
+          lyhPharmacyDetailsEntities:[],
+         },
         drugInfosC:[],
+
+        gridDataDetails:[],
       }
   },
   methods:{
@@ -219,7 +274,17 @@ name: "drugInfosC",
       }
     },
 
-
+    //大表格
+    selectionLineChangeHandle3 (val) {
+      this.gridDataDetails = val;
+      console.log(this.gridDataDetails);
+      for(var i = 0; i< this.gridDataDetails.length; i++){
+        console.log('id:'+this.gridDataDetails[i].drugId)
+        console.log('number:'+this.gridDataDetails[i])
+        console.log('编号:'+this.gridDataDetails[i].drugId)
+        console.log('数量:'+this.gridDataDetails[i])
+      }
+    },
 
 
 
@@ -238,10 +303,27 @@ name: "drugInfosC",
         this.centerDialogVisible=true;
       },
 
+
+    insertAllot(){
+
+      this.gridData=this.drugInfosC;
+        this.dialogVisible=true;
+
+    },
+insert(){
+      this.ruleFrom.lyhPharmacyDetailsEntities=this.gridDataDetails;
+  this.axios.post("http://localhost:8088/add-allot",this.ruleFrom)
+      .then((v) => {
+        console.log(this.drugInfosC)
+      })
+},
+
+
     initData(){
       this.axios.get("http://localhost:8088/find-pharmacy")
           .then((v) => {
             this.tableData = v.data;
+            this.ruleFrom.allotId=this.getProjectNum()+ Math.floor(Math.random() * 10000)
           })
     },
 
@@ -262,6 +344,28 @@ name: "drugInfosC",
     handleCurrentChange: function(currentPage){
       this.currentPage = currentPage;
       console.log(this.currentPage)  //点击第几页
+    },
+
+
+
+    // 获取当前日期的方法
+    getProjectNum () {
+      const projectTime = new Date() // 当前中国标准时间
+      const Year = projectTime.getFullYear() // 获取当前年份 支持IE和火狐浏览器.
+      const Month = projectTime.getMonth() + 1 // 获取中国区月份
+      const Day = projectTime.getDate() // 获取几号
+      var CurrentDate = Year
+      if (Month >= 10) { // 判断月份和几号是否大于10或者小于10
+        CurrentDate += Month
+      } else {
+        CurrentDate += '0' + Month
+      }
+      if (Day >= 10) {
+        CurrentDate += Day
+      } else {
+        CurrentDate += '0' + Day
+      }
+      return CurrentDate
     },
   },
   created() {

@@ -55,7 +55,7 @@
     <el-table  border :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                @selection-change="selectionLineChangeHandle">
       <el-table-column type="selection" width="55" align="center" />
-<!--      <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" />-->
+      <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" />
 
           <el-table-column label="供应商" width="200" align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"  >
             <template  #default="scope">

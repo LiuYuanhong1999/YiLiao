@@ -1,481 +1,232 @@
 <template>
-  <div class="drugApplyC">
+  <div id="xl">
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>药房</el-breadcrumb-item>
+      <el-breadcrumb-item>药品申请调拨记录</el-breadcrumb-item>
+    </el-breadcrumb>
+
+
+
+
     <el-card>
-<el-form label-width="120px" :model="applytable" ref="applyform" class="apply-form">
 
-  <h4 class="applytable">药物补给申请表</h4>
-  <p class="radio-p">
-    <el-radio label="1" v-model="applytable.checked">中药</el-radio>
-    <el-radio label="2" disabled>西药</el-radio>
-  </p>
-  <el-form-item label="药品名称" prop="drugname">
-    <el-input v-model="applytable.drugname"></el-input>
-  </el-form-item>
-  <el-form-item label="OTC标志" prop="otc_value">
-    <el-select v-model="applytable.otc_value" placeholder="请选择">
-      <el-option
-          v-for="item in OTC"
-          :key="item.otc_value"
-          :label="item.label"
-          :value="item.otc_value">
-      </el-option>
-    </el-select>
-  </el-form-item>
-  <el-form-item label="剂型" prop="form_value">
-    <el-select v-model="applytable.form_value" placeholder="请选择">
-      <el-option
-          v-for="f in form"
-          :key="f.form_value"
-          :label="f.label"
-          :value="f.form_value">
-      </el-option>
-    </el-select>
-  </el-form-item>
-  <el-form-item label="药品规格" prop="drugform">
-    <el-input v-model="applytable.drugform"></el-input>
-  </el-form-item>
-  <el-form-item label="数量（件）" prop="drugquantity">
-    <el-input v-model="applytable.drugquantity"></el-input>
-  </el-form-item>
-  <el-form-item label="申请人" prop="applyman">
-    <el-input v-model="applytable.applyman"></el-input>
-  </el-form-item>
-  <el-form-item label="申请科室" prop="applyoffices">
-    <el-input v-model="applytable.applyoffices"></el-input>
-  </el-form-item>
-  <el-form-item label="申请时间" prop="date">
-    <el-date-picker v-model="applytable.date" type="date" placeholder="选择日期"></el-date-picker>
-  </el-form-item>
-  <p  class="submit">
-    <el-button type="reset" @click="resetApply">重置申请</el-button>
-    <el-button type="submit" @click="submitApply">提交申请</el-button>
-  </p>
-</el-form>
+      <el-row>
+        <el-col :span="4">
+          <el-input placeholder="请输入药品名" v-model="ruleFrom.pharmacyName"  ></el-input>
+        </el-col>
 
-    <h4 class="tips">以下药品库存不足10件了，建议申请补给！</h4>
-    <el-table :data="insufficientTable" border class="insufficientTable">
-      <el-table-column prop="drugname" label="药品名称"></el-table-column>
-      <el-table-column prop="type" label="类别"></el-table-column>
-      <el-table-column prop="quantity" label="库存"></el-table-column>
-    </el-table>
+        <el-button  icon="el-icon-search" type="primary" @click="findByName(ruleFrom.pharmacyName)"></el-button>
+      </el-row>
+
+      <el-table
 
 
-</el-card>
+          :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+          border stripe style="width: 100%;margin-top: 10px"
+          :header-cell-style="{'text-align':'center'}"
+          :cell-style="{'text-align':'center'}"
+      >
 
+
+        <el-table-column
+            prop="lyhPharmacyEntity.lyhDrugEntity.drugState"
+            label="类别"
+            width="80">
+
+          <template #default="scope">
+            <template v-if="scope.row.lyhPharmacyEntity.lyhDrugEntity.drugState =='1'">
+              中药
+            </template>
+
+            <template v-if="scope.row.lyhPharmacyEntity.lyhDrugEntity.drugState =='2'">
+              西药
+            </template>
+          </template>
+
+
+        </el-table-column>
+        <el-table-column
+            prop="lyhPharmacyEntity.lyhDrugEntity.drugName"
+            label="药品名称"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="lyhPharmacyEntity.lyhDrugEntity.drugGuige"
+            label="规格"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="lyhPharmacyEntity.lyhDrugEntity.drugJixin"
+            label="剂型"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="lyhPharmacyEntity.lyhDrugEntity.drugDate"
+            label="有效期至"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="lyhPharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName"
+            label="厂家">
+        </el-table-column>
+        <el-table-column
+            prop="numbers"
+            label="申请调拨数量"
+            width="120">
+        </el-table-column>
+        <el-table-column
+            prop="lyhPharmacyEntity.lyhDrugEntity.drugPrice"
+            label="单价（元）"
+            width="120">
+        </el-table-column>
+
+        <el-table-column  label="操作" width="80px">
+          <template  #default="scope">
+            <el-tooltip content="申请调拨" placement="top">
+              <el-button
+                  icon="el-icon-view" size="mini"
+                  @click="editDrug(scope.row)"></el-button>
+            </el-tooltip>
+
+
+          </template>
+        </el-table-column>
+      </el-table>
+      <br>
+      <!--分页-->
+      <div class="fy_div">
+        <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 20, 40]"
+            :page-size="pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="tableData.length">
+        </el-pagination>
+      </div>
+
+    </el-card>
   </div>
 
 
 </template>
+
 <script>
+export default {
+  name: "drugInfosC",
+  data(){
+    return{
+      centerDialogVisible:false,
+      tableData:[],
+      dialogVisible: false,
+      dialogVisible2: false,
+      currentPage:1, //初始页
+      pagesize:10,    //    每页的数据
+      gridData:[],
+      ruleFrom:{
+        allotId:'',
+        lyhPharmacyDetailsEntities:[],
+      },
+      drugInfosC:[],
+    }
+  },
+  methods:{
 
-  export default {
-      name: "drugApplyC",
-          data(){
-            return{
 
-              tableData:[],
-              OTC: [
-                {
-                  otc_value: '选项1',
-                  label: '处方药'
-                },
-                {
-                  otc_value: '选项2',
-                  label: '非处方药'
-                }
-              ],
-              // 规格
-              form: [
-                {
-                  form_value: '选项1',
-                  label: '片剂'
-                },
-                {
-                  form_value: '选项2',
-                  label: '胶囊剂'
-                },
-                {
-                  form_value: '选项3',
-                  label: '丸剂'
-                },
-                {
-                  form_value: '选项4',
-                  label: '散剂'
-                },
-                {
-                  form_value: '选项5',
-                  label: '颗粒剂'
-                },
-                {
-                  form_value: '选项6',
-                  label: '外用膏剂'
-                },
-                {
-                  form_value: '选项7',
-                  label: '液体剂'
-                },
-                {
-                  form_value: '选项8',
-                  label: '气体剂'
-                },
-                {
-                  form_value: '选项9',
-                  label: '注射液剂'
-                }
-              ],
-
-              // 保存申请药物补给表的数据
-              applytable: {
-                drugname: '',
-                drugform: '',
-                drugquantity: '',
-                applyoffices: '',
-                applyman: '',
-                checked: '1',
-                otc_value: '',
-                form_value: '',
-                date: ''
-              },
-
-              // rules: {
-              //   drugname: [
-              //     {validator: validatevalue, trigger: 'blur'}
-              //   ],
-              //   drugform: [
-              //     {validator: validatevalue, trigger: 'blur'}
-              //   ],
-              //   drugquantity: [
-              //     {validator: checkquantity, trigger: 'blur'}
-              //   ],
-              //   applyoffices: [
-              //     {validator: validatevalue, trigger: 'blur'}
-              //   ],
-              //   applyman: [
-              //     {validator: validatevalue, trigger: 'blur'}
-              //   ],
-              //   otc_value: [
-              //     {validator: validatevalue, trigger: 'change'}
-              //   ],
-              //   form_value: [
-              //     {validator: validatevalue, trigger: 'change'}
-              //   ],
-              //   date: [
-              //     {validator: validatevalue, trigger: 'blur'}
-              //   ]
-              // },
-              // 药物库存不足表格
-              insufficientTable: [],
+    //大表格
+    selectionLineChangeHandle2 (val) {
+      this.drugInfosC = val;
+      console.log(this.drugInfosC);
+      for(var i = 0; i< this.drugInfosC.length; i++){
+        console.log('id:'+this.drugInfosC[i].drugId)
+        console.log('number:'+this.drugInfosC[i])
+        console.log('编号:'+this.drugInfosC[i].drugId)
+        console.log('数量:'+this.drugInfosC[i])
       }
     },
-    methods:{
 
-    }
-  }
+
+
+
+    initData(){
+      this.axios.get("http://localhost:8088/find-pharmacyDetails")
+          .then((v) => {
+            this.tableData = v.data;
+            this.ruleFrom.allotId=this.getProjectNum()+ Math.floor(Math.random() * 10000)
+          })
+    },
+
+    findByName(pharmacyName){
+      this.axios.get("http://localhost:8088/find-pharmacyName",{params:{pharmacyName:pharmacyName}})
+          .then((v)=>{
+            this.tableData=v.data;
+          })
+    },
+
+
+
+    // 初始页currentPage、初始每页数据数pagesize和数据data
+    handleSizeChange: function (size) {
+      this.pagesize = size;
+      console.log(this.pagesize)  //每页下拉显示数据
+    },
+    handleCurrentChange: function(currentPage){
+      this.currentPage = currentPage;
+      console.log(this.currentPage)  //点击第几页
+    },
+
+
+
+    // 获取当前日期的方法
+    getProjectNum () {
+      const projectTime = new Date() // 当前中国标准时间
+      const Year = projectTime.getFullYear() // 获取当前年份 支持IE和火狐浏览器.
+      const Month = projectTime.getMonth() + 1 // 获取中国区月份
+      const Day = projectTime.getDate() // 获取几号
+      var CurrentDate = Year
+      if (Month >= 10) { // 判断月份和几号是否大于10或者小于10
+        CurrentDate += Month
+      } else {
+        CurrentDate += '0' + Month
+      }
+      if (Day >= 10) {
+        CurrentDate += Day
+      } else {
+        CurrentDate += '0' + Day
+      }
+      return CurrentDate
+    },
+  },
+  created() {
+    this.initData();
+
+  },
+}
 </script>
 
 <style scoped>
+a {
+  text-decoration: none;
+}
+.router-link-active {
+  text-decoration: none;
+}
 
+.el-card{
+  margin-top: 50px;
+
+}
+.block{
+  margin-left: 350px;
+}
+.fy_div{
+  margin-top:20px;
+  margin-left: -200px;
+}
+
+.T1{
+  list-style-type: none;
+}
 </style>
-
-
-
-<!--<template>-->
-<!--  <div class="drugApplyC">-->
-<!--    <el-form label-width="120px" :model="applytable" :rules="rules" ref="applyform" class="apply-form">-->
-<!--      <h4 class="applytable">药物补给申请表</h4>-->
-<!--      <p class="radio-p">-->
-<!--        <el-raadio label="1" v-model="applytable.checked">中药</el-raadio>-->
-<!--        <el-radio label="2" disabled>西药</el-radio>-->
-<!--      </p>-->
-<!--      <el-form-item label="药品名称" prop="drugname">-->
-<!--        <el-input v-model="applytable.drugname"></el-input>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="OTC标志" prop="otc_value">-->
-<!--        <el-select v-model="applytable.otc_value" placeholder="请选择">-->
-<!--          <el-option-->
-<!--            v-for="item in OTC"-->
-<!--            :key="item.otc_value"-->
-<!--            :label="item.label"-->
-<!--            :value="item.otc_value">-->
-<!--          </el-option>-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="剂型" prop="form_value">-->
-<!--        <el-select v-model="applytable.form_value" placeholder="请选择">-->
-<!--          <el-option-->
-<!--            v-for="f in form"-->
-<!--            :key="f.form_value"-->
-<!--            :label="f.label"-->
-<!--            :value="f.form_value">-->
-<!--          </el-option>-->
-<!--        </el-select>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="药品规格" prop="drugform">-->
-<!--        <el-input v-model="applytable.drugform"></el-input>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="数量（件）" prop="drugquantity">-->
-<!--        <el-input v-model="applytable.drugquantity"></el-input>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="申请人" prop="applyman">-->
-<!--        <el-input v-model="applytable.applyman"></el-input>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="申请科室" prop="applyoffices">-->
-<!--        <el-input v-model="applytable.applyoffices"></el-input>-->
-<!--      </el-form-item>-->
-<!--      <el-form-item label="申请时间" prop="date">-->
-<!--        <el-date-picker v-model="applytable.date" type="date" placeholder="选择日期"></el-date-picker>-->
-<!--      </el-form-item>-->
-<!--      <p  class="submit">-->
-<!--        <el-button type="reset" @click="resetApply">重置申请</el-button>-->
-<!--        <el-button type="submit" @click="submitApply">提交申请</el-button>-->
-<!--      </p>-->
-<!--    </el-form>-->
-<!--    <h4 class="tips">以下药品库存不足10件了，建议申请补给！</h4>-->
-<!--    <el-table :data="insufficientTable" border class="insufficientTable">-->
-<!--      <el-table-column prop="drugname" label="药品名称"></el-table-column>-->
-<!--      <el-table-column prop="type" label="类别"></el-table-column>-->
-<!--      <el-table-column prop="quantity" label="库存"></el-table-column>-->
-<!--    </el-table>-->
-<!--  </div>-->
-<!--</template>-->
-
-<!--<script type="text/ecmascript-6">-->
-
-<!--  export default {-->
-<!--    name:'drugApplyC',-->
-<!--    data () {-->
-<!--      let validatevalue = (rule, value, callback) => {-->
-<!--        if (value === '') {-->
-<!--          callback(new Error('此处值不能为空！'));-->
-<!--        } else {-->
-<!--          callback();-->
-<!--        }-->
-<!--      };-->
-<!--      let checkquantity = (rule, value, callback) => {-->
-<!--        if (!value) {-->
-<!--          return callback(new Error('此处值不能为空！'));-->
-<!--        }-->
-<!--        setTimeout(() => {-->
-<!--          if (/^\d+$/.test(value) === false) {-->
-<!--            callback(new Error('请输入数字值！'));-->
-<!--          } else {-->
-<!--            callback();-->
-<!--          }-->
-<!--        }, 1000);-->
-<!--      };-->
-<!--      return {-->
-<!--        OTC: [-->
-<!--          {-->
-<!--            otc_value: '选项1',-->
-<!--            label: '处方药'-->
-<!--          },-->
-<!--          {-->
-<!--            otc_value: '选项2',-->
-<!--            label: '非处方药'-->
-<!--          }-->
-<!--        ],-->
-<!--        // 规格-->
-<!--        form: [-->
-<!--          {-->
-<!--            form_value: '选项1',-->
-<!--            label: '片剂'-->
-<!--          },-->
-<!--          {-->
-<!--            form_value: '选项2',-->
-<!--            label: '胶囊剂'-->
-<!--          },-->
-<!--          {-->
-<!--            form_value: '选项3',-->
-<!--            label: '丸剂'-->
-<!--          },-->
-<!--          {-->
-<!--            form_value: '选项4',-->
-<!--            label: '散剂'-->
-<!--          },-->
-<!--          {-->
-<!--            form_value: '选项5',-->
-<!--            label: '颗粒剂'-->
-<!--          },-->
-<!--          {-->
-<!--            form_value: '选项6',-->
-<!--            label: '外用膏剂'-->
-<!--          },-->
-<!--          {-->
-<!--            form_value: '选项7',-->
-<!--            label: '液体剂'-->
-<!--          },-->
-<!--          {-->
-<!--            form_value: '选项8',-->
-<!--            label: '气体剂'-->
-<!--          },-->
-<!--          {-->
-<!--            form_value: '选项9',-->
-<!--            label: '注射液剂'-->
-<!--          }-->
-<!--        ],-->
-<!--        // 保存申请药物补给表的数据-->
-<!--        applytable: {-->
-<!--          drugname: '',-->
-<!--          drugform: '',-->
-<!--          drugquantity: '',-->
-<!--          applyoffices: '',-->
-<!--          applyman: '',-->
-<!--          checked: '1',-->
-<!--          otc_value: '',-->
-<!--          form_value: '',-->
-<!--          date: ''-->
-<!--        },-->
-<!--        rules: {-->
-<!--          drugname: [-->
-<!--            {validator: validatevalue, trigger: 'blur'}-->
-<!--          ],-->
-<!--          drugform: [-->
-<!--            {validator: validatevalue, trigger: 'blur'}-->
-<!--          ],-->
-<!--          drugquantity: [-->
-<!--            {validator: checkquantity, trigger: 'blur'}-->
-<!--          ],-->
-<!--          applyoffices: [-->
-<!--            {validator: validatevalue, trigger: 'blur'}-->
-<!--          ],-->
-<!--          applyman: [-->
-<!--            {validator: validatevalue, trigger: 'blur'}-->
-<!--          ],-->
-<!--          otc_value: [-->
-<!--            {validator: validatevalue, trigger: 'change'}-->
-<!--          ],-->
-<!--          form_value: [-->
-<!--            {validator: validatevalue, trigger: 'change'}-->
-<!--          ],-->
-<!--          date: [-->
-<!--            {validator: validatevalue, trigger: 'blur'}-->
-<!--          ]-->
-<!--        },-->
-<!--        // 药物库存不足表格-->
-<!--        insufficientTable: []-->
-<!--      };-->
-<!--    },-->
-<!--    // mounted () {-->
-<!--    //   this.getinsufficientData();-->
-<!--    // },-->
-<!--    // methods: {-->
-<!--    //   // 点击提交申请按钮执行-->
-<!--    //   submitApply: function () {-->
-<!--    //     this.$refs.applyform.validate((valid) => {-->
-<!--    //       if (valid) {-->
-<!--    //         this.$notify({-->
-<!--    //           message: '提交成功',-->
-<!--    //           type: 'success'-->
-<!--    //         });-->
-<!--    //         // 测试-->
-<!--    //         // console.log(this.applytable);-->
-<!--    //         // 提交数据到后台（暂时没有后台接口）-->
-<!--    //         // this.$http.post('', {applytable: 'this.applytable'}).then(response => {}, response => {});-->
-<!--    //       } else {-->
-<!--    //         this.$notify.error({-->
-<!--    //           message: '提交失败'-->
-<!--    //         });-->
-<!--    //         return false;-->
-<!--    //       }-->
-<!--    //     });-->
-<!--    //   },-->
-<!--    //   // 点击重置申请按钮执行-->
-<!--    //   resetApply: function () {-->
-<!--    //     // 重置当前vue实例的所有数据-->
-<!--    //     this.$refs.applyform.resetFields();-->
-<!--    //   },-->
-<!--    //   // 获取库存不足10件的数据-->
-<!--    //   getinsufficientData: function () {-->
-<!--    //     let drugapplyThis = this;-->
-<!--    //-->
-<!--    //     drugapplyThis.$http.get(api.drugs, {params: {q: 1}}).then((response) => {-->
-<!--    //       // 把json接口获取的数据-->
-<!--    //       for (let i = 0; i < response.data.tableDataC.length; i++) {-->
-<!--    //         if (response.data.tableDataC[i].quantity < 10) {-->
-<!--    //           drugapplyThis.insufficientTable.push(response.data.tableDataC[i]);-->
-<!--    //         }-->
-<!--    //       }-->
-<!--    //     }, response => {-->
-<!--    //       // error callback-->
-<!--    //       drugapplyThis.$notify.error({-->
-<!--    //         message: '数据请求失败'-->
-<!--    //       });-->
-<!--    //     });-->
-<!--    //   }-->
-<!--    // }-->
-<!--  };-->
-<!--</script>-->
-
-<!--<style lang="stylus-loader" rel="stylesheet/stylus">-->
-<!--  /*.drugApplyC .apply-form*/-->
-<!--  /*  width: 100%*/-->
-
-<!--  .apply-form{-->
-<!--    width: 100%-->
-<!--  }-->
-
-<!--  /*.drugApplyC .apply-form .applytable*/-->
-<!--  /*  display: block*/-->
-<!--  /*  line-height: 30px*/-->
-<!--  /*  text-align: center*/-->
-<!--  /*  font-size: 20px*/-->
-<!--  /*  font-weight: bold*/-->
-<!--  /*  margin: 0 auto*/-->
-
-
-<!--  .applytable{-->
-<!--                                                      display: block;-->
-<!--                                                      line-height: 30px;-->
-<!--                                                      text-align: center;-->
-<!--                                                      font-size: 20px;-->
-<!--                                                      font-weight: bold;-->
-<!--                                                      margin: 0 auto;-->
-<!--                                                    }-->
-
-<!--  /*.drugApplyC .apply-form .radio-p*/-->
-
-<!--  .drugApplyC .apply-form .radio-p{-->
-<!--    line-height: 80px;-->
-<!--    text-align: center;-->
-<!--  }-->
-
-<!--    /*line-height: 80px*/-->
-<!--    /*text-align: center*/-->
-<!--  /*.drugApplyC .apply-form .el-form-item*/-->
-<!--  /*  display: inline-block*/-->
-<!--  /*  width: 25%*/-->
-<!--  /*  padding-left: 40px*/-->
-<!--  /*  padding-right: 40px*/-->
-
-<!-- .drugApplyC .apply-form .el-form-item{-->
-<!--                                           display: inline-block;-->
-<!--                                           width: 25%;-->
-<!--                                           padding-left: 40px;-->
-<!--                                           padding-right: 40px;-->
-<!--                                         }-->
-
-
-
-<!--  .drugApplyC .apply-form .el-select{-->
-<!--    width: 100%-->
-<!--  }-->
-
-<!--  .drugApplyC .apply-form .submit{-->
-<!--    margin-top: 20px;-->
-<!--    text-align: center-->
-<!--  }-->
-
-<!--  .drugApplyC .tips{-->
-<!--    display: block;-->
-<!--    padding-left: 95px;-->
-<!--    margin-top: 20px;-->
-<!--    margin-bottom: 20px;-->
-<!--    color: #FF4949-->
-<!--  }-->
-
-<!--  .drugApplyC .insufficientTable{-->
-<!--    width: 85%;-->
-<!--    margin: 0 auto-->
-<!--  }-->
-
-<!--</style>-->
