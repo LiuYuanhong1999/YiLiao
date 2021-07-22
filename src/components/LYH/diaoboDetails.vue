@@ -3,14 +3,13 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>药库</el-breadcrumb-item>
-      <el-breadcrumb-item>药库调拨</el-breadcrumb-item>
+      <el-breadcrumb-item>药库调拨详情</el-breadcrumb-item>
     </el-breadcrumb>
 
 
 
 
     <el-card>
-
       <!-- 查询条件开始 -->
       <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
         <el-form-item label="供应商名称" prop="providerId" >
@@ -37,17 +36,6 @@
       </el-form>
       <!-- 查询条件结束 -->
 
-      <!-- 表格工具按钮开始 -->
-      <el-row :gutter="10" style="margin-bottom: 8px;">
-        <el-col :span="1.5">
-          <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="updateById(1)">审核通过</el-button>
-        </el-col>
-        <el-col :span="1.5">
-          <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(2)">审核不通过</el-button>
-        </el-col>
-      </el-row>
-      <!-- 表格工具按钮结束 -->
-
       <el-table
 
 
@@ -57,51 +45,33 @@
           :cell-style="{'text-align':'center'}"
           @selection-change="selectionLineChangeHandle2"
       >
+        <el-table-column label="药品名" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugName"/>
 
-        <el-table-column width="50" type="selection"></el-table-column>
+        <el-table-column label="剂型" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugJixin"/>
 
-        <el-table-column
-            prop="allotId"
-            label="调拨编号"
-            width="120">
-        </el-table-column>
-        <el-table-column
-            prop="allotTime"
-            label="申请时间">
+        <el-table-column label="规格" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugGuige"/>
 
-        </el-table-column>
-        <el-table-column
-            prop="pharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName"
-            label="更新时间">
-        </el-table-column>
-
-        <el-table-column
-          label="状态">
+        <el-table-column label="类型"
+                         prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugState">
           <template #default="scope">
-            <template v-if="scope.row.allotState ==0">
-              未审核
+            <template v-if="scope.row.allotEntity.pharmacyEntity.lyhDrugEntity.drugState =='1'">
+              中药
             </template>
 
-            <template v-if="scope.row.allotState ==1">
-              审核通过
-            </template>
-            <template v-if="scope.row.allotState ==2">
-              审核未通过
+            <template v-if="scope.row.allotEntity.pharmacyEntity.lyhDrugEntity.drugState =='2'">
+              西药
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-tooltip content="查看详情" placement="top">
-              <router-link :to="{path: '/diaoboDetails',query:{key:scope.row.allotId,value:JSON.stringify(scope.row)}}">
-              <el-button
-                  icon="el-icon-view" size="mini"
-                  type="primary"
-                 ></el-button></router-link>
-            </el-tooltip>
 
-          </template>
-        </el-table-column>
+        <el-table-column label="价格" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugPrice"/>
+
+        <el-table-column label="生产厂商" prop="allotEntity.pharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName"/>
+        <el-table-column prop="allotdetailsDate" label="申请时间"/>
+
+        <el-table-column label="申请调拨数量" prop="numbers"/>
+
+        <el-table-column prop="allotId" label="调拨编号" width="120"/>
       </el-table>
 
       <br>
@@ -138,15 +108,8 @@ export default {
       pagesize:10,    //    每页的数据
 
       ruleFrom:{
-        pharmacyName:'',
-        lyhDrugEntity:{
-          drugName:'',
-          drugJixin:'',
-          drugGuige:'',
-          drugDate:'',
-          lyhSupplierEntity:{
-            supplierName:'',
-          },},},
+        allotId:''
+     },
       drugInfosC:[],
     }
   },
@@ -194,8 +157,10 @@ export default {
 
 
 
-    initData(){
-      this.axios.get("http://localhost:8088/find-allot")
+    initData(allotId){
+      this.axios.get("http://localhost:8088/find-allotDetails",{params:{
+        allotId:allotId
+        }})
           .then((v) => {
             this.tableData = v.data;
           })
@@ -214,7 +179,8 @@ export default {
     },
   },
   created() {
-    this.initData();
+    this.initData(this.$route.query.key)
+
 
   },
 }

@@ -205,7 +205,11 @@ const routes=[
               name: 'diaobo',
               component:()=>import('/src/components/LYH/diaobo.vue')
             },
-
+            {
+              path: '/drugCity',
+              name: 'drugCity',
+              component:()=>import('/src/components/LYH/drugCity.vue')
+            },
 
             {
               path: '/supplier',
@@ -227,10 +231,12 @@ const routes=[
                 path: '/Test3',
                 name: 'DrugTest',
                 component:()=>import('/src/components/LYH/DrugTest.vue')
-
-
             },
-
+            {
+              path: '/diaoboDetails',
+                name: 'diaoboDetails',
+                component:()=>import('/src/components/LYH/diaoboDetails.vue')
+            },
 
             //yxj-体检管理
             {

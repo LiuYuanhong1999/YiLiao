@@ -64,7 +64,13 @@
         <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="deleteById()">作废</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3);insertAudit()">提交入库</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3);insertAudit()">提交入库审核</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3);insertAudit()">审核通过</el-button>
+      </el-col>
+      <el-col :span="1.5">
+        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3);insertAudit()">审核不通过</el-button>
       </el-col>
     </el-row>
     <!-- 表格工具按钮结束 -->

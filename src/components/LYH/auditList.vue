@@ -40,10 +40,10 @@
     <!-- 表格工具按钮开始 -->
     <el-row :gutter="10" style="margin-bottom: 8px;">
       <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini"  @click="update(1);update2(4);update3()">审核通过</el-button>
+        <el-button type="success" icon="el-icon-edit" size="mini"  @click="update(1);update2(4);update3()">入库</el-button>
       </el-col>
       <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini"  @click="update(2);update2(5)">审核不通过</el-button>
+        <el-button type="danger" icon="el-icon-delete" size="mini"  @click="update(2);update2(5)">驳回</el-button>
       </el-col>
       <el-col :span="1.5">
         <el-button type="success" icon="el-icon-edit" size="mini"  @click="handleView">查看详情</el-button>
