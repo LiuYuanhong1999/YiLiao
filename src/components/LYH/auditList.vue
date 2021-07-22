@@ -37,27 +37,15 @@
     </el-form>
     <!-- 查询条件结束 -->
 
-    <!-- 表格工具按钮开始 -->
-    <el-row :gutter="10" style="margin-bottom: 8px;">
-      <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini"  @click="update(1);update2(4);update3()">入库</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="danger" icon="el-icon-delete" size="mini"  @click="update(2);update2(5)">驳回</el-button>
-      </el-col>
-      <el-col :span="1.5">
-        <el-button type="success" icon="el-icon-edit" size="mini"  @click="handleView">查看详情</el-button>
-      </el-col>
-    </el-row>
+
     <!-- 表格工具按钮结束 -->
 
     <!-- 数据表格开始 -->
     <el-table  border :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                @selection-change="selectionLineChangeHandle">
-      <el-table-column type="selection" width="55" align="center" />
       <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" />
 
-          <el-table-column label="供应商" width="200" align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"  >
+          <el-table-column label="供应商" width="160" align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"  >
             <template  #default="scope">
               <router-link :to="{path: '/s',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
                 {{scope.row.lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName}}
@@ -93,6 +81,29 @@
       <el-table-column label="入库时间" align="center" prop="auditDate" show-overflow-tooltip />
       <el-table-column label="审核信息" align="center" prop="auditDate" />
       <el-table-column label="创建时间" align="center" prop="lyhProcurementEntity.procurementFirstdate" show-overflow-tooltip />
+
+<el-table-column label="操作" width="120px">
+    <template #default="scope">
+
+      <el-tooltip content="入库" placement="top">
+        <router-link :to="{path: '/s',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
+          <el-button
+              icon="el-icon-view" size="mini"
+
+          ></el-button>
+        </router-link>
+      </el-tooltip>
+
+      <el-tooltip content="驳回">
+        <el-button
+                   icon="el-icon-delete"
+                   @click="update(2);update2(5)"></el-button>
+
+      </el-tooltip>
+
+    </template>
+</el-table-column>
+
     </el-table>
     <!-- 数据表格结束 -->
     <!-- 分页控件开始 -->

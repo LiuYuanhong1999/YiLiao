@@ -3,7 +3,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>药库</el-breadcrumb-item>
-      <el-breadcrumb-item>供应商管理</el-breadcrumb-item>
+      <el-breadcrumb-item>药品管理</el-breadcrumb-item>
     </el-breadcrumb>
 
 
@@ -37,46 +37,40 @@
       </el-form>
 
 
+
+
+
+
+
       <!-- 数据表格开始 -->
       <el-table
           :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)">
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="供应商" align="center" width="200" prop="supplierName">
+
+
+
+        <el-table-column
+        prop="drugName"
+        label="药品名"
+        ></el-table-column>
+
+        <el-table-column label="供应商" align="center" width="200" prop="lyhSupplierEntity.supplierName">
 
         </el-table-column>
-        <el-table-column label="药品名" width="200" align="center" prop="lyhDrugEntities[0].drugName"/>
-
-
-        <el-table-column label="状态" prop="procurementState" align="center"  >
+        <el-table-column label="状态" prop="drugState" align="center"  >
           <template #default="scope">
-            <template v-if="scope.row.procurementState =='0'">
-              未审核
+            <template v-if="scope.row.drugState =='1'">
+              中药
             </template>
 
-            <template v-if="scope.row.procurementState =='1'">
-              审核中
-            </template>
-
-            <template v-if="scope.row.procurementState =='2'">
-              已作废
-            </template>
-
-            <template v-if="scope.row.procurementState =='3'">
-              提交入库审核
-            </template>
-            <template v-if="scope.row.procurementState =='4'">
-              入库审核通过
-            </template>
-            <template v-if="scope.row.procurementState =='5'">
-              入库审核不通过
+            <template v-if="scope.row.drugState =='2'">
+              西药
             </template>
           </template>
         </el-table-column>
-        <el-table-column label="申请人" align="center" prop="userName" />
-        <el-table-column label="入库操作人" align="center" prop="procurementName"/>
-        <el-table-column label="入库时间" align="center" prop="procurementDate"  />
-
-        <el-table-column label="创建时间" align="center" prop="procurementFirstdate" />
+        <el-table-column label="规格" align="center" prop="drugGuige" />
+        <el-table-column label="剂型" align="center" prop="drugJixin"/>
+        <el-table-column label="更新时间" align="center" prop="drugDate"  />
+        <el-table-column label="单价" align="center" prop="drugPrice" />
       </el-table>
       <!--分页-->
       <div class="fy_div">
@@ -90,6 +84,20 @@
             :total="tableDate.length">
         </el-pagination>
       </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     </el-card>
@@ -116,7 +124,7 @@ export default {
   methods:{
 
     initDate(){
-      this.axios.get("http://localhost:8088/find-supplier")
+      this.axios.get("http://localhost:8088/find-drugAll")
           .then((v) => {
             this.tableDate=v.data;
           })

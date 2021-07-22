@@ -40,7 +40,7 @@
               :data="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities.slice((currentPage-1)*pagesize,currentPage*pagesize)"
               @selection-change="selectionLineChangeHandle"
               border
-              style="width: 100%">
+              style="width: 100%;margin-left: -20px">
             <el-table-column type="selection" width="55" align="center" />
             <el-table-column
                 prop="drugEntity.drugName"
@@ -83,45 +83,22 @@
 
 
               </template>
-
-
-
             </el-table-column>
             <el-table-column
                 prop="procurementId"
                 label="采购编号">
             </el-table-column>
 
+<el-table-column
+    width="180px"
+    label="采购批次">
+<template #default="scope">
+  <el-input v-model="scope.row.piCi"></el-input>
+</template>
 
-            <el-table-column label="操作">
-              <template #default="scope">
-                <el-tooltip content="保存" placement="top">
-                  <el-button
-                      style="width: 40px"
-                      icon="el-icon-edit  "
-                      @click="scope.row.show =false;update(scope.row.numbers,scope.row.proId)"
-                  ></el-button>
 
-                </el-tooltip>
-              </template>
-            </el-table-column>
+</el-table-column>
           </el-table>
-
-<!--          &lt;!&ndash;分页&ndash;&gt;-->
-<!--          <div class="fy_div">-->
-<!--            <el-pagination-->
-<!--                @size-change="handleSizeChange"-->
-<!--                @current-change="handleCurrentChange"-->
-<!--                :current-page="currentPage"-->
-<!--                :page-sizes="[5, 10, 20, 40]"-->
-<!--                :page-size="pagesize"-->
-<!--                layout="total, sizes, prev, pager, next, jumper"-->
-<!--                :total="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities.length">-->
-<!--            </el-pagination>-->
-<!--          </div>-->
-
-
-
 </el-form-item>
       </el-col>
     </el-row>
@@ -137,7 +114,7 @@ export default {
     return {
       reverse: true,
 
-
+    piCi:'',
       customerData: [],
       ruleFrom:{
         procurementId:"",

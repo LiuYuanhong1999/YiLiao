@@ -73,22 +73,7 @@
             label="生产日期"
             width="120">
         </el-table-column>
-<!--        <el-table-column-->
-<!--            prop=""-->
-<!--            label="规格"-->
-<!--            width="100">-->
-<!--        </el-table-column>-->
-<!--        <el-table-column-->
-<!--            prop="eDate"-->
-<!--            label="剂型"-->
-<!--            width="50">-->
-<!--        </el-table-column>-->
 
-<!--        <el-table-column-->
-<!--            prop="eDate"-->
-<!--            label="储存温度	"-->
-<!--            width="80">-->
-<!--        </el-table-column>-->
         <el-table-column
             prop="lyhProcurementEntity.procurementName"
             label="经手人"
@@ -157,11 +142,18 @@ export default {
       dialogVisible: false,
       currentPage:1, //初始页
       pagesize:10,    //    每页的数据
+
+      ruleFrom:{
+        drugId:'',
+        procurementId:'',
+      }
     }
   },
   methods:{
     initData(){
-      this.axios.get("http://localhost:8088/find-drugstore")
+      this.axios.get("http://localhost:8088/find-drugstore",{params:{
+        drugId:this.$route.query.key
+        }})
           .then((v) => {
             this.tableData = v.data;
           })
@@ -178,7 +170,10 @@ export default {
     },
   },
   created() {
-    this.initData();
+
+  // this.ruleFrom=JSON.parse(this.$route.query.value)
+  //   alert(this.ruleFrom.procurementId)
+    this.initData(this.$route.query.key);
 
   },
 }
