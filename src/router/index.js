@@ -238,6 +238,13 @@ const routes=[
                 component:()=>import('/src/components/LYH/diaoboDetails.vue')
             },
 
+            {
+                path:'/diaoboWrite',
+                name: 'diaoboWrite',
+                component:()=>import('/src/components/LYH/diaoboWrite.vue')
+            },
+
+
             //yxj-体检管理
             {
                 path: '/Yxjcategory',

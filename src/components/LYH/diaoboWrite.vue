@@ -3,7 +3,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>药库</el-breadcrumb-item>
-      <el-breadcrumb-item>药库调拨详情</el-breadcrumb-item>
+      <el-breadcrumb-item>药库调拨记录</el-breadcrumb-item>
     </el-breadcrumb>
 
 
@@ -11,7 +11,7 @@
 
     <el-card>
       <!-- 查询条件开始 -->
-      <el-form ref="queryForm" :model="ruleFrom" :inline="true" label-width="98px">
+      <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
         <el-form-item label="供应商名称" prop="providerId" >
           <el-select >
 
@@ -35,7 +35,7 @@
         </el-form-item>
       </el-form>
       <!-- 查询条件结束 -->
-<el-button @click="updateById2()">调拨</el-button>
+
       <el-table
 
 
@@ -45,9 +45,6 @@
           :cell-style="{'text-align':'center'}"
           @selection-change="selectionLineChangeHandle2"
       >
-
-        <el-table-column width="50" type="selection"></el-table-column>
-
         <el-table-column label="药品名" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugName"/>
 
         <el-table-column label="剂型" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugJixin"/>
@@ -112,7 +109,7 @@ export default {
 
       ruleFrom:{
         allotId:''
-     },
+      },
       drugInfosC:[],
     }
   },
@@ -124,31 +121,15 @@ export default {
       this.drugInfosC = val;
       console.log(this.drugInfosC);
       for(var i = 0; i< this.drugInfosC.length; i++){
-        console.log('药品id:'+this.drugInfosC[i].drugId)
-        console.log('数量:'+this.drugInfosC[i].numbers)
-        console.log('采购编号:'+this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugstoreEntity.procurementId)
-
+        console.log('id:'+this.drugInfosC[i].drugId)
+        console.log('number:'+this.drugInfosC[i])
+        console.log('编号:'+this.drugInfosC[i].drugId)
+        console.log('数量:'+this.drugInfosC[i])
       }
     },
 
 
-    updateById2(){
-      for (var i = 0; i < this.drugInfosC.length; i++) {
 
-        this.axios.get("http://localhost:8088/update-drugstore", {
-          params: {
-            numbers:this.drugInfosC[i].numbers,
-            drugId:this.drugInfosC[i].drugId,
-            procurementId:this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugstoreEntity.procurementId,
-            allotId:this.drugInfosC[i].allotId
-          }
-        })
-            .then((v) => {
-              this.$message("修改成功");
-              this.initData();
-            });
-      }
-    },
 
 
 
@@ -165,7 +146,7 @@ export default {
         })
             .then((v) => {
               this.$message("修改成功");
-              this.initData();
+              this.initDate();
             });
       }
 
@@ -178,7 +159,7 @@ export default {
 
     initData(allotId){
       this.axios.get("http://localhost:8088/find-allotDetails",{params:{
-        allotId:allotId
+          allotId:allotId
         }})
           .then((v) => {
             this.tableData = v.data;
