@@ -11,28 +11,55 @@
 
 <el-card>
 
-  <el-row>
-    <el-col :span="4">
-      <el-input placeholder="请输入药品名" v-model="ruleFrom.pharmacyName"  ></el-input>
-    </el-col>
 
-    <el-button  icon="el-icon-search" type="primary" @click="findByName(ruleFrom.pharmacyName)"></el-button>
-  </el-row>
+    <!-- 查询条件开始 -->
+    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+      <el-form-item label="药品类型" prop="providerId" style="margin-left: 0%">
+        <el-select v-model="queryParams.drugState" value-key="id">
+          <el-option v-for="item in drugStates" :key="item.id" :label="item.name" :value="item.id">
+
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="药品名" >
+        <el-input
+            placeholder="请输入药品名"
+            clearable
+            v-model="queryParams.drugName"
+            size="small"
+            style="width:180px"
+        />
+      </el-form-item>
+
+      <el-form-item label="选择剂型">
+        <el-select v-model="queryParams.drugJixin">
+          <el-option v-for="item in drugJiXins" :key="item.id" :label="item.name" :value="item.name"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="选择厂商">
+
+        <el-input v-model="queryParams.supplierName"></el-input>
+      </el-form-item>
+
+      <el-form-item style="margin-left: 80%">
+        <el-button type="primary" icon="el-icon-search" size="mini" @click="initData(queryParams.drugName,queryParams.drugState,queryParams.drugJixin,queryParams.supplierName)">搜索</el-button>
+        <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+      </el-form-item>
+    </el-form>
+
   <!-- 表格工具按钮开始 -->
-  <el-row :gutter="10" style="margin-bottom: 8px;margin-top: 10px">
+  <el-row :gutter="10" style="margin-bottom: 8px;margin-top: -30px">
     <el-col :span="1.5">
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="insertAllot() ">提交申请</el-button>
     </el-col>
-    <el-col :span="1.5">
-      <el-button type="success" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">申请记录</el-button>
-    </el-col>
+
   </el-row>
 
   <el-table
 
 
       :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-      border stripe style="width: 100%;margin-top: 10px"
+      border stripe style="width: 100%;margin-top: -10px"
       :header-cell-style="{'text-align':'center'}"
       :cell-style="{'text-align':'center'}"
       @selection-change="selectionLineChangeHandle2"
@@ -243,6 +270,12 @@ export default {
 name: "drugInfosC",
   data(){
       return{
+        queryParams:{
+          drugState:'',
+          drugName:'',
+          drugJixin:'',
+          supplierName:''
+        },
         centerDialogVisible:false,
         tableData:[],
         dialogVisible: false,
@@ -257,10 +290,32 @@ name: "drugInfosC",
         drugInfosC:[],
 
         gridDataDetails:[],
+        drugStates:[
+          {
+            id:1,
+            name:'中药'
+          },{
+            id:2,
+            name: "西药"
+          }
+        ],
+        drugJiXins:[
+          {
+            id:'丸剂',
+            name:'丸剂'
+          },
+          {
+            id:"口服液",
+            name: '口服液'
+          },
+          {
+            id:'片剂',
+            name: '片剂'
+          },
+        ],
       }
   },
   methods:{
-
 
     //大表格
     selectionLineChangeHandle2 (val) {
@@ -274,6 +329,8 @@ name: "drugInfosC",
       }
     },
 
+
+
     //大表格
     selectionLineChangeHandle3 (val) {
       this.gridDataDetails = val;
@@ -285,25 +342,6 @@ name: "drugInfosC",
         console.log('数量:'+this.gridDataDetails[i])
       }
     },
-
-
-
-
-
-
-
-
-    editDrug(row){
-        // this.dialogVisible=true;
-      this.ruleFrom.lyhDrugEntity.drugName=row.lyhDrugEntity.drugName;
-      this.ruleFrom.lyhDrugEntity.drugGuige=row.lyhDrugEntity.drugGuige;
-      this.ruleFrom.lyhDrugEntity.drugJixin=row.lyhDrugEntity.drugJixin;
-      this.ruleFrom.lyhDrugEntity.lyhSupplierEntity.supplierName=row.lyhDrugEntity.lyhSupplierEntity.supplierName;
-      this.ruleFrom.lyhDrugEntity.drugDate=row.lyhDrugEntity.drugDate;
-        this.centerDialogVisible=true;
-      },
-
-
     insertAllot(){
 
       this.gridData=this.drugInfosC;
@@ -319,8 +357,15 @@ insert(){
 },
 
 
-    initData(){
-      this.axios.get("http://localhost:8088/find-pharmacy")
+    initData(drugName,drugState,drugJixin,supplierName){
+      this.axios.get("http://localhost:8088/find-pharmacy",{params:{
+
+          drugName:drugName,
+          drugState:drugState,
+          drugJixin:drugJixin,
+          supplierName:supplierName
+
+        }})
           .then((v) => {
             this.tableData = v.data;
             this.ruleFrom.allotId=this.getProjectNum()+ Math.floor(Math.random() * 10000)

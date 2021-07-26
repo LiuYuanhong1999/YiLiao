@@ -11,13 +11,40 @@
 
     <el-card>
 
-      <el-row>
-        <el-col :span="4">
-          <el-input placeholder="请输入药品名" v-model="ruleFrom.pharmacyName"  ></el-input>
-        </el-col>
+      <!-- 查询条件开始 -->
+      <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form-item label="药品类型" prop="providerId" style="margin-left: 0%">
+          <el-select v-model="queryParams.drugState" value-key="id">
+<el-option v-for="item in drugStates" :key="item.id" :label="item.name" :value="item.id">
 
-        <el-button  icon="el-icon-search" type="primary" @click="findByName(ruleFrom.pharmacyName)"></el-button>
-      </el-row>
+</el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="药品名" >
+          <el-input
+              placeholder="请输入药品名"
+              clearable
+              v-model="queryParams.drugName"
+              size="small"
+              style="width:180px"
+          />
+        </el-form-item>
+
+        <el-form-item label="选择剂型">
+          <el-select v-model="queryParams.drugJixin">
+            <el-option v-for="item in drugJiXins" :key="item.id" :label="item.name" :value="item.name"></el-option>
+          </el-select>
+        </el-form-item>
+<el-form-item label="选择厂商">
+
+  <el-input v-model="queryParams.supplierName"></el-input>
+</el-form-item>
+
+        <el-form-item style="margin-left: 80%">
+          <el-button type="primary" icon="el-icon-search" size="mini" @click="initData(queryParams.drugName,queryParams.drugState,queryParams.drugJixin,queryParams.supplierName)">搜索</el-button>
+          <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+        </el-form-item>
+      </el-form>
 
       <el-table
 
@@ -43,9 +70,10 @@
               西药
             </template>
           </template>
-
-
         </el-table-column>
+
+        <el-table-column prop="detailsDate" label="申请时间"></el-table-column>
+
         <el-table-column
             prop="lyhPharmacyEntity.lyhDrugEntity.drugName"
             label="药品名称"
@@ -80,18 +108,6 @@
             label="单价（元）"
             width="120">
         </el-table-column>
-
-        <el-table-column  label="操作" width="80px">
-          <template  #default="scope">
-            <el-tooltip content="申请调拨" placement="top">
-              <el-button
-                  icon="el-icon-view" size="mini"
-                  @click="editDrug(scope.row)"></el-button>
-            </el-tooltip>
-
-
-          </template>
-        </el-table-column>
       </el-table>
       <br>
       <!--分页-->
@@ -118,6 +134,37 @@ export default {
   name: "drugInfosC",
   data(){
     return{
+      queryParams:{
+        drugState:'',
+        drugName:'',
+        drugJixin:'',
+        supplierName:''
+      },
+      drugStates:[
+        {
+          id:1,
+          name:'中药'
+        },{
+        id:2,
+          name: "西药"
+        }
+      ],
+      drugJiXins:[
+        {
+          id:'丸剂',
+          name:'丸剂'
+        },
+        {
+          id:"口服液",
+          name: '口服液'
+        },
+        {
+          id:'片剂',
+          name: '片剂'
+        },
+      ],
+
+
       centerDialogVisible:false,
       tableData:[],
       dialogVisible: false,
@@ -150,20 +197,21 @@ export default {
 
 
 
-    initData(){
-      this.axios.get("http://localhost:8088/find-pharmacyDetails")
+    initData(drugName,drugState,drugJixin,supplierName){
+      this.axios.get("http://localhost:8088/find-pharmacyDetails",{params:{
+
+        drugName:drugName,
+          drugState:drugState,
+          drugJixin:drugJixin,
+          supplierName:supplierName
+
+        }})
           .then((v) => {
             this.tableData = v.data;
             this.ruleFrom.allotId=this.getProjectNum()+ Math.floor(Math.random() * 10000)
           })
     },
 
-    findByName(pharmacyName){
-      this.axios.get("http://localhost:8088/find-pharmacyName",{params:{pharmacyName:pharmacyName}})
-          .then((v)=>{
-            this.tableData=v.data;
-          })
-    },
 
 
 
