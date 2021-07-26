@@ -51,6 +51,12 @@ const routes=[
                 component:()=>import('/src/components/ZSX/opc/therapyManager.vue')
                 // meta:'诊疗卡管理'
             },
+            {
+                path:'/prescription',
+                name:'prescriptionManager',
+                component:()=>import('/src/components/ZSX/opc/prescriptionManager.vue'),
+                meta:'门诊处方'
+            },
             //护士工作站
             {
                 path:'/dispensing',

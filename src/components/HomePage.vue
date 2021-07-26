@@ -36,16 +36,12 @@
               <i class="el-icon-user"></i>
               <span>门诊管理</span>
             </template>
-            <el-menu-item-group>
-              <template #title>挂号信息管理</template>
               <router-link to="/registration"><el-menu-item index="1-1">挂号管理</el-menu-item></router-link>
-              <router-link to="/charging"><el-menu-item index="1-2">划价管理</el-menu-item></router-link>
-            </el-menu-item-group>
-            <el-menu-item-group title="门诊">
+              <router-link to="/charging"><el-menu-item index="1-2">叫号管理</el-menu-item></router-link>
               <router-link to="/charge"> <el-menu-item index="1-3">门诊收费</el-menu-item></router-link>
-              <router-link to="/lock"><el-menu-item index="1-4">门诊锁定</el-menu-item></router-link>
-              <router-link to="/relieve"><el-menu-item index="1-5">门诊解锁</el-menu-item></router-link>
-            </el-menu-item-group>
+              <router-link to="/lock"><el-menu-item index="1-4">门诊锁定与解锁</el-menu-item></router-link>
+<!--              <router-link to="/relieve"><el-menu-item index="1-5">null</el-menu-item></router-link>-->
+              <router-link to="/therapy"><el-menu-item index="1-6">诊疗卡管理</el-menu-item></router-link>
           </el-submenu>
 
           <el-submenu index="2">
@@ -53,7 +49,7 @@
                   <i class="el-icon-user"></i>
                   <span>医生工作站</span>
               </template>
-            <el-menu-item index="2-1">门诊处方</el-menu-item>
+            <router-link to="/prescription"><el-menu-item index="2-1">门诊处方</el-menu-item></router-link>
             <router-link to="/zyyz"><el-menu-item index="2-2">住院</el-menu-item></router-link>
           </el-submenu>
 

@@ -29,28 +29,31 @@
       >
         <el-table-column
             prop="medicalCard.medicalCardNumber"
-            label="诊疗卡号"
-            width="180">
+            label="诊疗卡号">
         </el-table-column>
         <el-table-column
             prop="patientDataName"
-            label="卡号所属人"
-            width="180">
+            label="卡号所属人">
         </el-table-column>
         <el-table-column
             prop="medicalCard.medicalCardBalance"
-            label="余额"
-            width="180">
+            label="余额">
         </el-table-column>
         <el-table-column
             prop="medicalCard.medicalCardLock"
-            label="状态"
-            width="180">
+            label="状态">
+          <template #default="scope">
+            <template v-if="scope.row.medicalCard.medicalCardLock =='0'">
+              解锁
+            </template>
+            <template v-if="scope.row.medicalCard.medicalCardLock =='1'">
+              锁定
+            </template>
+          </template>
         </el-table-column>
         <el-table-column
             prop="medicalCard.medicalCardRecords.medicalCardTime"
-            label="充值时间"
-            width="180">
+            label="充值时间">
         </el-table-column>
         <el-table-column  label="操作" width="130px">
           <template  #default="scope">
@@ -100,12 +103,22 @@
             <el-form-item label="状态" prop="medicalCardLock">
               <el-select v-model="patientData.medicalCard.medicalCardLock" placeholder="请选择" value-key="medicalCardId">
                 <el-option
-                    v-for="item in medicalCardTableData"
-                    :key="item.medicalCard.medicalCardId"
-                    :label="item.medicalCard.medicalCardLock"
-                    :value="item.medicalCard.medicalCardLock">
+                    v-for="item in options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
                 </el-option>
               </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="余额" prop="medicalCardBalance">
+              <el-input v-model="patientData.medicalCard.medicalCardBalance"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="密码" prop="medicalCardPassword">
+              <el-input v-model="patientData.medicalCard.medicalCardPassword" show-password></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="10">
@@ -135,7 +148,7 @@
       <template #footer>
     <span class="dialog-footer">
       <el-button @click="ClearFrom">取 消</el-button>
-      <el-button type="primary" @click="addTherapy">确 定</el-button>
+      <el-button type="primary" @click="saveTherapy">确 定</el-button>
     </span>
       </template>
     </el-dialog>
@@ -167,6 +180,7 @@ export default {
         patientDataName:'',
         patientDataPhone:'',
         patientDataSex:'',
+        medicalCardNumber:'',
         medicalCard:{
           medicalCardId:'',
           medicalCardNumber:'',
@@ -174,26 +188,24 @@ export default {
           medicalCardBalance:'',
           medicalCardLock:'',
           medicalCardRecords:{
+            medicalCardNumber:'',
             medicalCardRecordId:'',
             medicalCardTime:''
           }
         }
       },
+      options:[{
+        value:'1',
+        label:'锁定'
+      },{
+        value:'0',
+        label:'解锁'
+      }],
       value: '',
       activeName: 'second'
     }
   },
   methods:{
-
-    // initData(page,size){
-    //   this.axios.get("http://localhost:8088/emp-mgr", {params: {pageNum: page, size: size}})
-    //       .then((v) => {
-    //         this.tableData = v.data.rows;
-    //         this.totalSize = v.data.total;
-    //
-    //       })
-    // },
-
     initData(){
       this.axios.get("http://localhost:8088/medicalCard")
           .then((v) => {
@@ -232,19 +244,19 @@ export default {
               medicalCardLock:'',
               medicalCardRecords:{
                 medicalCardRecordId:'',
+                medicalCardNumber:'',
                 medicalCardTime:''
               }
             }
       };
       this.dialogVisible=false;
     },
-    addTherapy(){
-      this.axios.post("http://localhost:8088/",this.patientData)
+    saveTherapy(){
+      this.axios.post("http://localhost:8088/saveMedicalCard",this.patientData)
           .then((v) => {
             this.dialogVisible=false;
             this.$message('操作成功！');
             this.initData(this.currentPage, this.pageSize);
-
           })
     },
 
