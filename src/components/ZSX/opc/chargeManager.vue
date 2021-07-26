@@ -286,7 +286,8 @@
                       patientDataSex:'',
                       medicalCardNumber:''
                   }
-                }
+                },
+              activeName: 'second'
             }
         },
         methods:{
