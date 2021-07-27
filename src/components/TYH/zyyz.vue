@@ -10,50 +10,36 @@
         </el-breadcrumb>
 
 
-        <el-card style="width: 450px;height: 100%">
+        <el-card style="width: 460px;height: 100%">
             <!--表头-->
             <el-row>
                 <el-col :span="20">
                     <el-input placeholder="病人"></el-input>
                 </el-col>
-
-                <el-table>
+                <el-table :data="tableData1" style="margin-top: 20px">
                     <el-table-column
-                            prop=""
+                            prop="hosregNum"
                             label="住院号"
-                            width="60">
+                            width="180px">
                     </el-table-column>
                     <el-table-column
-                            prop=""
-                            label="病人姓名"
-                            width="70">
+                            prop="tyhPatientEntity.patientName"
+                            label="病人姓名">
                     </el-table-column>
                     <el-table-column
-                            prop=""
-                            label="床位"
-                            width="50">
+                            prop="tyhPatientEntity.patientYue"
+                            label="押金余额">
                     </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="住院状态"
-                            width="70">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="押金余额"
-                            width="70">
-                    </el-table-column>
-                    <el-table-column  label="操作" width="50px">
+                    <el-table-column  label="操作">
                         <template  #default="scope">
                             <el-tooltip content="查看" placement="top">
                                 <el-button
-                                        icon="el-icon-edit" size="mini"
-                                        @click=""></el-button>
+                                        icon="el-icon-view" size="mini"
+                                        @click="initData2(scope.row.tyhPatientEntity.patientId)"></el-button>
                             </el-tooltip>
                         </template>
                     </el-table-column>
                 </el-table>
-
             </el-row>
 
             <!--分页-->
@@ -64,7 +50,7 @@
             <!--表头-->
             <el-button type="primary" style="margin-left: -650px" @click="dialogVisible = true">新开处方</el-button>
             <el-row>
-                <el-table :data="tableData">
+                <el-table :data="tableData2">
                     <el-table-column
                             width="150">
                         <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
@@ -109,14 +95,23 @@
                                 <el-form ref="form" :rules="formRules" :inline="true" :model="form" label-width="80px">
                                     <div v-for="(item, index) in form.dynamicItem" :key="index">
                                         <el-form-item
-                                                label="项目名称"
-                                                :prop="'dynamicItem.' + index + '.name'"
+                                                label="名称"
+                                                style="margin-right: 100px"
                                         >
                                             <el-input v-model="item.name" @click="xzxm=true"></el-input>
                                         </el-form-item>
                                         <el-form-item
+                                                label="医嘱"
+                                        >
+                                            <el-input v-model="item.name"></el-input>
+                                        </el-form-item>
+                                        <el-form-item
                                                 label="单价"
-                                                :prop="'dynamicItem.' + index + '.phone'"
+                                        >
+                                            <el-input v-model="item.phone"></el-input>
+                                        </el-form-item>
+                                        <el-form-item
+                                                label="数量"
                                         >
                                             <el-input v-model="item.phone"></el-input>
                                         </el-form-item>
@@ -137,27 +132,27 @@
                         </el-drawer>
                     </el-table-column>
                     <el-table-column
-                            prop="data"
+                            prop="tyhRecipeEntity.recipeId"
                             label="处方号"
                             width="60">
                     </el-table-column>
                     <el-table-column
-                            prop="name"
+                            prop="tyhRecipeEntity.tyhPatientEntity.patientName"
                             label="病人姓名"
                             width="70">
                     </el-table-column>
                     <el-table-column
-                            prop="address"
+                            prop="tyhRecipeEntity.recipeDate"
                             label="处方时间"
                             width="150">
                     </el-table-column>
                     <el-table-column
-                            prop="ts"
+                            prop="tyhRecipeEntity.recipeDay"
                             label="执行天数"
                             width="70">
                     </el-table-column>
                     <el-table-column
-                            prop="je"
+                            prop="tyhRecipeEntity.recipePrice"
                             label="处方金额"
                             width="70">
                     </el-table-column>
@@ -192,60 +187,113 @@
             <el-form status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="处方号" prop="">
-                            <el-input></el-input>
-
+                        <el-form-item label="处方时间" prop="">
+                            <el-date-picker
+                                    v-model="rdFrom.tyhRecipeEntity.recipeDate"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="处方时间" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="注意事项" prop="">
+                            <el-input v-model="rdFrom.tyhRecipeEntity.recipeExplain"></el-input>
+
                         </el-form-item>
                     </el-col>
                 </el-row>
 
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="住院病人" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="执行天数" prop="">
+                            <el-input v-model="rdFrom.tyhRecipeEntity.recipeDay"></el-input>
 
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
                         <el-form-item label="处方金额" prop="">
-                            <el-input></el-input>
+                            <el-input v-model="rdFrom.tyhRecipeEntity.recipePrice"></el-input>
 
                         </el-form-item>
                     </el-col>
-                </el-row><br><br>
+                </el-row><br>
+                <el-form label-width="80px">
+                    <el-button @click="xzxm=true">选择项目</el-button><br><br>
+                    药品
+                    <el-table
+                            :data="checkBoxData"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="drugName"
+                                label="药品名称">
+                        </el-table-column>
+                        <el-table-column
+                                label="数量">
+                            <template  #default="scope">
+                                <el-input v-model="scope.row[rdFrom.recipedetailNumber]" ></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column
+                                prop="drugPrice"
+                                label="单价">
+                        </el-table-column>
+                        <el-table-column
+                                label="小计">
+                            <template  #default="scope">
+                                {{ scope.row[rdFrom.recipedetailNumber]==null?0 : scope.row[rdFrom.recipedetailNumber]*scope.row.drugPrice}}
+                            </template>
 
-                处方内容<br><br><br>
-                <el-form ref="form" :rules="formRules" :inline="true" :model="form" label-width="80px">
-                    <div v-for="(item, index) in form.dynamicItem" :key="index">
-                        <el-form-item
-                                label="项目名称"
-                                :prop="'dynamicItem.' + index + '.name'"
-                        >
-                            <el-input v-model="item.name" @click="xzxm=true"></el-input>
-                        </el-form-item>
-                        <el-form-item
-                                label="单价"
-                                :prop="'dynamicItem.' + index + '.phone'"
-                        >
-                            <el-input v-model="item.phone"></el-input>
-                        </el-form-item>
-                        <el-form-item>
-                            <el-button v-if="index+1 == form.dynamicItem.length" @click="addItem" type="primary">增加</el-button>
-                            <el-button v-if="index !== 0" @click="deleteItem(item, index)" type="danger">删除</el-button>
-                        </el-form-item>
-                    </div>
+                        </el-table-column>
+                        <el-table-column
+                                label="注意事项">
+                            <template  #default="scope">
+                                <el-input  ></el-input>
+                            </template>
+                        </el-table-column>
+                        <el-table-column  label="操作">
+                            <template  #default="scope">
+                                <el-tooltip content="查看" placement="top">
+                                    <el-button
+                                            icon="el-icon-delete" size="mini"
+                                            @click="deleteyp(scope.$index)"></el-button>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                    </el-table>
+                    <br><br>
+                    项目
+                    <el-table
+                            :data="checkBoxData2"
+                            style="width: 100%">
+                        <el-table-column
+                                prop="projectName"
+                                label="项目名称">
+                        </el-table-column>
+                        <el-table-column
+                                prop="projectPrice"
+                                label="单价">
+                        </el-table-column>
+                        <el-table-column
+                                label="注意事项">
+                            <el-input></el-input>
+                        </el-table-column>
+                        <el-table-column  label="操作">
+                            <template  #default="scope">
+                                <el-tooltip content="查看" placement="top">
+                                    <el-button
+                                            icon="el-icon-delete" size="mini"
+                                            @click="deleteyp2(scope.$index)"></el-button>
+                                </el-tooltip>
+                            </template>
+                        </el-table-column>
+                    </el-table>
                 </el-form>
             </el-form>
 
             <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="dialogVisible = false,addchufang()">确 定</el-button>
     </span>
             </template>
         </el-dialog>
@@ -258,24 +306,81 @@
                 :before-close="handleClose">
             <el-form status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
-                    <el-table>
-                        <el-table-column
-                                prop=""
-                                label="项目编号"
-                                width="60">
-                        </el-table-column>
-                        <el-table-column
-                                prop=""
-                                label="项目名称"
-                                width="70">
-                        </el-table-column>
-                        <el-table-column
-                                prop=""
-                                label="价格"
-                                width="150">
-                        </el-table-column>
-                    </el-table>
-
+                    <el-tabs>
+                        <el-tab-pane label="药品" name="first">
+                            <el-table
+                                    :data="tableData3"
+                                    style="width: 100%"
+                                    @selection-change="changeFun">
+                                <el-table-column
+                                        type="selection">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="drugId"
+                                        label="药品编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="drugName"
+                                        label="药品名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="drugPrice"
+                                        label="药品价格"
+                                        width="180">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="drugDate"
+                                        label="生产日期">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="手术项目" name="second">
+                            <el-table
+                                    :data="tableData4"
+                                    style="width: 100%"
+                                    @selection-change="changeFun2">
+                                <el-table-column
+                                        type="selection">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="projectId"
+                                        label="项目编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="projectName"
+                                        label="项目名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="projectPrice"
+                                        label="项目价格"
+                                        width="180">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                        <el-tab-pane label="体检项目" name="third">
+                            <el-table
+                                    :data="tableData5"
+                                    style="width: 100%"
+                                    @selection-change="changeFun2">
+                                <el-table-column
+                                        type="selection">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="projectId"
+                                        label="项目编号">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="projectName"
+                                        label="项目名称">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="projectPrice"
+                                        label="项目价格"
+                                        width="180">
+                                </el-table-column>
+                            </el-table>
+                        </el-tab-pane>
+                    </el-tabs>
                 </el-row>
             </el-form>
 
@@ -303,31 +408,16 @@
             return {
                 dialogVisible: false,
                 xzxm: false,
-                tableData: [{
-                    date: '2016-05-02',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1518 弄',
-                    ts:'1',
-                    je:'100'
-                }, {
-                    date: '2016-05-04',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1517 弄',
-                    ts:'1',
-                    je:'100'
-                }, {
-                    date: '2016-05-01',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1519 弄',
-                    ts:'1',
-                    je:'100'
-                }, {
-                    date: '2016-05-03',
-                    name: '王小虎',
-                    address: '上海市普陀区金沙江路 1516 弄',
-                    ts:'1',
-                    je:'100'
-                }],
+                znumbers:'',
+                numbers:[],
+                tableData1:[],
+                tableData2:[],
+                tableData3:[],
+                tableData4:[],
+                tableData5:[],
+                tableData6:[],
+                checkBoxData: [],
+                checkBoxData2:[],
                 form: {
                     dynamicItem: [
                         {
@@ -336,11 +426,108 @@
                         }
                     ]
                 },
+                rdFrom:{
+                    recipedetailId:'',
+                    recipeId:'',
+                    recipedetailProject:'',
+                    recipedetailDurg:'',
+                    recipedetailPrice:'',
+                    recipedetailNumber:'',
+                    recipedetailExplain:'',
+                    tyhRecipeEntity:{
+                        recipeId:'',
+                        recipePrice:'',
+                        recipeDate:'',
+                        recipeDay:'',
+                        patientId:'',
+                        staffId:'',
+                        recipeExplain:'',
+                        recipeZt:'',
+                        tyhPatientEntity:{
+                            patientId:'',
+                            patientName:'',
+                            patientSex:'',
+                            patientYue:'',
+                        },
+                        yxjStaffEntity: {
+                            staffId: '',
+                            staffName: '',
+                            staffAge: '',
+                            staffTime: '',
+                            deptId: '',
+                            tyhRecipeEntities: ''
+                        }
+                    },
+                    yxjProjectEntity:[],
+                    lyhDrugEntity:[]
+                },
                 drawer: false,
                 direction: 'rtl',
             }
         },
         methods:{
+            suan(s,a){
+                this.numbers.splice(a,0,s);
+                console.log(this.numbers)
+            },
+
+            addchufang(){
+            },
+
+            deleteyp(s){
+                this.checkBoxData.splice(s,1);
+            },
+
+            deleteyp2(s){
+                //表示先获取这个元素的下标，然后从这个下标开始计算，删除长度为1的元素
+                this.checkBoxData2.splice(s,1);
+            },
+
+            changeFun(val) {
+                this.checkBoxData = val;
+                console.log(this.checkBoxData)
+            },
+
+            changeFun2(val) {
+                this.checkBoxData2 = this.checkBoxData2.concat(val);
+                console.log(this.checkBoxData2)
+            },
+
+            initData5(){
+                this.axios.get("http://localhost:8088/find-pro2")
+                    .then((v) => {
+                        this.tableData5 = v.data;
+                    })
+            },
+
+            initData4(){
+                this.axios.get("http://localhost:8088/find-pro1")
+                    .then((v) => {
+                        this.tableData4 = v.data;
+                    })
+            },
+
+            initData3(){
+                this.axios.get("http://localhost:8088/find-yp")
+                    .then((v) => {
+                        this.tableData3 = v.data;
+                    })
+            },
+
+            initData2(id){
+                this.axios.get("http://localhost:8088/find-chufang",{params:{id:id}})
+                    .then((v) => {
+                        this.tableData2 = v.data;
+                    })
+            },
+
+            initData() {
+                this.axios.get("http://localhost:8088/find-chub")
+                    .then((v) => {
+                        this.tableData1 = v.data;
+                    })
+            },
+
             addItem() {
                 this.form.dynamicItem.push({
                     name: "",
@@ -375,6 +562,10 @@
             }
         },
         created() {
+            this.initData()
+            this.initData3()
+            this.initData4()
+            this.initData5()
         },
 
     }
