@@ -37,7 +37,7 @@
               <span>门诊管理</span>
             </template>
               <router-link to="/registration"><el-menu-item index="1-1">挂号管理</el-menu-item></router-link>
-              <router-link to="/charging"><el-menu-item index="1-2">叫号管理</el-menu-item></router-link>
+              <router-link to="/callNumber"><el-menu-item index="1-2">叫号管理</el-menu-item></router-link>
               <router-link to="/charge"> <el-menu-item index="1-3">门诊收费</el-menu-item></router-link>
               <router-link to="/lock"><el-menu-item index="1-4">门诊锁定与解锁</el-menu-item></router-link>
 <!--              <router-link to="/relieve"><el-menu-item index="1-5">null</el-menu-item></router-link>-->

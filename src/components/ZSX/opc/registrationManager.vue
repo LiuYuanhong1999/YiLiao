@@ -25,15 +25,15 @@
 
                     stripe
                     style="width: 100%"
-                    :data="registrationTableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                    :data="registrationTableData"
             >
                 <el-table-column
-                        prop="registrationId"
+                        prop="registrationNumber"
                         label="门诊号"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="room"
+                        prop="desk.deskName"
                         label="科室"
                         width="180">
                 </el-table-column>
@@ -43,12 +43,12 @@
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="ePhone"
+                        prop="registrationType"
                         label="挂号类型"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="ePhone"
+                        prop="registrationName"
                         label="经办人"
                         width="180">
                 </el-table-column>
@@ -58,18 +58,18 @@
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
-                    <template  #default="scope">
+                    <template #default="{row}">
                         <el-tooltip content="编辑" placement="top">
                             <el-button
                                     icon="el-icon-edit" size="mini"
-                                    @click="editEmp(scope.row)"></el-button>
+                                    @click="editEmp(row)"></el-button>
                         </el-tooltip>
 
 
                         <el-tooltip content="删除" placement="top">
                             <el-button
                                     icon="el-icon-delete" size="mini"
-                                    @click="deleteEmp(scope.row.eId)"></el-button>
+                                    @click="deleteEmp(row.eId)"></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -84,7 +84,7 @@
                         :page-sizes="[5, 10, 20, 40]"
                         :page-size="pagesize"
                         layout="total, sizes, prev, pager, next, jumper"
-                        :total="registrationTableData.length">
+                        total="10">
                 </el-pagination>
             </div>
 
@@ -97,26 +97,26 @@
             <el-form :model="registration" status-icon  ref="registration" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="门诊号" prop="eName">
-                            <el-input v-model="registration.eName" :disabled="true"></el-input>
+                        <el-form-item label="门诊号" prop="registrationNumber">
+                            <el-input v-model="registration.registrationNumber" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="状态" prop="eSex">
-                            <el-select v-model="value" disabled placeholder="请选择">
+                        <el-form-item label="状态" prop="registrationState">
+                            <el-select v-model="registration.registrationState" disabled placeholder="请选择">
                                 <el-option
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
+                                        v-for="item in stateOptions"
+                                        :key="item.stateValue"
+                                        :label="item.stateLabel"
+                                        :value="item.stateValue">
                                 </el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="挂号日期" prop="eSex">
+                        <el-form-item label="挂号日期" prop="registrationTime">
                             <el-date-picker
-                                    v-model="value1"
+                                    v-model="registration.registrationTime"
                                     type="date"
                                     placeholder="选择日期">
                             </el-date-picker>
@@ -124,8 +124,8 @@
                     </el-col>
 
                     <el-col :span="10">
-                        <el-form-item label="挂号类型" prop="eName">
-                            <el-select v-model="value" placeholder="请选择">
+                        <el-form-item label="挂号类型" prop="registrationType">
+                            <el-select v-model="registration.registrationType" placeholder="请选择">
                                 <el-option
                                         v-for="item in options"
                                         :key="item.value"
@@ -137,35 +137,51 @@
                     </el-col>
 
                     <el-col :span="10">
-                        <el-form-item label="科室" prop="eName">
-                            <el-select v-model="value" placeholder="请选择">
+                        <el-form-item label="科室" prop="room">
+                            <el-select v-model="registration.room" placeholder="请选择">
                                 <el-option
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
+                                        v-for="item in deskTableData"
+                                        :key="item.deskId"
+                                        :label="item.deskName"
+                                        :value="item.deskId">
                                 </el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="经办人" prop="eName">
-                            <el-input v-model="registration.ePhone"></el-input>
+                        <el-form-item label="经办人" prop="registrationName">
+                            <el-input v-model="registration.registrationName"></el-input>
                         </el-form-item>
                     </el-col>
+
+                  <el-col :span="10">
+                    <el-form-item label="诊疗卡号" prop="patientDataNumber">
+                      <el-select v-model="registration.patient.medicalCardNumber" placeholder="请选择" @change="findByPatient(registration.patient.medicalCardNumber)">
+                        <el-option
+                            v-for="item in patientTableData"
+                            :key="item.patientDataId"
+                            :label="item.medicalCardNumber"
+                            :value="item.medicalCardNumber">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :span="10">
+                    <el-form-item label="id" prop="patientDataId">
+                      <el-input :disabled="true" v-model="patientDataId"></el-input>
+                    </el-form-item>
+                  </el-col>
+
                     <el-col :span="10">
-                        <el-form-item label="病人姓名" prop="eName">
-                            <el-input v-model="registration.ePhone"></el-input>
+                        <el-form-item label="病人姓名" prop="patientDataName">
+                          <el-input :disabled="true" v-model="patientDataName"></el-input>
                         </el-form-item>
                     </el-col>
+
                     <el-col :span="10">
-                        <el-form-item label="诊疗卡号" prop="eName">
-                            <el-input v-model="registration.ePhone"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="身份证号码" prop="eName">
-                            <el-input v-model="registration.ePhone"></el-input>
+                        <el-form-item label="身份证号码" prop="patientDataCard">
+                            <el-input :disabled="true" v-model="patientDataCard"></el-input>
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -209,8 +225,8 @@
 
             <template #footer>
     <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button @click="ClearFrom">取 消</el-button>
+      <el-button type="primary" @click="saveRegistration">确 定</el-button>
     </span>
             </template>
         </el-dialog>
@@ -229,8 +245,20 @@
 
         data() {
             return {
+              patientDataId:'',
+              patientDataName:'',
+              patientDataCard:'',
                 value1:'',
                 registrationTableData:[],
+                list:[],
+                deskTableData:[],
+                patientTableData:[],
+                findPatient:[
+                  {
+                    patientDataId:'',
+                    patientDataName:'',
+                    patientDataCard:'',
+                  }],
                 dialogVisible: false,
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
@@ -238,12 +266,15 @@
                 //挂号对象
                 registration:{
                   registrationId:'',
-                  regsitrationNumber:'',
+                  registrationNumber:'',
+                  patientDataId:'',
                   room:'',
                   doctot:'',
                   registrationTime:'',
                   registrationFee:'',
                   registrationState:'',
+                  registrationType:'',
+                  registrationName:'',
                   patient:{
                     patientDataId:'',
                     patientDataCard:'',
@@ -251,17 +282,36 @@
                     patientDataPhone:'',
                     patientDataSex:'',
                     medicalCardNumber:''
+                  },
+                  desk:{
+                    deskId:'',
+                    deskName:'',
+                    deskTime:''
                   }
                 },
                 options: [{
-                    value: '选项1',
+                    value: '普通',
                     label: '普通'
                 }, {
-                    value: '选项2',
+                    value: '急诊',
                     label: '急诊'
                 }],
-                value: '',
-                activeName: 'first'
+              value:'',
+                stateOptions:[{
+                    stateValue:'0',
+                    stateLabel:'待就诊'
+                },{
+                    stateValue:'1',
+                  stateLabel: '待取药',
+                },{
+                  stateValue: '2',
+                  stateLabel: '待住院',
+                },{
+                  stateValue: '3',
+                  stateLabel: '待出院',
+                }],
+                stateValue: '1',
+                activeName: 'first',
             }
         },
         methods:{
@@ -279,7 +329,28 @@
                 this.axios.get("http://localhost:8088/registration")
                     .then((v) => {
                         this.registrationTableData = v.data;
-                        this.registration.regsitrationNumber= 'MZ'+ this.getProjectNum()+ Math.floor(Math.random() * 10000);
+                        this.registration.registrationNumber= 'MZ'+ this.getProjectNum()+ Math.floor(Math.random() * 10000);
+                    })
+            },
+            selectDesk(){
+                this.axios.get("http://localhost:8088/select-desk")
+              .then((v) =>{
+                this.deskTableData = v.data;
+              })
+            },
+            selectPatient(){
+              this.axios.get("http://localhost:8088/select-patient").then((v)=>{
+                this.patientTableData = v.data;
+              })
+            },
+            findByPatient(medicalCardNumber){
+                this.axios.get("http://localhost:8088/find-by-patient",{params:{
+                    medicalCardNumber:medicalCardNumber}})
+                    .then((v)=>{
+                      this.findPatient = v.data;
+                      this.patientDataId=this.findPatient[0].patientDataId
+                      this.patientDataName=this.findPatient[0].patientDataName
+                      this.patientDataCard=this.findPatient[0].patientDataCard
                     })
             },
 
@@ -295,18 +366,49 @@
             editEmp(row){
                 this.dialogVisible=true;
                 this.registration={...row}
+                this.registration.room=row.desk.deskId
+                this.registration.patient.medicalCardNumber=row.patient.medicalCardNumber
+                this.patientDataId=row.patient.patientDataId
+                this.patientDataName=row.patient.patientDataName
+                this.patientDataCard=row.patient.patientDataCard
             },
 
             ClearFrom(){
-                this.registration='';
+                this.registration={
+                  registrationId:'',
+                  // registrationNumber:'',
+                  room:'',
+                  doctot:'',
+                  registrationTime:'',
+                  registrationFee:'',
+                  registrationState:'',
+                  registrationType:'',
+                  registrationName:'',
+                  patient:{
+                    patientDataId:'',
+                    patientDataCard:'',
+                    patientDataName:'',
+                    patientDataPhone:'',
+                    patientDataSex:'',
+                    medicalCardNumber:''
+                  },
+                  desk:{
+                    deskId:'',
+                    deskName:'',
+                    deskTime:''
+                  }
+                };
+                this.patientDataName='';
+                this.patientDataCard='';
                 this.dialogVisible=false;
             },
-            save(){
+            saveRegistration(){
+              this.registration.patientDataId=this.patientDataId
                 this.axios.post("http://localhost:8088/save-registration",this.registration)
                     .then((v) => {
                         this.dialogVisible=false;
                         this.$message('操作成功！');
-                        this.initData(this.currPage, this.pageSize);
+                        this.initData(this.currentPage, this.pageSize);
 
                     })
             },
@@ -359,7 +461,8 @@
         },
         created() {
             this.initData();
-
+            this.selectDesk();
+            this.selectPatient();
         },
     }
 </script>

@@ -6,7 +6,7 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>门诊管理</el-breadcrumb-item>
-            <el-breadcrumb-item>划价管理</el-breadcrumb-item>
+            <el-breadcrumb-item>叫号管理</el-breadcrumb-item>
         </el-breadcrumb>
 
         <el-card>

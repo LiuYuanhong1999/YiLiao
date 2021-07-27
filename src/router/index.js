@@ -20,10 +20,10 @@ const routes=[
                 // meta:'挂号管理',
             },
             {
-                path:'/charging',
-                name:'chargingManager',
-                component:()=>import('/src/components/ZSX/opc/chargingManager.vue'),
-                // meta:'划价管理'
+                path:'/callNumber',
+                name:'callNumberManager',
+                component:()=>import('/src/components/ZSX/opc/callNumberManager.vue'),
+                // meta:'叫号管理'
             },
             {
                 path:'/charge',
