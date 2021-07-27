@@ -35,55 +35,42 @@
           :cell-style="{'text-align':'center'}"
       >
         <el-table-column
-            prop="eId"
+            prop="deptId"
             label="编号"
         >
         </el-table-column>
 
         <el-table-column
-            prop="eName"
+            prop="deptName"
             label="部门名称"
         >
         </el-table-column>
 
         <el-table-column
-            prop="eName"
-            label="类别"
+            prop="deptTime"
+            label="成立时间"
         >
         </el-table-column>
 
         <el-table-column
-            prop="eDate"
-            label="规格"
+            prop="deptNum"
+            label="人数"
         >
         </el-table-column>
 
-        <el-table-column
-            prop="eDate"
-            label="负责院"
-        >
-        </el-table-column>
+        <el-table-column label="操作"  align="center">
 
-        <el-table-column
-            prop="eDate"
-            label="单价（元）"
-        >
-        </el-table-column>
+          <template  #default="scope">
 
-        <el-table-column
-            prop="eName"
-            label="执行人"
-        >
-        </el-table-column>
-
-        <el-table-column label="操作" >
-          <template #default="scope">
-            <el-tooltip content="查看" placement="top">
+            <el-tooltip content="编辑" placement="top">
               <el-button
-                  icon="el-icon-view" size="mini"
-                  @click="editEmp(scope.row)"></el-button>
+                  icon="el-icon-scissors" size="mini"
+                  @click="updateDesk(scope.row),dialogVisible=true">编辑</el-button>
             </el-tooltip>
+
+
           </template>
+
         </el-table-column>
 
       </el-table>
@@ -106,29 +93,35 @@
 
     <!--   新增按钮表单   -->
     <el-dialog
+        @close="clearDept()"
         title="提示"
         v-model="dialogVisible"
         width="60%"
         :before-close="handleClose">
-      <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+      <el-form :model="dept" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
         <el-row>
           <el-col :span="10">
-            <el-form-item label="类别名字" prop="eName">
-              <el-input v-model="ruleForm.eName"></el-input>
+            <el-form-item label="部门名称" >
+              <el-input v-model="dept.deptName"></el-input>
 
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="规格" prop="eSex">
-              <el-input v-model="ruleForm.eSex"></el-input>
+            <el-form-item label="部门成立时间" >
+              <el-date-picker
+                  format="YYYY-MM-DD HH:mm:ss"
+                  v-model="dept.deptTime"
+                  type="datetime"
+                  placeholder="选择日期时间" :disabled="is">
+              </el-date-picker>
             </el-form-item>
           </el-col>
         </el-row>
 
         <el-row>
           <el-col :span="10">
-            <el-form-item label="负责院" prop="eName">
-              <el-input v-model="ruleForm.ePhone"></el-input>
+            <el-form-item label="部门人数" >
+              <el-input v-model="dept.deptNum"></el-input>
 
             </el-form-item>
           </el-col>
@@ -137,8 +130,8 @@
 
       <template #footer>
       <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+        <el-button @click="clearDept(),dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addDept(),dialogVisible = false">确 定</el-button>
       </span>
       </template>
     </el-dialog>
@@ -161,18 +154,18 @@ export default {
       currentPage: 1, //初始页
       pagesize: 10,    //    每页的数据
       dialogVisible: false,
-      ruleForm:{
-        eId:'',
-        eName:'',
-        eSex:'',
-        ePhone:'',
-        eDate:''
+      is:false,
+      dept:{
+        deptId:'',
+        deptName:'',
+        deptTime:'',
+        deptNum:''
       }
     }
   },
   methods: {
     initData() {
-      this.axios.get("http://localhost:8088/emp")
+      this.axios.get("http://localhost:8088/sleDept")
           .then((v) => {
             this.tableData = v.data;
           })
@@ -195,7 +188,37 @@ export default {
             done();
           })
           .catch(_ => {});
+    },
+
+    // 新增部门
+    addDept(){
+      this.axios.post("http://localhost:8088/addDept",this.dept)
+          .then((v)=>{
+            this.initData()
+          })
+    },
+
+    // 修改部门
+    updateDesk(dept){
+      this.is = true;
+      this.dept.deptId = dept.deptId
+      this.dept.deptName = dept.deptName
+      this.dept.deptTime = dept.deptTime
+      this.dept.deptNum = dept.deptNum
+    },
+
+    // 清空表单
+    clearDept(){
+      this.dept = {
+        deptId:'',
+        deptName:'',
+        deptTime:'',
+        deptNum:''
+      }
     }
+
+
+
 
   },
   created() {

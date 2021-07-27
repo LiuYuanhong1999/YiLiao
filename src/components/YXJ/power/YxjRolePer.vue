@@ -20,6 +20,7 @@
         <el-button @click="dialogVisible = true" icon="el-icon-circle-plus" type="success"
                    style="float: left;margin-left: 800px">
           新增角色
+
         </el-button>
 
       </el-row>
@@ -27,44 +28,40 @@
 
       <el-table
 
-
           :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
           border stripe style="width: 100%;margin-top: 10px"
           :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"
           :cell-style="{'text-align':'center'}"
       >
         <el-table-column
-            prop="eId"
+            prop="roleId"
             label="编号"
         >
         </el-table-column>
 
         <el-table-column
-            prop="eName"
+            prop="roleName"
             label="角色名"
         >
         </el-table-column>
 
         <el-table-column
-            prop="eName"
-            label="角色描述"
+            prop="roleTime"
+            label="创建时间"
         >
         </el-table-column>
 
 
         <el-table-column label="操作">
-          <template #default="scope">
-            <el-tooltip content="查看" placement="top">
-              <el-button
-                  icon="el-icon-view" size="mini"
-                  @click="editEmp(scope.row)"></el-button>
-            </el-tooltip>
+          <template v-slot:default="r">
+            <el-button type="primary" size="medium"  @click="grantDialog=true,roleId=r.row.roleId">授权</el-button>
           </template>
-
         </el-table-column>
 
       </el-table>
       <br>
+
+
       <!--分页-->
       <div class="fy_div">
         <el-pagination
@@ -83,42 +80,59 @@
 
     <!--   新增按钮表单   -->
     <el-dialog
-        title="New Role"
+        @close="clearRole()"
+        title="提示"
         v-model="dialogVisible"
         width="60%"
         :before-close="handleClose">
-      <el-form ref="form" :model="form" label-width="80px">
+      <el-form :model="role" status-icon   label-width="100px" class="demo-ruleForm">
+        <el-row>
+          <el-col :span="10">
+            <el-form-item label="角色名称" prop="eName">
+              <el-input v-model="role.roleName"></el-input>
 
-        <el-form-item label="角色名">
-          <el-input v-model="form.name" style="width: 400px;margin-left: -300px" placeholder="请输入角色名"></el-input>
-        </el-form-item>
-
-
-        <el-form-item label="角色描述 ">
-          <el-input type="textarea" v-model="form.desc" style="width: 400px;margin-left: -300px"
-                    placeholder="请输入角色描述"></el-input>
-        </el-form-item>
-
-        <el-form-item label="菜单">
-
-
-          <el-tree
-              style="margin-left: 10px"
-              :data="data"
-              show-checkbox
-              node-key="id"
-              :props="defaultProps">
-          </el-tree>
-
-
-        </el-form-item>
+            </el-form-item>
+          </el-col>
+          <el-col :span="10">
+            <el-form-item label="角色成立时间" >
+              <el-date-picker
+                  format="YYYY-MM-DD HH:mm:ss"
+                  v-model="role.roleTime"
+                  type="datetime"
+                  placeholder="选择日期时间" >
+              </el-date-picker>
+            </el-form-item>
+          </el-col>
+        </el-row>
 
       </el-form>
 
       <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="clearRole(),dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="addRole(),dialogVisible = false">确 定</el-button>
+      </span>
+      </template>
+
+
+    <!--   授权部分   -->
+    </el-dialog>
+
+    <el-dialog v-model="grantDialog" title="权限列表">
+      <el-tree
+          node-key="funcId"
+          :data="functions"
+          :props="props"
+          show-checkbox
+          :default-checked-keys="roleFun"
+          default-expand-all
+          ref="funcTree">
+      </el-tree>
+
+      <template #footer>
         <span class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+          <el-button type="primary" @click="savaGrant()">确 定</el-button>
+          <el-button @click="grantDialog = false">取 消</el-button>
         </span>
       </template>
 
@@ -134,6 +148,7 @@
 </template>
 
 <script>
+import qs from 'qs'
 export default {
   name: "YxjRolePer",
   data() {
@@ -142,65 +157,40 @@ export default {
       currentPage: 1, //初始页
       pagesize: 10,    //    每页的数据
       dialogVisible: false,
-      form: {
-        name: '',
-        region: '',
-        date1: '',
-        date2: '',
-        delivery: false,
-        type: [],
-        resource: '',
-        desc: ''
+      grantDialog:false,//授权弹框
+      roleId:'',//获取角色id
+      role: {
+        roleId:'',
+        roleName:'',
+        roleTime:''
       },
-
-      //树形控件
-      data: [{
-        id: 1,
-        label: '一级 1',
-        children: [{
-          id: 4,
-          label: '二级 1-1',
-          children: [{
-            id: 9,
-            label: '三级 1-1-1'
-          }, {
-            id: 10,
-            label: '三级 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: '一级 2',
-        children: [{
-          id: 5,
-          label: '二级 2-1'
-        }, {
-          id: 6,
-          label: '二级 2-2'
-        }]
-      }, {
-        id: 3,
-        label: '一级 3',
-        children: [{
-          id: 7,
-          label: '二级 3-1'
-        }, {
-          id: 8,
-          label: '二级 3-2'
-        }]
-      }],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
+      functions:[],// 权限组
+      roleFun:[2,3],// 已经授予的权限
+      props: {//树形控件
+        id:'funcId',
+        label: 'funcMeta',
+        children: 'children'
+      },
 
     }
   },
   methods: {
     initData() {
-      this.axios.get("http://localhost:8088/emp")
+      this.axios.get("http://localhost:8088/allRole")
           .then((v) => {
             this.tableData = v.data;
+          })
+      this.axios.get("http://localhost:8088/allFunc")
+          .then((v) => {
+            this.functions = v.data;
+          })
+
+      // 取得当前登录用户ID
+      let userId =this.$store.state.token.userId;
+      console.log(userId)
+      this.axios.get("http://localhost:8088/allGrantFun",{params:{userId:userId}})
+          .then((v) => {
+            this.roleFun = v.data;
           })
     },
 
@@ -214,6 +204,24 @@ export default {
       console.log(this.currentPage)  //点击第几页
     },
 
+    // 新增角色
+    addRole(){
+      this.axios.post("http://localhost:8088/addRole",this.role)
+          .then((v) =>{
+            this.initData()
+          })
+    },
+
+    // 清空表单
+    clearRole(){
+      this.role = {
+        roleId:'',
+        roleName:'',
+        roleTime:''
+      }
+    },
+
+
     //按钮表单弹出
     handleClose(done) {
       this.$confirm('确认关闭？')
@@ -223,7 +231,23 @@ export default {
           .catch(_ => {
           });
     },
-    //
+
+    // 树形控件开始
+    handleCheckChange(data, checked, indeterminate) {
+      console.log(data, checked, indeterminate);
+    },
+
+    // 保存树形数据
+    savaGrant(){
+      var checkedKeys = this.$refs.funcTree.getCheckedKeys();
+      var grant = JSON.stringify({roleId:this.roleId,checkedKeys:checkedKeys})
+      this.axios.post("http://localhost:8088/saveGrant",qs.stringify({grant:grant}))
+          .then((v) =>{
+            this.functions = v.data;
+            this.grantDialog = false;
+            this.roleId = '';
+          })
+    },
 
 
   },

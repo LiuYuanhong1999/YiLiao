@@ -104,7 +104,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="科室成立时间">
+            <el-form-item label="科室成立时间" >
               <el-date-picker
                   format="YYYY-MM-DD HH:mm:ss"
                   v-model="desk.deskTime"

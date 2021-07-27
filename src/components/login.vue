@@ -16,15 +16,15 @@
     <div class="loginContainer">
 
       <h2 class="title">医院内部管理系统登录</h2>
-      <el-form ref="loginForm" :model="loginForm" label-width="80px">
-        <el-form-item prop="userName">
+      <el-form ref="logForm" :model="loginForm" label-width="80px" :rules="rules">
+        <el-form-item prop="userName" >
           <el-input prefix-icon="el-icon-user" placeholder="请输入用户名" v-model="loginForm.userName"></el-input>
         </el-form-item>
-        <el-form-item prop="userPass">
+        <el-form-item prop="userPass" >
           <el-input prefix-icon="el-icon-lock" class="inputpsw" placeholder="请输入密码" v-model="loginForm.userPass" ></el-input>
         </el-form-item>
         <el-form-item class="btus">
-          <el-button type="primary" @click="login()">登录</el-button>
+          <el-button type="primary" @click="submitForm()">登录</el-button>
 
         </el-form-item>
       </el-form>
@@ -40,10 +40,36 @@ name: "login",
   data(){
   return{
     loginForm: {
-      userName: 'admin',
-      userPass:'123456'
+      userName: '',
+      userPass:''
     },
-  }
+    rules: {
+      userName: [
+        { required:true,
+          message:"用户名不能为空",
+          trigger: 'blur'
+        },
+        {
+          min: 3,
+          max:10,
+          message: "用户名3—5位",
+          trigger: 'blur'
+        }
+      ],
+      userPass: [
+        { required:true,
+          message:"密码不能为空",
+          trigger: 'blur'
+        },
+        {
+          min:3,
+          max:10,
+          message: "密码3-11位",
+          trigger: 'blur'
+        }
+      ],
+    }
+  };
   },
   methods:{
     resetLoginForm(){
@@ -52,20 +78,44 @@ name: "login",
         userPass: ''
       }
     },
-    login(){
-      this.axios.post("http://localhost:8088/login",this.loginForm)
-          .then(res=>{
-            console.log(res.data);
-            if(typeof(res.data) == 'string'){
+    submitForm(){
+      this.$refs.logForm.validate(valid =>{
+        if(valid){
+          this.axios.post("http://localhost:8088/login",this.loginForm).then((res) =>{
+            if(res.data === 'ok'){
+                this.$store.state.token = res.data;
+                sessionStorage.setItem("token",JSON.stringify(res.data))
+                // 存入state
+                this.$router.push("/registration")
+              }
+          }).catch(() =>{
 
-              this.$message.error(res.data);
-            }else{
+          })
+        }else {
+          console.log('验证失败');
+          return false;
+        }
 
-              window.sessionStorage.setItem("token",JSON.stringify(res.data));
-              this.$router.push("/registration");
-            }
-          });
-    },
+      })
+    }
+
+
+
+
+    // login(){
+    //   this.axios.post("http://localhost:8088/login",this.loginForm)
+    //       .then(res=>{
+    //         console.log(res.data);
+    //         if(typeof(res.data) == 'string'){
+    //
+    //           this.$message.error(res.data);
+    //         }else{
+    //
+    //           window.sessionStorage.setItem("token",JSON.stringify(res.data));
+    //           this.$router.push("/registration");
+    //         }
+    //       });
+    // },
   },
   created() {
     //先清空
