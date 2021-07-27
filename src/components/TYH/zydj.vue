@@ -98,8 +98,8 @@
                 </el-table-column>
             </el-table>
             <br>
-            <!--分页-->
 
+            <!--分页124-->?
         </el-card>
         <el-dialog
                 title="提示"
@@ -158,7 +158,7 @@
 
                         </el-form-item>
                     </el-col>
-
+1
                 </el-row>
             </el-form>
 
@@ -258,9 +258,9 @@
                     hosnotWar: '',
                     hosnotZt: '',
                     yxjDeskEntity:{
-                        deskId:"",
-                        deskName:"",
-                        deskTime:"",
+                        deskId:'',
+                        deskName:'',
+                        deskTime:'',
                     },
                     tyhPatientEntity:{
                         patientId:'',
