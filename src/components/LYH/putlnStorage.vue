@@ -140,7 +140,6 @@
         </el-pagination>
       </div>
       <el-dialog
-
           v-model="dialogVisible"
           width="80%"
           :before-close="handleClose">

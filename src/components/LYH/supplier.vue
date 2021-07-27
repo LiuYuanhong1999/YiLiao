@@ -39,7 +39,16 @@
 
 
 
+<el-row>
+  <el-col :span="4">
+    <el-button
+        @click="dialogVisible = true"
+        type="primary"
+    >新增</el-button>
 
+
+  </el-col>
+</el-row>
 
 
       <!-- 数据表格开始 -->
@@ -91,19 +100,73 @@
 
 
 
+      <el-dialog
+          v-model="dialogVisible"
+          width="60%"
+          :before-close="handleClose">
+        <div style="margin-top: -30px">—————————————————————<span style="color:red">新增药品</span>———————————————————————</div>
+        <div style="margin-top: 10px"/>
 
 
+    <el-form :model="ruleForm"  :rules="rules" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+
+      <el-row>
+        <el-col :span="10">
+          <el-form-item label="药品名:" prop="drugName">
+            <el-input v-model="ruleForm.drugName"></el-input>
+          </el-form-item>
+        </el-col>
 
 
+        <el-col :span="10">
+
+          <el-form-item label="供应商:" prop="supplierId">
+            <el-select v-model="ruleForm.supplierId" value-key="supplierId">
+              <el-option v-for="item in providerOptions" :key="item.supplierId" :label="item.supplierName" :value="item.supplierId"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <el-row>
+        <el-col :span="10">
+          <el-form-item label="类型">
+          <el-select v-model="ruleForm.drugState"></el-select>
+          </el-form-item>
+        </el-col>
+
+        <el-col :span="10">
+        <el-form-item label="单价" prop="drugPrice">
+          <el-input v-model="ruleForm.drugPrice"></el-input>
+        </el-form-item>
+        </el-col>
+      </el-row>
 
 
+      <el-row>
+        <el-col :span="10">
+          <el-form-item label="规格:">
+            <el-select v-model="ruleForm.drugGuige"></el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="10">
+          <el-form-item label="剂型:">
+            <el-select v-model="ruleForm.drugJixin"></el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
 
+    </el-form>
+        <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible = false">取 消</el-button>
+      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    </span>
+        </template>
+      </el-dialog>
 
     </el-card>
-
-
-
 </div>
 </template>
 
@@ -117,11 +180,44 @@ export default {
       tableDate:[],
       ruleForm:{
         supplierId:'',
+        drugGuige: '',
+        drugState:"",
+        drugPrice: "",
+        drugName:'',
       },
       providerOptions:[],
+      dialogVisible:false,
+
+      rules:{
+        drugPrice: [
+          {
+            required: true,
+            message: "请输入金额",
+            trigger: "change"
+          },
+          {
+            pattern: /^(([1-9]{1}\d*)|(0{1}))(\.\d{1,2})?$/,
+            message: "请输入合法的金额数字，最多两位小数",
+            trigger: "change"
+          }
+        ],
+
+        supplierId: [{required:true,message:'请选择供应商',trigger:"change"}],
+        drugName: [{required:true,message:'请输入药品',trigger:"change"}]
+      },
+
+
     }
   },
   methods:{
+
+
+
+
+
+
+
+
 
     initDate(){
       this.axios.get("http://localhost:8088/find-drugAll")
@@ -131,7 +227,11 @@ export default {
     },
 
 
+insertDrug(){
 
+      this.axios.post()
+
+},
 
 
 

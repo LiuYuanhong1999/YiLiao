@@ -115,7 +115,7 @@
             <router-link to="/diaoboDetails"><el-menu-item index="6-6">药库调拨单详情</el-menu-item></router-link>
             <router-link to="/diaoboWrite"><el-menu-item index="6-7">药库调拨记录</el-menu-item></router-link>
             <router-link to="/return"><el-menu-item index="6-8">药库退货</el-menu-item></router-link>
-            <router-link to="/supplier"><el-menu-item index="6-9">供应商管理</el-menu-item></router-link>
+            <router-link to="/supplier"><el-menu-item index="6-9">药品管理</el-menu-item></router-link>
 
 
           </el-submenu>
