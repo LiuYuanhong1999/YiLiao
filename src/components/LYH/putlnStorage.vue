@@ -180,7 +180,7 @@
                  {required: true,message: '总金额不能为空'},
               ]"
                 >
-                  <el-input ty v-model="ruleForm.drugPrice" autocomplete="off" style="width: 200px;"></el-input>
+                  <el-input ty v-model="ruleForm.zPrice" autocomplete="off" style="width: 200px;"></el-input>
                 </el-form-item>
               </el-col>
 
@@ -189,7 +189,6 @@
                 <el-form-item label="搜索">
 
                   <el-input>
-                    111111sdsdsdsd
                   </el-input>
 
                 </el-form-item>
@@ -215,9 +214,11 @@
 <!--                <el-input v-model="ruleForm.procurementId"></el-input>-->
 <!--              </el-table-column>-->
               <el-table-column property="" label="数量">
+
                 <template #default="scope" style="text-align: center">
                   <el-input-number style="width: 100px;text-align: center" v-model="scope.row.numbers" controls-position="right" @change="handleChange" :min="1" :max="20"></el-input-number>
                 </template>
+
               </el-table-column>
               <el-table-column property="" label="参考价格">
                 <template #default="scope" style="text-align: center">
@@ -225,7 +226,7 @@
                 </template>
               </el-table-column>
             </el-table>
-
+{{reversedMessage}}---1212121212
             <!--分页-->
             <div class="fy_div">
               <el-pagination
@@ -273,11 +274,10 @@ export default {
     return {
 
       tableDate:[],
-      gridData: [
-
-      ],
+      gridData: [],
       dialogVisible:false,
       ruleForm: {
+        zPrice:0,
         procurementState:'0',
         procurementId:'',
         supplierId:'',
@@ -307,17 +307,31 @@ export default {
 
     }
   },
+  // mounted() {
+  //     zPrice:function(){
+  //     var Z
+  // //   }
+  // },
   methods:{
+
+    allPrice(){
+      for (var i=0;i<this.lyhProcurementDetailsEntities.length;i++){
+      this.ruleForm.zPrice=this.lyhProcurementDetailsEntities[i].drugPrice*this.lyhProcurementDetailsEntities[i].numbers
+      }
+    },
+
     //小表格
     selectionLineChangeHandle (val) {
       this.lyhProcurementDetailsEntities = val;
+
       console.log(this.lyhProcurementDetailsEntities);
       for(var i = 0; i< this.lyhProcurementDetailsEntities.length; i++){
+        // this.ruleForm.zPrice+=this.lyhProcurementDetailsEntities[i].drugPrice*this.lyhProcurementDetailsEntities[i].numbers;
         console.log('id:'+this.lyhProcurementDetailsEntities[i].drugId)
         console.log('number:'+this.lyhProcurementDetailsEntities[i])
         console.log('编号:'+this.lyhProcurementDetailsEntities[i].procurementId)
         console.log('数量:'+this.lyhProcurementDetailsEntities[i].numbers)
-      }
+      };
     },
     //大表格
     selectionLineChangeHandle2 (val) {
@@ -455,7 +469,16 @@ deleteById(){
     },
 
   },
-
+  computed:{
+    reversedMessage: function () {
+      var result=0;
+      for(let i=0;i<this.lyhProcurementDetailsEntities.length;i++) {
+        console.log("qedqwdawa")
+        result+= this.lyhProcurementDetailsEntities[i].drugPrice
+      }
+      return result;
+    }
+  },
 
   created() {
 
@@ -490,5 +513,17 @@ a {
 .fy_div{
   margin-top:20px;
   margin-left: -200px;
+}
+a,
+a:hover,
+a:active,
+a:visited,
+a:link,
+a:focus {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  background: none;
+  text-decoration: none;
 }
 </style>

@@ -250,7 +250,11 @@ const routes=[
                 component:()=>import('/src/components/LYH/diaoboWrite.vue')
             },
 
-
+            {
+              path: '/drug',
+                name: 'drug',
+                component:()=>import('/src/components/LYH/drug.vue')
+            },
             //yxj-体检管理
             {
                 path: '/Yxjcategory',

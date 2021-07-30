@@ -40,8 +40,8 @@ name: "login",
   data(){
   return{
     loginForm: {
-      userName: '',
-      userPass:''
+      userName: 'admin',
+      userPass:'123456'
     },
     rules: {
       userName: [
