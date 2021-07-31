@@ -255,6 +255,11 @@ const routes=[
                 name: 'drug',
                 component:()=>import('/src/components/LYH/drug.vue')
             },
+            {
+                path: '/pan',
+                name: 'pandian',
+                component:()=>import('/src/components/LYH/pandian.vue')
+            },
             //yxj-体检管理
             {
                 path: '/Yxjcategory',

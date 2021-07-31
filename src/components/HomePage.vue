@@ -111,12 +111,13 @@
             <router-link to="/auditList"><el-menu-item index="6-2">入库审核</el-menu-item></router-link>
             <router-link to="/drugCity"><el-menu-item index="6-3">药品库存</el-menu-item></router-link>
             <router-link to="/CheckDrugStorage"><el-menu-item index="6-4">库存详情</el-menu-item></router-link>
-            <router-link to="/diaobo"><el-menu-item index="6-5">药库调拨</el-menu-item></router-link>
-            <router-link to="/diaoboDetails"><el-menu-item index="6-6">药库调拨单详情</el-menu-item></router-link>
-            <router-link to="/diaoboWrite"><el-menu-item index="6-7">药库调拨记录</el-menu-item></router-link>
-            <router-link to="/return"><el-menu-item index="6-8">采购退货</el-menu-item></router-link>
-            <router-link to="/supplier"><el-menu-item index="6-9">药品管理</el-menu-item></router-link>
-            <router-link to="/drug"><el-menu-item index="6-10">供应商</el-menu-item></router-link>
+            <router-link to="/pan"><el-menu-item index="6-5">药品盘点</el-menu-item></router-link>
+            <router-link to="/diaobo"><el-menu-item index="6-6">药库调拨</el-menu-item></router-link>
+            <router-link to="/diaoboDetails"><el-menu-item index="6-7">药库调拨单详情</el-menu-item></router-link>
+            <router-link to="/diaoboWrite"><el-menu-item index="6-8">药库调拨记录</el-menu-item></router-link>
+            <router-link to="/return"><el-menu-item index="6-9">采购退货</el-menu-item></router-link>
+            <router-link to="/supplier"><el-menu-item index="6-10">药品管理</el-menu-item></router-link>
+            <router-link to="/drug"><el-menu-item index="6-11">供应商</el-menu-item></router-link>
 
           </el-submenu>
           <el-submenu index="7">
