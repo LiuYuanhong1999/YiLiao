@@ -52,10 +52,6 @@
                         prop="hosnotPrice"
                         label="预计住院费用">
                 </el-table-column>
-                <el-table-column
-                        prop=""
-                        label="通知说明">
-                </el-table-column>
                 <el-table-column  label="操作">
                     <template  #default="scope">
                         <el-tooltip content="编辑" placement="top">

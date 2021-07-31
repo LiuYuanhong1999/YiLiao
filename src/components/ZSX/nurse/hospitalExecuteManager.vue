@@ -16,11 +16,9 @@
                 <el-col :span="4">
                     <el-input placeholder="请输入住院医嘱执行号" v-model="eaaOrderNumber"  ></el-input>
                 </el-col>
-
-                <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
                 <!--打印导入导出-->
-                <el-button type="primary" @click="dialogVisible = true">增加</el-button>
-            </el-row>
+            </el-row><br><br>
+            今日医嘱<br><br>
             <el-table
 
                     stripe
@@ -28,58 +26,64 @@
                     :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             >
                 <el-table-column
-                        prop="eId"
-                        label="住院医嘱执行号"
-                        width="180">
+                        prop="executeId"
+                        label="住院医嘱执行号">
                 </el-table-column>
                 <el-table-column
-                        prop="eName"
-                        label="住院号"
-                        width="180">
+                        prop="tyhPatientEntity.tyhHosregEntity.hosregNum"
+                        label="住院号">
                 </el-table-column>
                 <el-table-column
-                        prop="eSex"
-                        label="医嘱类型"
-                        width="180">
+                        prop="tyhPatientEntity.patientName"
+                        label="病人姓名">
                 </el-table-column>
                 <el-table-column
-                        prop="ePhone"
-                        label="处方号"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="执行检况"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="执行情况"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="执行护士"
-                        width="180">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="操作人"
-                        width="180">
-                </el-table-column>
-                <el-table-column  label="操作" width="130px">
+                        label="执行天数">
                     <template  #default="scope">
-                        <el-tooltip content="编辑" placement="top">
+                    {{"第"+scope.row.executeDay+"天"}}
+                    </template>
+                </el-table-column>
+                <el-table-column
+                        prop="executeExp"
+                        label="注意事项">
+                </el-table-column>
+                <el-table-column
+                        prop="executeZt"
+                        label="状态">
+                    <template #default="scope">
+                        <template v-if="scope.row.executeZt =='0'">
+                            待执行
+                        </template>
+                        <template v-if="scope.row.executeZt =='1'">
+                            发药中
+                        </template>
+                        <template v-if="scope.row.executeZt =='2'">
+                            已发药
+                        </template>
+                        <template v-if="scope.row.executeZt =='3'">
+                            执行完毕
+                        </template>
+                    </template>
+                </el-table-column>
+                <el-table-column  label="操作">
+                    <template  #default="scope">
+                        <el-tooltip content="详情" placement="top">
                             <el-button
-                                    icon="el-icon-edit" size="mini"
-                                    @click="editEmp(scope.row)"></el-button>
+                                    icon="el-icon-view" size="mini"
+                                    @click="hsxq(scope.row.executeId)"></el-button>
                         </el-tooltip>
 
 
-                        <el-tooltip content="删除" placement="top">
+                        <el-tooltip content="申请发药" placement="top">
                             <el-button
-                                    icon="el-icon-delete" size="mini"
-                                    @click="deleteEmp(scope.row.eId)"></el-button>
+                                    icon="el-icon-circle-plus" size="mini"
+                                    @click="updata1(scope.row.executeId)"></el-button>
+                        </el-tooltip>
+
+                        <el-tooltip content="执行完毕" placement="top">
+                            <el-button
+                                    icon="el-icon-success" size="mini"
+                                    @click="updata2(scope.row.executeId)"></el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -99,84 +103,6 @@
             </div>
 
         </el-card>
-        <el-dialog
-                title="新增住院医嘱"
-                v-model="dialogVisible"
-                width="60%"
-                :before-close="handleClose">
-            <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-row>
-                    <el-col :span="10">
-                        <el-form-item label="医嘱执行号" prop="eName">
-                            <el-input v-model="ruleForm.eName"></el-input>
-
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="住院号" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="住院状态" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
-                </el-row>
-                <el-row>
-                    <el-table
-                            :data="tableData"
-                            style="width: 100%">
-                        <el-table-column
-                                prop="date"
-                                label="处方号">
-                        </el-table-column>
-                        <el-table-column
-                                prop="name"
-                                label="医嘱类型">
-                        </el-table-column>
-                        <el-table-column
-                                prop="date"
-                                label="医嘱状态">
-                        </el-table-column>
-                        <el-table-column
-                                prop="name"
-                                label="处方日期">
-                        </el-table-column>
-                        <el-table-column
-                                prop="date"
-                                label="执行次数">
-                        </el-table-column>
-                        <el-table-column
-                                prop="date"
-                                label="最新医嘱执行号">
-                        </el-table-column>
-                        <el-table-column
-                                prop="date"
-                                label="最新执行日期">
-                        </el-table-column>
-                        <el-table-column
-                                prop="date"
-                                label="最新执行时间">
-                        </el-table-column>
-                        <el-table-column
-                                prop="date"
-                                label="最新执行检况">
-                        </el-table-column>
-                    </el-table>
-                </el-row>
-                <el-row>
-
-                </el-row>
-            </el-form>
-
-            <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-    </span>
-            </template>
-        </el-dialog>
 
 
 
@@ -206,18 +132,26 @@
             }
         },
         methods:{
+            hsxq(s){
+                this.$router.push({path: '/hsxq',query:{ id:s}});
+            },
 
-            // initData(page,size){
-            //   this.axios.get("http://localhost:8088/emp-mgr", {params: {pageNum: page, size: size}})
-            //       .then((v) => {
-            //         this.tableData = v.data.rows;
-            //         this.totalSize = v.data.total;
-            //
-            //       })
-            // },
+            updata1(s){
+                this.axios.get("http://localhost:8088/updata1-execute",{params:{id:s}})
+                    .then((v) => {
+                        this.initData()
+                    })
+            },
+
+            updata2(s){
+                this.axios.get("http://localhost:8088/updata2-execute",{params:{id:s}})
+                    .then((v) => {
+                        this.initData()
+                    })
+            },
 
             initData(){
-                this.axios.get("http://localhost:8088/emp")
+                this.axios.get("http://localhost:8088/find-execute")
                     .then((v) => {
                         this.tableData = v.data;
                     })
@@ -232,44 +166,7 @@
                 this.currentPage = currentPage;
                 console.log(this.currentPage)  //点击第几页
             },
-            editEmp(row){
-                this.dialogVisible=true;
-                this.ruleForm.eName=row.eName;
-                this.ruleForm.ePhone=row.ePhone;
-                this.ruleForm.eId=row.eId;
-                this.ruleForm.eSex=row.eSex;
-            },
 
-            ClearFrom(){
-                this.ruleForm='';
-                this.dialogVisible=false;
-            },
-            addEmp(){
-                this.axios.post("http://localhost:8088/add-emp",this.ruleForm)
-                    .then((v) => {
-                        this.dialogVisible=false;
-                        this.$message('操作成功！');
-                        this.initData(this.currPage, this.pageSize);
-
-                    })
-            },
-
-            deleteEmp(id){
-                this.$confirm('你确定要删除该条信息吗？', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'},
-                    this.axios.post("http://localhost:8088/del-emp",qs.stringify({eId: id
-                    })))
-                    .then((v) => {
-                        this.$message('删除成功！');
-                        this.initData(this.currPage, this.pageSize);
-                    })
-            },
-
-            pageChange(p) {
-                this.initData(p, this.pageSize)
-            },
             handleClose(done) {
                 this.$confirm('确认关闭？')
                     .then(_ => {
