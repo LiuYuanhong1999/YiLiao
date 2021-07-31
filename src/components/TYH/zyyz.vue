@@ -132,27 +132,27 @@
                         </el-drawer>
                     </el-table-column>
                     <el-table-column
-                            prop="tyhRecipeEntity.recipeId"
+                            prop="recipeId"
                             label="处方号"
                             width="60">
                     </el-table-column>
                     <el-table-column
-                            prop="tyhRecipeEntity.tyhPatientEntity.patientName"
+                            prop="tyhPatientEntity.patientName"
                             label="病人姓名"
                             width="70">
                     </el-table-column>
                     <el-table-column
-                            prop="tyhRecipeEntity.recipeDate"
+                            prop="recipeDate"
                             label="处方时间"
                             width="150">
                     </el-table-column>
                     <el-table-column
-                            prop="tyhRecipeEntity.recipeDay"
+                            prop="recipeDay"
                             label="执行天数"
                             width="70">
                     </el-table-column>
                     <el-table-column
-                            prop="tyhRecipeEntity.recipePrice"
+                            prop="recipePrice"
                             label="处方金额"
                             width="70">
                     </el-table-column>
@@ -161,7 +161,7 @@
                             <el-tooltip content="查看" placement="top">
                                 <el-button
                                         icon="el-icon-edit" size="mini"
-                                        @click=""></el-button>
+                                        @click="xiangxi(scope.row)"></el-button>
                             </el-tooltip>
                             <el-tooltip content="处方作废" placement="top">
                                 <el-button
@@ -189,7 +189,7 @@
                     <el-col :span="10">
                         <el-form-item label="处方时间" prop="">
                             <el-date-picker
-                                    v-model="rdFrom.tyhRecipeEntity.recipeDate"
+                                    v-model="rdFrom.recipeDate"
                                     type="datetime"
                                     placeholder="选择日期时间">
                             </el-date-picker>
@@ -197,7 +197,7 @@
                     </el-col>
                     <el-col :span="10">
                         <el-form-item label="注意事项" prop="">
-                            <el-input v-model="rdFrom.tyhRecipeEntity.recipeExplain"></el-input>
+                            <el-input v-model="rdFrom.recipeExplain"></el-input>
 
                         </el-form-item>
                     </el-col>
@@ -206,17 +206,26 @@
                 <el-row>
                     <el-col :span="10">
                         <el-form-item label="执行天数" prop="">
-                            <el-input v-model="rdFrom.tyhRecipeEntity.recipeDay"></el-input>
+                            <el-input v-model="rdFrom.recipeDay"></el-input>
 
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="处方金额" prop="">
-                            <el-input v-model="rdFrom.tyhRecipeEntity.recipePrice"></el-input>
+                        <el-form-item label="病人姓名" prop="">
+                            <el-input disabled v-model="rdFrom.tyhPatientEntity.patientName"></el-input>
 
                         </el-form-item>
                     </el-col>
-                </el-row><br>
+                </el-row>
+                <el-row>
+                    <el-col :span="10">
+                        <el-form-item label="处方金额" prop="">
+                            <el-input disabled v-model="rdFrom.recipePrice"></el-input>
+
+                        </el-form-item>
+                    </el-col>
+                </el-row>
+                <br>
                 <el-form label-width="80px">
                     <el-button @click="xzxm=true">选择项目</el-button><br><br>
                     药品
@@ -230,7 +239,7 @@
                         <el-table-column
                                 label="数量">
                             <template  #default="scope">
-                                <el-input v-model="scope.row[rdFrom.recipedetailNumber]" ></el-input>
+                                <el-input v-model="scope.row.numbers" @input="aaaa(scope.row,scope.$index)"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -240,14 +249,14 @@
                         <el-table-column
                                 label="小计">
                             <template  #default="scope">
-                                {{ scope.row[rdFrom.recipedetailNumber]==null?0 : scope.row[rdFrom.recipedetailNumber]*scope.row.drugPrice}}
+                                {{ scope.row.numbers==null?0 : scope.row.numbers*scope.row.drugPrice.toFixed(2)}}
                             </template>
 
                         </el-table-column>
                         <el-table-column
                                 label="注意事项">
                             <template  #default="scope">
-                                <el-input  ></el-input>
+                                <el-input v-model="scope.row.recipedetailExplain" @input="cccc(scope.row,scope.$index)"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column  label="操作">
@@ -255,7 +264,7 @@
                                 <el-tooltip content="查看" placement="top">
                                     <el-button
                                             icon="el-icon-delete" size="mini"
-                                            @click="deleteyp(scope.$index)"></el-button>
+                                            @click="deleteyp(scope.$index,scope.row[numbers]*scope.row.drugPrice)"></el-button>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
@@ -275,14 +284,16 @@
                         </el-table-column>
                         <el-table-column
                                 label="注意事项">
-                            <el-input></el-input>
+                            <template  #default="scope">
+                                <el-input v-model="scope.row.recipedetailExplain" @input="dddd(scope.row,scope.$index)"></el-input>
+                            </template>
                         </el-table-column>
                         <el-table-column  label="操作">
                             <template  #default="scope">
                                 <el-tooltip content="查看" placement="top">
                                     <el-button
                                             icon="el-icon-delete" size="mini"
-                                            @click="deleteyp2(scope.$index)"></el-button>
+                                            @click="deleteyp2(scope.$index,scope.row.projectPrice)"></el-button>
                                 </el-tooltip>
                             </template>
                         </el-table-column>
@@ -406,10 +417,13 @@
         data() {
 
             return {
+                xiaoji:0,
+                a:0,
                 dialogVisible: false,
                 xzxm: false,
                 znumbers:'',
                 numbers:[],
+                shixiang:[],
                 tableData1:[],
                 tableData2:[],
                 tableData3:[],
@@ -418,6 +432,9 @@
                 tableData6:[],
                 checkBoxData: [],
                 checkBoxData2:[],
+                checkBoxData3:[],
+                checkBoxData4:[],
+                checkBoxData5:[],
                 form: {
                     dynamicItem: [
                         {
@@ -427,70 +444,129 @@
                     ]
                 },
                 rdFrom:{
-                    recipedetailId:'',
                     recipeId:'',
-                    recipedetailProject:'',
-                    recipedetailDurg:'',
-                    recipedetailPrice:'',
-                    recipedetailNumber:'',
-                    recipedetailExplain:'',
-                    tyhRecipeEntity:{
-                        recipeId:'',
-                        recipePrice:'',
-                        recipeDate:'',
-                        recipeDay:'',
+                    recipePrice:0,
+                    recipeDate:'',
+                    recipeDay:'',
+                    patientId:'',
+                    staffId:'',
+                    recipeExplain:'',
+                    recipeZt:'',
+                    tyhDrugVos:[],
+                    tyhProjectVos:[],
+                    tyhPatientEntity:{
                         patientId:'',
-                        staffId:'',
-                        recipeExplain:'',
-                        recipeZt:'',
-                        tyhPatientEntity:{
-                            patientId:'',
-                            patientName:'',
-                            patientSex:'',
-                            patientYue:'',
-                        },
-                        yxjStaffEntity: {
-                            staffId: '',
-                            staffName: '',
-                            staffAge: '',
-                            staffTime: '',
-                            deptId: '',
-                            tyhRecipeEntities: ''
-                        }
-                    },
-                    yxjProjectEntity:[],
-                    lyhDrugEntity:[]
+                        patientName:''
+                    }
                 },
                 drawer: false,
                 direction: 'rtl',
             }
         },
         methods:{
-            suan(s,a){
-                this.numbers.splice(a,0,s);
-                console.log(this.numbers)
+            xiangxi(s){
+                this.$router.push({path: '/yzxq',query:{ id:s.recipeId}});
+            },
+
+            dddd(s,a){
+                this.checkBoxData5.splice(a,0,s)
+                let j = 0
+                this.checkBoxData5.forEach(v => {
+                    if (s.projectId==v.projectId){
+                        j=j+1
+                        if (j==2){
+                            this.checkBoxData5.splice(a,1)
+                        }
+                    }
+                })
+
+                console.log(this.checkBoxData5)
+            },
+
+            cccc(s,a){
+                this.checkBoxData4.splice(a,0,s)
+                let j = 0
+                this.checkBoxData4.forEach(v => {
+                    if (s.drugId==v.drugId){
+                        j=j+1
+                        if (j==2){
+                            this.checkBoxData4.splice(a,1)
+                        }
+                    }
+                })
+            },
+
+            aaaa(s,a){
+                this.checkBoxData3.splice(a,0,s)
+                let j = 0
+                this.checkBoxData3.forEach(v => {
+                    if (s.drugId==v.drugId){
+                        j=j+1
+                        if (j==2){
+                            this.checkBoxData3.splice(a,1)
+                        }
+                    }
+                })
+
+                try {
+                    this.suan()
+                }catch (e) {
+
+                }
+
+                this.checkBoxData3.forEach(v =>{
+                    this.rdFrom.recipePrice=this.rdFrom.recipePrice+v.numbers*v.drugPrice
+                })
             },
 
             addchufang(){
+                this.rdFrom.durg=this.checkBoxData4
+                this.rdFrom.project=this.checkBoxData5
+                console.log(this.rdFrom)
+                this.axios.post("http://localhost:8088/add-chufang",this.rdFrom)
+                    .then((v) => {
+                        alert("新开处方成功")
+                    })
             },
 
-            deleteyp(s){
+            deleteyp(s,a){
                 this.checkBoxData.splice(s,1);
+                this.checkBoxData3.splice(s,1);
+                this.checkBoxData4.splice(s,1);
+                try {
+                    this.suan()
+                }catch (e) {
+
+                }
+
+                this.checkBoxData3.forEach(v =>{
+                    this.rdFrom.recipePrice=this.rdFrom.recipePrice+v.numbers*v.drugPrice
+                })
             },
 
-            deleteyp2(s){
-                //表示先获取这个元素的下标，然后从这个下标开始计算，删除长度为1的元素
+            deleteyp2(s,a){
                 this.checkBoxData2.splice(s,1);
+                this.rdFrom.recipePrice=this.rdFrom.recipePrice-a
+                this.checkBoxData5.splice(s,1);
             },
 
             changeFun(val) {
                 this.checkBoxData = val;
-                console.log(this.checkBoxData)
             },
 
             changeFun2(val) {
                 this.checkBoxData2 = this.checkBoxData2.concat(val);
-                console.log(this.checkBoxData2)
+                this.suan()
+                this.checkBoxData3.forEach(v =>{
+                    this.rdFrom.recipePrice=this.rdFrom.recipePrice+v.numbers*v.drugPrice
+                })
+            },
+
+            suan(){
+                this.rdFrom.recipePrice=0
+                this.checkBoxData2.forEach(v => {
+                    this.rdFrom.recipePrice=this.rdFrom.recipePrice+v.projectPrice
+                })
             },
 
             initData5(){
@@ -514,10 +590,19 @@
                     })
             },
 
+            brname(id){
+                this.axios.get("http://localhost:8088/find-brname",{params:{id:id}})
+                    .then((v) => {
+                        this.rdFrom.tyhPatientEntity=v.data
+                    })
+            },
+
             initData2(id){
-                this.axios.get("http://localhost:8088/find-chufang",{params:{id:id}})
+                this.axios.get("http://localhost:8088/find-chufang1",{params:{patientId:id}})
                     .then((v) => {
                         this.tableData2 = v.data;
+                        this.rdFrom.patientId=this.tableData2[0].tyhPatientEntity.patientId
+                        this.brname(this.rdFrom.patientId);
                     })
             },
 
@@ -567,6 +652,16 @@
             this.initData4()
             this.initData5()
         },
+
+        // computed:{
+        //     total(){
+        //         let s = 0;
+        //         this.List.forEach(p=>{
+        //             s +=p.price * p.number
+        //         });
+        //         return s
+        //     }
+        // }
 
     }
 

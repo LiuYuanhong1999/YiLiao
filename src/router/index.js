@@ -102,6 +102,11 @@ const routes=[
                 component:()=>import('/src/components/TYH/zytz.vue'),
             },
             {
+                path: '/yzxq',
+                name:'yzxq',
+                component:()=>import('/src/components/TYH/yzxq.vue'),
+            },
+            {
                 path: '/zydj',
                 name:'zydj',
                 component:()=>import('/src/components/TYH/zydj.vue'),
@@ -228,6 +233,11 @@ const routes=[
               path: '/return',
               name:'return',
               component:()=>import('/src/components/LYH/return.vue')
+            },
+            {
+                path: '/hsxq',
+                name:'hsxq',
+                component:()=>import('/src/components/TYH/hsxq.vue')
             },
             {
                 path: '/Test2',
