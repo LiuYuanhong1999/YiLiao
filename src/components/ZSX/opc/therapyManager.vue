@@ -30,6 +30,11 @@
         <el-table-column
             prop="medicalCard.medicalCardNumber"
             label="诊疗卡号">
+          <template #default="scope">
+            <router-link :to="{path: '/MedicalCardDetails',query:{key:scope.row.medicalCardId,value:JSON.stringify(scope.row)}}">
+              {{scope.row.medicalCard.medicalCardNumber}}
+            </router-link>
+          </template>
         </el-table-column>
         <el-table-column
             prop="patientDataName"
@@ -51,11 +56,7 @@
             </template>
           </template>
         </el-table-column>
-        <el-table-column
-            prop="medicalCard.medicalCardRecords.medicalCardTime"
-            label="充值时间">
-        </el-table-column>
-        <el-table-column  label="操作" width="130px">
+        <el-table-column  label="操作" width="180px">
           <template  #default="scope">
             <el-tooltip content="编辑" placement="top">
               <el-button
@@ -63,6 +64,11 @@
                   @click="editTherapy(scope.row)"></el-button>
             </el-tooltip>
 
+            <el-tooltip content="充值" placement="top">
+              <el-button
+                  icon="el-icon-circle-plus-outline" size="mini"
+                  @click="editTherapy2(scope.row)"></el-button>
+            </el-tooltip>
 
             <el-tooltip content="删除" placement="top">
               <el-button
@@ -112,11 +118,6 @@
             </el-form-item>
           </el-col>
           <el-col :span="10">
-            <el-form-item label="余额" prop="medicalCardBalance">
-              <el-input v-model="patientData.medicalCard.medicalCardBalance"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="10">
             <el-form-item label="密码" prop="medicalCardPassword">
               <el-input v-model="patientData.medicalCard.medicalCardPassword" show-password></el-input>
             </el-form-item>
@@ -138,7 +139,14 @@
           </el-col>
           <el-col :span="10">
             <el-form-item label="病人性别" prop="patientDataSex">
-              <el-input v-model="patientData.patientDataSex"></el-input>
+              <el-select v-model="patientData.patientDataSex" placeholder="请选择">
+                <el-option
+                    v-for="item in options2"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value">
+                </el-option>
+              </el-select>
             </el-form-item>
           </el-col>
         </el-row>
@@ -153,6 +161,37 @@
       </template>
     </el-dialog>
 
+    <el-dialog
+        title="充值"
+        v-model="dialogVisible2"
+        width="60%"
+        :before-close="handleClose">
+      <el-form :model="medicalCardRecord" status-icon  ref="medicalCardRecord" label-width="100px" class="demo-ruleForm">
+        <el-row>
+          <el-col :span="10">
+            <el-form-item label="诊疗卡号" prop="medicalCardNumber">
+              <el-input v-model="medicalCardRecord.medicalCardNumber" :disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+              <el-col :span="10">
+                <el-form-item label="充值金额" prop="medicalCardMoney">
+                  <el-input-number v-model="medicalCardRecord.medicalCardMoney"></el-input-number>
+                </el-form-item>
+              </el-col>
+              <el-col :span="10">
+                <el-form-item label="经办人" prop="medicalCardPerson">
+                  <el-input v-model="medicalCardRecord.medicalCardPerson"></el-input>
+                </el-form-item>
+              </el-col>
+        </el-row>
+      </el-form>
+      <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="ClearFrom2">取 消</el-button>
+      <el-button type="primary" @click="addMedicalCardRecord">确 定</el-button>
+    </span>
+      </template>
+    </el-dialog>
 
 
   </div>
@@ -164,12 +203,12 @@ export default {
   name: "therapyManager",
   components: {},
 
-
   data() {
     return {
       value1:'',
       medicalCardTableData:[],
       dialogVisible: false,
+      dialogVisible2:false,
       currentPage:1, //初始页
       pagesize:10,    //    每页的数据
 
@@ -187,19 +226,29 @@ export default {
           medicalCardPassword:'',
           medicalCardBalance:'',
           medicalCardLock:'',
-          medicalCardRecords:{
-            medicalCardNumber:'',
-            medicalCardRecordId:'',
-            medicalCardTime:''
-          }
+          nmsl:'',
+          medicalCardRecord: []
         }
       },
+      medicalCardRecord: {
+          medicalCardRecordId:'',
+          medicalCardNumber:'',
+          medicalCardPerson:'',
+          medicalCardMoney:'',
+        },
       options:[{
         value:'1',
         label:'锁定'
       },{
         value:'0',
         label:'解锁'
+      }],
+      options2: [{
+        value: '男',
+        label: '男'
+      }, {
+        value: '女',
+        label: '女'
       }],
       value: '',
       activeName: 'second'
@@ -211,7 +260,6 @@ export default {
           .then((v) => {
             this.medicalCardTableData = v.data;
             this.patientData.medicalCard.medicalCardNumber= 'ZL'+ this.getProjectNum()+ Math.floor(Math.random() * 10000);
-            console.log(v.data);
           })
     },
 
@@ -224,33 +272,6 @@ export default {
       this.currentPage = currentPage;
       console.log(this.currentPage)  //点击第几页
     },
-    editTherapy(row){
-      this.dialogVisible=true;
-      this.patientData={...row}
-    },
-
-    ClearFrom(){
-      this.patientData={
-            patientDataId:'',
-            patientDataCard:'',
-            patientDataName:'',
-            patientDataPhone:'',
-            patientDataSex:'',
-            medicalCard:{
-              medicalCardId:'',
-              medicalCardNumber:'',
-              medicalCardPassword:'',
-              medicalCardBalance:'',
-              medicalCardLock:'',
-              medicalCardRecords:{
-                medicalCardRecordId:'',
-                medicalCardNumber:'',
-                medicalCardTime:''
-              }
-            }
-      };
-      this.dialogVisible=false;
-    },
     saveTherapy(){
       this.axios.post("http://localhost:8088/saveMedicalCard",this.patientData)
           .then((v) => {
@@ -258,6 +279,35 @@ export default {
             this.$message('操作成功！');
             this.initData(this.currentPage, this.pageSize);
           })
+    },
+    editTherapy(row){
+      this.patientData = Object.assign({}, row)
+      this.dialogVisible=true;
+    },
+    ClearFrom(){
+      this.$refs['patientData'].resetFields()
+      this.patientData = this.$options.data().patientData
+      this.dialogVisible=false;
+    },
+
+
+    addMedicalCardRecord(){
+      this.axios.post("http://localhost:8088/add-record",this.medicalCardRecord)
+          .then((v) => {
+        this.dialogVisible2=false;
+        this.$message('操作成功！');
+        this.initData(this.currentPage, this.pageSize);
+      })
+    },
+    editTherapy2(row){
+      this.medicalCardRecord = Object.assign({}, row)
+      this.medicalCardRecord.medicalCardNumber = row.medicalCard.medicalCardNumber
+      this.dialogVisible2=true;
+    },
+    ClearFrom2(){
+      this.$refs['medicalCardRecord'].resetFields()
+      this.medicalCardRecord = this.$options.data().medicalCardRecord
+      this.dialogVisible2=false;
     },
 
     deleteEmp(id){

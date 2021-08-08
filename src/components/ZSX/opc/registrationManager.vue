@@ -25,7 +25,7 @@
 
                     stripe
                     style="width: 100%"
-                    :data="registrationTableData"
+                    :data="registrationTableData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
             >
                 <el-table-column
                         prop="registrationNumber"
@@ -82,42 +82,31 @@
                         @current-change="handleCurrentChange"
                         :current-page="currentPage"
                         :page-sizes="[5, 10, 20, 40]"
-                        :page-size="pagesize"
+                        :page-size="pageSize"
                         layout="total, sizes, prev, pager, next, jumper"
-                        total="10">
+                        :total="registrationTableData.length">
                 </el-pagination>
             </div>
 
         </el-card>
         <el-dialog
-                title="新增挂号"
+                title="挂号"
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
-            <el-form :model="registration" status-icon  ref="registration" label-width="100px" class="demo-ruleForm">
+            <el-form :model="registration" status-icon  ref="form" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
                         <el-form-item label="门诊号" prop="registrationNumber">
                             <el-input v-model="registration.registrationNumber" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="状态" prop="registrationState">
-                            <el-select v-model="registration.registrationState" disabled placeholder="请选择">
-                                <el-option
-                                        v-for="item in stateOptions"
-                                        :key="item.stateValue"
-                                        :label="item.stateLabel"
-                                        :value="item.stateValue">
-                                </el-option>
-                            </el-select>
-                        </el-form-item>
-                    </el-col>
+
                     <el-col :span="10">
                         <el-form-item label="挂号日期" prop="registrationTime">
                             <el-date-picker
                                     v-model="registration.registrationTime"
-                                    type="date"
+                                    type="datetime"
                                     placeholder="选择日期">
                             </el-date-picker>
                         </el-form-item>
@@ -156,7 +145,7 @@
 
                   <el-col :span="10">
                     <el-form-item label="诊疗卡号" prop="patientDataNumber">
-                      <el-select v-model="registration.patient.medicalCardNumber" placeholder="请选择" @change="findByPatient(registration.patient.medicalCardNumber)">
+                      <el-select v-model="registration.patient.medicalCardNumber" clearable placeholder="请选择" @change="findByPatient(registration.patient.medicalCardNumber)">
                         <el-option
                             v-for="item in patientTableData"
                             :key="item.patientDataId"
@@ -167,60 +156,65 @@
                     </el-form-item>
                   </el-col>
 
-                  <el-col :span="10">
-                    <el-form-item label="id" prop="patientDataId">
-                      <el-input :disabled="true" v-model="patientDataId"></el-input>
-                    </el-form-item>
-                  </el-col>
-
                     <el-col :span="10">
                         <el-form-item label="病人姓名" prop="patientDataName">
-                          <el-input :disabled="true" v-model="patientDataName"></el-input>
+                          <el-input v-model="registration.patient.patientDataName"></el-input>
                         </el-form-item>
                     </el-col>
 
                     <el-col :span="10">
                         <el-form-item label="身份证号码" prop="patientDataCard">
-                            <el-input :disabled="true" v-model="patientDataCard"></el-input>
+                            <el-input v-model="registration.patient.patientDataCard"></el-input>
                         </el-form-item>
                     </el-col>
+                  <el-col :span="10">
+                    <el-form-item label="病人电话" prop="patientDataPhone">
+                      <el-input v-model="registration.patient.patientDataPhone"></el-input>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :span="10">
+                    <el-form-item label="病人性别" prop="patientDataSex">
+                      <el-input v-model="registration.patient.patientDataSex"></el-input>
+                    </el-form-item>
+                  </el-col>
                 </el-row>
 
-                <el-row>
-                    <el-tabs v-model="activeName" @tab-click="handleClick">
-                        <el-tab-pane label="收费项目" name="first">
-                            <el-table
-                                    :data="tableData"
-                                    style="width: 100%">
-                                <el-table-column
-                                        prop="date"
-                                        label="收费项目编号"
-                                        width="180">
-                                </el-table-column>
-                                <el-table-column
-                                        prop="name"
-                                        label="收费项目名称"
-                                        width="180">
-                                </el-table-column>
-                            </el-table>
-                        </el-tab-pane>
-                        <el-tab-pane label="收费记录" name="second">
-                            <el-form-item label="收费项目" prop="eName">
-                                <el-input v-model="registration.ePhone"></el-input>
-                            </el-form-item>
-                            <el-form-item label="收挂号费" prop="eName">
-                                <el-input v-model="registration.ePhone"></el-input>
-                            </el-form-item>
-                            <el-form-item label="退挂号费" prop="eName">
-                                <el-input v-model="registration.ePhone"></el-input>
-                            </el-form-item>
-                            <el-button @click="dialogVisible = false">收挂号费</el-button>
-                            <el-button @click="dialogVisible = false">退挂号费</el-button>
-                            <el-button @click="dialogVisible = false">删除</el-button>
-                        </el-tab-pane>
+<!--                <el-row>-->
+<!--                    <el-tabs v-model="activeName" @tab-click="handleClick">-->
+<!--                        <el-tab-pane label="收费项目" name="first">-->
+<!--                            <el-table-->
+<!--                                    :data="tableData"-->
+<!--                                    style="width: 100%">-->
+<!--                                <el-table-column-->
+<!--                                        prop="date"-->
+<!--                                        label="收费项目编号"-->
+<!--                                        width="180">-->
+<!--                                </el-table-column>-->
+<!--                                <el-table-column-->
+<!--                                        prop="name"-->
+<!--                                        label="收费项目名称"-->
+<!--                                        width="180">-->
+<!--                                </el-table-column>-->
+<!--                            </el-table>-->
+<!--                        </el-tab-pane>-->
+<!--                        <el-tab-pane label="收费记录" name="second">-->
+<!--                            <el-form-item label="收费项目" prop="eName">-->
+<!--                                <el-input v-model="registration.ePhone"></el-input>-->
+<!--                            </el-form-item>-->
+<!--                            <el-form-item label="收挂号费" prop="eName">-->
+<!--                                <el-input v-model="registration.ePhone"></el-input>-->
+<!--                            </el-form-item>-->
+<!--                            <el-form-item label="退挂号费" prop="eName">-->
+<!--                                <el-input v-model="registration.ePhone"></el-input>-->
+<!--                            </el-form-item>-->
+<!--                            <el-button @click="dialogVisible = false">收挂号费</el-button>-->
+<!--                            <el-button @click="dialogVisible = false">退挂号费</el-button>-->
+<!--                            <el-button @click="dialogVisible = false">删除</el-button>-->
+<!--                        </el-tab-pane>-->
 
-                    </el-tabs>
-                </el-row>
+<!--                    </el-tabs>-->
+<!--                </el-row>-->
             </el-form>
 
             <template #footer>
@@ -261,7 +255,7 @@
                   }],
                 dialogVisible: false,
                 currentPage:1, //初始页
-                pagesize:10,    //    每页的数据
+                pageSize:10,    //    每页的数据
 
                 //挂号对象
                 registration:{
@@ -295,36 +289,29 @@
                 }, {
                     value: '急诊',
                     label: '急诊'
+                }, {
+                  value: '专家门诊',
+                  label: '专家门诊'
                 }],
               value:'',
                 stateOptions:[{
-                    stateValue:'0',
-                    stateLabel:'待就诊'
+                  registrationState:'0',
+                  stateLabel:'待就诊'
                 },{
-                    stateValue:'1',
+                  registrationState:'1',
                   stateLabel: '待取药',
                 },{
-                  stateValue: '2',
+                  registrationState: '2',
                   stateLabel: '待住院',
                 },{
-                  stateValue: '3',
+                  registrationState: '3',
                   stateLabel: '待出院',
                 }],
-                stateValue: '1',
+              registrationState: '1',
                 activeName: 'first',
             }
         },
         methods:{
-
-            // initData(page,size){
-            //   this.axios.get("http://localhost:8088/emp-mgr", {params: {pageNum: page, size: size}})
-            //       .then((v) => {
-            //         this.tableData = v.data.rows;
-            //         this.totalSize = v.data.total;
-            //
-            //       })
-            // },
-
             initData(){
                 this.axios.get("http://localhost:8088/registration")
                     .then((v) => {
@@ -347,10 +334,8 @@
                 this.axios.get("http://localhost:8088/find-by-patient",{params:{
                     medicalCardNumber:medicalCardNumber}})
                     .then((v)=>{
-                      this.findPatient = v.data;
-                      this.patientDataId=this.findPatient[0].patientDataId
-                      this.patientDataName=this.findPatient[0].patientDataName
-                      this.patientDataCard=this.findPatient[0].patientDataCard
+                      //这不就变了嘛，本身你这样查询的话返回一个对象就行了，都不要返回什么数组
+                      this.registration.patient = Object.assign(this.registration.patient,v.data[0])
                     })
             },
 
@@ -364,46 +349,21 @@
                 console.log(this.currentPage)  //点击第几页
             },
             editEmp(row){
+                this.registration = Object.assign({}, row)
+                this.registration.room = row.desk.deskId
                 this.dialogVisible=true;
-                this.registration={...row}
-                this.registration.room=row.desk.deskId
-                this.registration.patient.medicalCardNumber=row.patient.medicalCardNumber
-                this.patientDataId=row.patient.patientDataId
-                this.patientDataName=row.patient.patientDataName
-                this.patientDataCard=row.patient.patientDataCard
             },
 
+          close(){
+            this.$refs['form'].resetFields()
+            this.registration = this.$options.data().registration
+            this.dialogVisible=false;
+          },
+
             ClearFrom(){
-                this.registration={
-                  registrationId:'',
-                  // registrationNumber:'',
-                  room:'',
-                  doctot:'',
-                  registrationTime:'',
-                  registrationFee:'',
-                  registrationState:'',
-                  registrationType:'',
-                  registrationName:'',
-                  patient:{
-                    patientDataId:'',
-                    patientDataCard:'',
-                    patientDataName:'',
-                    patientDataPhone:'',
-                    patientDataSex:'',
-                    medicalCardNumber:''
-                  },
-                  desk:{
-                    deskId:'',
-                    deskName:'',
-                    deskTime:''
-                  }
-                };
-                this.patientDataName='';
-                this.patientDataCard='';
-                this.dialogVisible=false;
+                this.close()
             },
             saveRegistration(){
-              this.registration.patientDataId=this.patientDataId
                 this.axios.post("http://localhost:8088/save-registration",this.registration)
                     .then((v) => {
                         this.dialogVisible=false;

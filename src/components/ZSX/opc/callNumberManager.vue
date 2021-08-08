@@ -13,12 +13,12 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入划价单编号" v-model="eaaOrderNumber"  ></el-input>
+                    <el-input placeholder="请输入叫号编号" v-model="eaaOrderNumber"  ></el-input>
                 </el-col>
 
                 <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
                 <!--打印导入导出-->
-                <el-button type="primary" @click="dialogVisible = true">增加</el-button>
+<!--                <el-button type="primary" @click="dialogVisible = true">增加</el-button>-->
             </el-row>
             <el-table
 
@@ -27,59 +27,58 @@
                     :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             >
                 <el-table-column
-                        prop="eId"
-                        label="划价单编号">
+                        prop="callNumberId"
+                        label="叫号编号">
                 </el-table-column>
                 <el-table-column
-                        prop="eName"
+                        prop="registration.registrationState"
                         label="状态">
+                  <template #default="scope">
+                    <template v-if="scope.row.registration.registrationState =='0'">
+                      待就诊
+                    </template>
+                    <template v-if="scope.row.registration.registrationState =='1'">
+                      已就诊
+                    </template>
+                  </template>
                 </el-table-column>
                 <el-table-column
-                        prop="eSex"
+                        prop="registration.registrationNumber"
                         label="门诊号">
                 </el-table-column>
                 <el-table-column
-                        prop="ePhone"
+                        prop="registration.patient.patientDataName"
                         label="病人姓名">
                 </el-table-column>
                 <el-table-column
-                        prop="eDate"
-                        label="总金额">
+                    prop="registration.desk.deskName"
+                    label="科室">
                 </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="应收金额">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="划价日期">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="机台号">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="处方号">
-                </el-table-column>
-                <el-table-column
-                        prop="eDate"
-                        label="凭证单号">
-                </el-table-column>
+              <el-table-column
+                  prop="callNumberTime"
+                  label="叫号时间">
+              </el-table-column>
+
+
                 <el-table-column  label="操作" width="130px">
                     <template  #default="scope">
-                        <el-tooltip content="编辑" placement="top">
-                            <el-button
-                                    icon="el-icon-edit" size="mini"
-                                    @click="editEmp(scope.row)"></el-button>
-                        </el-tooltip>
 
-
-                        <el-tooltip content="删除" placement="top">
+                      <template v-if="scope.row.registration.registrationState == 0">
+                        <el-tooltip content="就诊" placement="top">
                             <el-button
-                                    icon="el-icon-delete" size="mini"
-                                    @click="deleteEmp(scope.row.eId)"></el-button>
+                                    icon="el-icon-data-line" size="mini"
+                                    @click="updateState(scope.row.registration.registrationNumber)"></el-button>
                         </el-tooltip>
+                      </template>
+
+                      <template v-if="scope.row.registration.registrationState ==1">
+                      <el-tooltip content="已就诊" placement="top">
+                        <el-button
+                            icon="el-icon-star-on" size="mini"
+                            @click="updateState(scope.row.registration.registrationNumber)"></el-button>
+                      </el-tooltip>
+                    </template>
+
                     </template>
                 </el-table-column>
             </el-table>
@@ -420,51 +419,68 @@
             </template>
         </el-dialog>
 
-
-
     </div>
 </template>
 
 <script>
     import qs from "qs";
     export default {
-        name: "chargingManager",
+        name: "callNumberManager",
         components: {},
-
-
         data() {
             return {
                 tableData:[],
                 dialogVisible: false,
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
-                ruleForm:{
-                    eId:'',
-                    eName:'',
-                    eSex:'',
-                    ePhone:'',
-                    eDate:''
-                }
+                //叫号对象
+                callNumber:{
+                  callNumberId:'',
+                  callNumberTime:'',
+                  registration:{
+                    registrationId:'',
+                    registrationNumber:'',
+                    patientDataId:'',
+                    room:'',
+                    doctot:'',
+                    registrationTime:'',
+                    registrationFee:'',
+                    registrationState:'',
+                    registrationType:'',
+                    registrationName:'',
+                    patient:{
+                      patientDataId:'',
+                      patientDataCard:'',
+                      patientDataName:'',
+                      patientDataPhone:'',
+                      patientDataSex:'',
+                      medicalCardNumber:''
+                    },
+                    desk:{
+                      deskId:'',
+                      deskName:'',
+                      deskTime:''
+                    }
+                  }
+                },
             }
         },
         methods:{
-
-            // initData(page,size){
-            //   this.axios.get("http://localhost:8088/emp-mgr", {params: {pageNum: page, size: size}})
-            //       .then((v) => {
-            //         this.tableData = v.data.rows;
-            //         this.totalSize = v.data.total;
-            //
-            //       })
-            // },
-
             initData(){
-                this.axios.get("http://localhost:8088/emp")
+                this.axios.get("http://localhost:8088/find-callNumber")
                     .then((v) => {
                         this.tableData = v.data;
+                        console.log(v.data)
                     })
             },
+            updateState(registrationNumber){
+              this.axios.get("http://localhost:8088/update-state",{params:{registrationNumber:registrationNumber}})
+                  .then((v) => {
+                    this.$message('操作成功！');
+                    this.initData(this.currentPage, this.pageSize);
 
+                  })
+            },
             // 初始页currentPage、初始每页数据数pagesize和数据data
             handleSizeChange: function (size) {
                 this.pagesize = size;
@@ -473,40 +489,6 @@
             handleCurrentChange: function(currentPage){
                 this.currentPage = currentPage;
                 console.log(this.currentPage)  //点击第几页
-            },
-            editEmp(row){
-                this.dialogVisible=true;
-                this.ruleForm.eName=row.eName;
-                this.ruleForm.ePhone=row.ePhone;
-                this.ruleForm.eId=row.eId;
-                this.ruleForm.eSex=row.eSex;
-            },
-
-            ClearFrom(){
-                this.ruleForm='';
-                this.dialogVisible=false;
-            },
-            addEmp(){
-                this.axios.post("http://localhost:8088/add-emp",this.ruleForm)
-                    .then((v) => {
-                        this.dialogVisible=false;
-                        this.$message('操作成功！');
-                        this.initData(this.currPage, this.pageSize);
-
-                    })
-            },
-
-            deleteEmp(id){
-                this.$confirm('你确定要删除该条信息吗？', '提示', {
-                        confirmButtonText: '确定',
-                        cancelButtonText: '取消',
-                        type: 'warning'},
-                    this.axios.post("http://localhost:8088/del-emp",qs.stringify({eId: id
-                    })))
-                    .then((v) => {
-                        this.$message('删除成功！');
-                        this.initData(this.currPage, this.pageSize);
-                    })
             },
 
             pageChange(p) {
