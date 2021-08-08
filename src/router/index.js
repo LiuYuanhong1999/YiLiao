@@ -270,6 +270,13 @@ const routes=[
                 name: 'pandian',
                 component:()=>import('/src/components/LYH/pandian.vue')
             },
+            {
+              path: '/recipeDetails',
+              name: 'recipeDetails',
+              component:()=>import('/src/components/LYH/recipeDetails.vue')
+            },
+
+
             //yxj-体检管理
             {
                 path: '/Yxjcategory',

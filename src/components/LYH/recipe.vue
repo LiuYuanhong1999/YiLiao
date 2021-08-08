@@ -35,45 +35,66 @@
         <el-col :span="1.5">
           <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoAudit">发药</el-button>
         </el-col>
-<!--        <el-col :span="1.5">-->
-<!--          <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="handleDoInvalid">作废</el-button>-->
-<!--        </el-col>-->
-<!--        <el-col :span="1.5">-->
-<!--          <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoInventory">提交入库</el-button>-->
-<!--        </el-col>-->
+
       </el-row>
       <!-- 表格工具按钮结束 -->
 
       <!-- 数据表格开始 -->
-      <el-table v-loading="loading" border :data="purchaseTableList" @selection-change="handleSelectionChnage">
-        <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="单据ID" align="center" width="200" prop="purchaseId">
-          <template slot-scope="scope">
-            <router-link :to="'/erp/purchase/editPurchase/'+scope.row.purchaseId" class="link-type">
-              <span>{{scope.row.purchaseId}}</span>
-            </router-link>
+      <el-table
+
+          stripe
+          style="width: 100%"
+          :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+      >
+        <el-table-column
+            prop="executeId"
+            label="住院医嘱执行号">
+        </el-table-column>
+        <el-table-column
+            prop="tyhPatientEntity.tyhHosregEntity.hosregNum"
+            label="住院号">
+        </el-table-column>
+        <el-table-column
+            prop="tyhPatientEntity.patientName"
+            label="病人姓名">
+        </el-table-column>
+        <el-table-column
+            label="执行天数">
+          <template  #default="scope">
+            {{"第"+scope.row.executeDay+"天"}}
           </template>
         </el-table-column>
-        <el-table-column label="患者姓名" width="200" align="center" prop="providerId" :formatter="providerFormatter" />
-        <el-table-column label="性别" align="center" prop="purchaseTradeTotalAmount">
-          <template slot-scope="scope">
-            <span>{{ scope.row.purchaseTradeTotalAmount|rounding }}</span>
+        <el-table-column
+            prop="executeExp"
+            label="注意事项">
+        </el-table-column>
+        <el-table-column
+            prop="executeZt"
+            label="状态">
+          <template #default="scope">
+            <template v-if="scope.row.executeZt =='0'">
+              待执行
+            </template>
+            <template v-if="scope.row.executeZt =='1'">
+              发药中
+            </template>
+            <template v-if="scope.row.executeZt =='2'">
+              已发药
+            </template>
+            <template v-if="scope.row.executeZt =='3'">
+              执行完毕
+            </template>
           </template>
         </el-table-column>
-        <el-table-column label="年龄" prop="status" align="center" :formatter="statusFormatter" />
-        <el-table-column label="地址" align="center" prop="applyUserName" />
-        <el-table-column label="联系方式	" align="center" prop="storageOptUser" />
-        <el-table-column label="发药时间	" align="center" prop="storageOptUser" />
-        <el-table-column label="发药药师	" align="center" prop="storageOptTime" show-overflow-tooltip />
-<!--        <el-table-column  label="操作" width="80px">-->
-<!--          <template  #default="scope">-->
-<!--            <el-tooltip content="发药" placement="top">-->
-<!--              <el-button-->
-<!--                  icon="el-icon-view" size="mini"-->
-<!--                  @click="editEmp(scope.row)"></el-button>-->
-<!--            </el-tooltip>-->
-<!--          </template>-->
-<!--        </el-table-column>-->
+        <el-table-column  label="操作">
+          <template  #default="scope">
+            <el-tooltip content="详情" placement="top">
+              <el-button
+                  icon="el-icon-view" size="mini"
+                  @click="hsxq(scope.row.executeId)"></el-button>
+            </el-tooltip>
+          </template>
+        </el-table-column>
       </el-table>
       <!-- 数据表格结束 -->
       <!-- 分页控件开始 -->
@@ -90,150 +111,17 @@
       <!-- 分页控件结束 -->
     </el-card>
   </div>
-<!--<div  id="xl">-->
-<!--  &lt;!&ndash;表头结束&ndash;&gt;-->
-<!--  &lt;!&ndash;table开始&ndash;&gt;-->
 
-<!--  <el-breadcrumb separator-class="el-icon-arrow-right">-->
-<!--    <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>-->
-<!--    <el-breadcrumb-item>药房</el-breadcrumb-item>-->
-<!--    <el-breadcrumb-item>处理处方</el-breadcrumb-item>-->
-<!--  </el-breadcrumb>-->
-
-
-<!--<el-card>-->
-<!--  &lt;!&ndash;表头&ndash;&gt;-->
-<!--  <el-row>-->
-<!--    <el-col :span="4">-->
-<!--      <el-input placeholder="请输入药品名" v-model="eaaOrderNumber"  ></el-input>-->
-<!--    </el-col>-->
-
-<!--    <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>-->
-<!--    &lt;!&ndash;打印导入导出&ndash;&gt;-->
-<!--    <el-button type="primary" @click="dialogVisible = true">增加</el-button>-->
-<!--  </el-row>-->
-<!--  <el-table-->
-
-
-<!--      :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"-->
-<!--      border stripe style="width: 100%;margin-top: 10px"-->
-<!--      :header-cell-style="{'text-align':'center','background':'#DAE2EF','color':'gray'}"-->
-<!--      :cell-style="{'text-align':'center'}"-->
-<!--  >-->
-<!--    <el-table-column-->
-<!--        prop="eId"-->
-<!--        label="编号"-->
-<!--        width="180">-->
-<!--    </el-table-column>-->
-<!--    <el-table-column-->
-<!--        prop="eName"-->
-<!--        label="姓名"-->
-<!--        width="180">-->
-<!--    </el-table-column>-->
-<!--    <el-table-column-->
-<!--        prop="eSex"-->
-<!--        label="性别"-->
-<!--        width="180">-->
-<!--    </el-table-column>-->
-<!--    <el-table-column-->
-<!--        prop="ePhone"-->
-<!--        label="电话"-->
-<!--        width="180">-->
-<!--    </el-table-column>-->
-<!--    <el-table-column-->
-<!--        prop="eDate"-->
-<!--        label="地址"-->
-<!--        width="180">-->
-<!--    </el-table-column>-->
-<!--    <el-table-column  label="操作" width="130px">-->
-<!--      <template  #default="scope">-->
-<!--        <el-tooltip content="编辑" placement="top">-->
-<!--          <el-button-->
-<!--              icon="el-icon-edit" size="mini"-->
-<!--              @click="editEmp(scope.row)"></el-button>-->
-<!--        </el-tooltip>-->
-
-
-<!--        <el-tooltip content="删除" placement="top">-->
-<!--          <el-button-->
-<!--              icon="el-icon-delete" size="mini"-->
-<!--              @click="deleteEmp(scope.row.eId)"></el-button>-->
-<!--        </el-tooltip>-->
-<!--      </template>-->
-<!--    </el-table-column>-->
-<!--  </el-table>-->
-<!--  <br>-->
-<!--  &lt;!&ndash;分页&ndash;&gt;-->
-<!--  <div class="fy_div">-->
-<!--    <el-pagination-->
-<!--        @size-change="handleSizeChange"-->
-<!--        @current-change="handleCurrentChange"-->
-<!--        :current-page="currentPage"-->
-<!--        :page-sizes="[5, 10, 20, 40]"-->
-<!--    :page-size="pagesize"-->
-<!--    layout="total, sizes, prev, pager, next, jumper"-->
-<!--    :total="tableData.length">-->
-<!--    </el-pagination>-->
-<!--  </div>-->
-
-<!--</el-card>-->
-<!--  <el-dialog-->
-<!--      title=""-->
-<!--      v-model="dialogVisible"-->
-<!--      width="60%"-->
-<!--      :before-close="handleClose">-->
-<!--    <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">-->
-<!--      <el-row>-->
-<!--        <el-col :span="10">-->
-<!--          <el-form-item label="处方编号" prop="eName">-->
-<!--            <el-select v-model="ruleForm.eName"></el-select>-->
-
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-<!--        <el-col :span="10">-->
-<!--          <el-form-item label="员工性别" prop="eSex">-->
-<!--            <el-input v-model="ruleForm.eSex"></el-input>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-<!--      </el-row>-->
-
-<!--      <el-row>-->
-<!--        <el-col :span="10">-->
-<!--          <el-form-item label="电话" prop="eName">-->
-<!--            <el-input v-model="ruleForm.ePhone"></el-input>-->
-
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-
-<!--        <el-col :span="10">-->
-<!--          <el-form-item label="地址">-->
-<!--            <el-input></el-input>-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-<!--      </el-row>-->
-<!--    </el-form>-->
-
-<!--    <template #footer>-->
-<!--    <span class="dialog-footer">-->
-<!--      <el-button @click="dialogVisible = false">取 消</el-button>-->
-<!--      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
-<!--    </span>-->
-<!--    </template>-->
-<!--  </el-dialog>-->
-
-
-
-<!--</div>-->
 </template>
 <script>
 import qs from "qs";
 export default{
   name:"recipe",
-  components: {},
-
-
   data() {
     return {
+      currentPage:1, //初始页
+      pagesize:10,    //    每页的数据
+      tableDate:[],
       // 是否启用遮罩层
       loading: false,
       // 选中数组
@@ -261,34 +149,27 @@ export default{
         providerId: undefined,
         applyUserName: undefined
       }
-      // tableData:[],
-      // dialogVisible: false,
-      // currentPage:1, //初始页
-      // pagesize:10,    //    每页的数据
-      // ruleForm:{
-      //   eId:'',
-      //   eName:'',
-      //   eSex:'',
-      //   ePhone:'',
-      //   eDate:''
-      // }
+
   }
 },
 methods:{
 
-  // initData(page,size){
-  //   this.axios.get("http://localhost:8088/emp-mgr", {params: {pageNum: page, size: size}})
-  //       .then((v) => {
-  //         this.tableData = v.data.rows;
-  //         this.totalSize = v.data.total;
-  //
-  //       })
-  // },
+
+
+  hsxq(s){
+    this.$router.push({path: '/recipeDetails',query:{ id:s}});
+  },
+
+
+
+
+
+
 
   initData(){
-    this.axios.get("http://localhost:8088/emp")
+    this.axios.get("http://localhost:8088/find-execute2")
         .then((v) => {
-          this.tableData = v.data;
+          this.tableDate = v.data;
         })
   },
 
@@ -301,40 +182,10 @@ methods:{
     this.currentPage = currentPage;
     console.log(this.currentPage)  //点击第几页
   },
-  editEmp(row){
-    this.dialogVisible=true;
-    this.ruleForm.eName=row.eName;
-    this.ruleForm.ePhone=row.ePhone;
-    this.ruleForm.eId=row.eId;
-    this.ruleForm.eSex=row.eSex;
-  },
 
-  ClearFrom(){
-    this.ruleForm='';
-    this.dialogVisible=false;
-  },
-  addEmp(){
-    this.axios.post("http://localhost:8088/add-emp",this.ruleForm)
-        .then((v) => {
-          this.dialogVisible=false;
-          this.$message('操作成功！');
-          this.initData(this.currPage, this.pageSize);
 
-        })
-  },
 
-  deleteEmp(id){
-    this.$confirm('你确定要删除该条信息吗？', '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'},
-        this.axios.post("http://localhost:8088/del-emp",qs.stringify({eId: id
-        })))
-        .then((v) => {
-          this.$message('删除成功！');
-          this.initData(this.currPage, this.pageSize);
-        })
-  },
+
 
   pageChange(p) {
     this.initData(p, this.pageSize)
@@ -349,7 +200,6 @@ methods:{
 },
   created() {
     this.initData();
-
   },
 }
 
