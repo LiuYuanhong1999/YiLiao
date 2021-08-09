@@ -141,6 +141,7 @@
             <router-link to="/hospitalExecute"><el-menu-item index="8-3">住院医嘱执行</el-menu-item></router-link>
             <router-link to="/opcExecute"><el-menu-item index="8-4">门诊医嘱执行</el-menu-item></router-link>
             <router-link to="/dispensing"><el-menu-item index="8-5">住院发药</el-menu-item></router-link>
+              <router-link to="/cwgl"><el-menu-item index="8-5">床位管理</el-menu-item></router-link>
           </el-submenu>
 
 

@@ -35,7 +35,7 @@
                             <el-tooltip content="查看" placement="top">
                                 <el-button
                                         icon="el-icon-view" size="mini"
-                                        @click="initData2(scope.row.tyhPatientEntity.patientId)"></el-button>
+                                        @click="initData2(scope.row.tyhPatientEntity)"></el-button>
                             </el-tooltip>
                         </template>
                     </el-table-column>
@@ -239,7 +239,8 @@
                         <el-table-column
                                 label="数量">
                             <template  #default="scope">
-                                <el-input v-model="scope.row.numbers" @input="aaaa(scope.row,scope.$index)"></el-input>
+                                <el-input v-model="scope.row.numbers" oninput="if(value>this.tableData3[scope.$index].lyhPharmacyEntity.pharmacyYj)value=tableData3[scope.$index].lyhPharmacyEntity.pharmacyYj"
+                                          @input="aaaa(scope.row,scope.$index)"></el-input>
                             </template>
                         </el-table-column>
                         <el-table-column
@@ -336,8 +337,11 @@
                                 </el-table-column>
                                 <el-table-column
                                         prop="drugPrice"
-                                        label="药品价格"
-                                        width="180">
+                                        label="药品价格">
+                                </el-table-column>
+                                <el-table-column
+                                        prop="lyhPharmacyEntity.pharmacyYj"
+                                        label="剩余库存">
                                 </el-table-column>
                                 <el-table-column
                                         prop="drugDate"
@@ -422,6 +426,7 @@
                 dialogVisible: false,
                 xzxm: false,
                 znumbers:'',
+                shulxz:3,
                 numbers:[],
                 shixiang:[],
                 tableData1:[],
@@ -464,6 +469,10 @@
             }
         },
         methods:{
+            shuliangxz(s){
+                this.shulxz=s
+            },
+
             xiangxi(s){
                 this.$router.push({path: '/yzxq',query:{ id:s.recipeId}});
             },
@@ -598,7 +607,9 @@
             },
 
             initData2(id){
-                this.axios.get("http://localhost:8088/find-chufang1",{params:{patientId:id}})
+                this.rdFrom.patientId=id.patientId
+                this.rdFrom.tyhPatientEntity.patientName=id.patientName
+                this.axios.get("http://localhost:8088/find-chufang1",{params:{patientId:id.patientId}})
                     .then((v) => {
                         this.tableData2 = v.data;
                         this.rdFrom.patientId=this.tableData2[0].tyhPatientEntity.patientId

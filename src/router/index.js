@@ -77,6 +77,18 @@ const routes=[
                 meta:'住院医嘱执行'
             },
             {
+                path:'/cwgl',
+                name:'cwgl',
+                component:()=>import('/src/components/ZSX/nurse/cwgl.vue'),
+                meta:'床位管理'
+            },
+            {
+                path:'/cwglx',
+                name:'cwglx',
+                component:()=>import('/src/components/ZSX/nurse/cwglx.vue'),
+                meta:'床位管理详情'
+            },
+            {
                 path:'/opcExecute',
                 name:'opcExecuteManager',
                 component:()=>import('/src/components/ZSX/nurse/opcExecuteManager.vue'),
