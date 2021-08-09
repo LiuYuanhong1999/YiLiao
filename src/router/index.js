@@ -52,6 +52,12 @@ const routes=[
                 // meta:'诊疗卡管理'
             },
             {
+                path: '/MedicalCardDetails',
+                name:'therapyDetailsManager',
+                component:()=>import('/src/components/ZSX/opc/therapyDetailsManager.vue')
+                // meta: '诊疗卡详情'
+            },
+            {
                 path:'/prescription',
                 name:'prescriptionManager',
                 component:()=>import('/src/components/ZSX/opc/prescriptionManager.vue'),
