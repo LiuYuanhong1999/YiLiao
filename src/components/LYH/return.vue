@@ -60,73 +60,116 @@
       <!-- 表格工具按钮开始 -->
       <el-row :gutter="10" style="margin-bottom: 8px;">
         <el-col :span="1.5">
-          <el-button type="primary" icon="el-icon-plus" size="mini" @click="handleToNewPurchase">新增</el-button>
+          <el-button type="primary" icon="el-icon-plus" size="mini"  @click="dialogVisible = true">选择退货单</el-button>
         </el-col>
-        <!--        <el-col :span="1.5">-->
-        <!--          <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoAudit">提交审核</el-button>-->
-        <!--        </el-col>-->
-        <!--        <el-col :span="1.5">-->
-        <!--          <el-button type="danger" icon="el-icon-delete" size="mini" :disabled="single" @click="handleDoInvalid">作废</el-button>-->
-        <!--        </el-col>-->
-        <!--        <el-col :span="1.5">-->
-        <!--          <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="handleDoInventory">提交入库</el-button>-->
-        <!--        </el-col>-->
+
       </el-row>
       <!-- 表格工具按钮结束 -->
 
       <!-- 数据表格开始 -->
-      <el-table v-loading="loading" border :data="purchaseTableList">
+      <el-table v-loading="loading" border
+                :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)">
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column label="单据ID" align="center" width="200" prop="purchaseId">
-          <template slot-scope="scope">
-            <router-link :to="'/erp/purchase/editPurchase/'+scope.row.purchaseId" class="link-type">
-              <span>{{scope.row.purchaseId}}</span>
+        <el-table-column label="采购编号" align="center" width="200" prop="procurementId">
+
+          <template #default="scope">
+            <router-link :to="{path: '/returnDetails',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
+              {{scope.row.procurementId}}
             </router-link>
           </template>
-        </el-table-column>
-        <el-table-column label="供应商" width="200" align="center" prop="providerId" :formatter="providerFormatter" />
 
-        <el-table-column  label="退货原因" width="200" align="center" prop="providerId" :formatter="providerFormatter" >
+
 
         </el-table-column>
+        <el-table-column label="供应商"  align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName" />
 
-        <el-table-column label="退货时间" prop="status" align="center" :formatter="statusFormatter" />
-        <el-table-column label="申请人" align="center" prop="applyUserName" />
-        <el-table-column label="状态" align="center" prop="storageOptUser" />
+        <el-table-column label="采购员" align="center" prop="lyhProcurementEntity.procurementName" />
 
+        <el-table-column label="操作员" align="center" prop="auditUser" />
 
-
-                <el-table-column  label="操作" width="80px">
-                  <template  #default="scope">
-                    <el-tooltip content="状态" placement="top">
-                      <el-button
-                          icon="el-icon-view" size="mini"
-                          @click="editEmp(scope.row)"></el-button>
-                    </el-tooltip>
-                  </template>
-                </el-table-column>
 
       </el-table>
       <!-- 数据表格结束 -->
       <!-- 分页控件开始 -->
-      <el-pagination
-          v-show="total>0"
-          :current-page="queryParams.pageNum"
-          :page-sizes="[5, 10, 20, 30]"
-          :page-size="queryParams.pageSize"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="total"
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-      />
+      <!--分页-->
+      <div class="fy_div">
+        <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 20, 40]"
+            :page-size="pagesize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="tableDate.length">
+        </el-pagination>
+      </div>
       <!-- 分页控件结束 -->
+
+
+
+      <el-dialog
+
+          v-model="dialogVisible"
+          width="80%"
+          :before-close="handleClose">
+        <div style="margin-top: -30px">—————————————————————<span style="color:red">退货票据</span>———————————————————————</div>
+        <div style="margin-top: 10px">
+          <el-form :model="ruleFrom" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+
+
+            <el-table
+                :data="tableData2.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                style="width: 100%;"
+                max-height="200"
+                :cell-style="{'text-align':'center'}"
+                :header-cell-style="{background:'#D6E9FC',color:'#606266','text-align':'center'}"
+                @selection-change="selectionLineChangeHandle"
+            >
+              <el-table-column width="50" type="selection"></el-table-column>
+              <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" />
+              <el-table-column label="供应商" width="160" align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"  />
+              <el-table-column label="采购批发总额" align="center" prop="lyhProcurementEntity.procurementPrice"/>
+              <el-table-column label="申请人" align="center" prop="lyhProcurementEntity.procurementName" />
+              <el-table-column label="入库操作人" align="center" prop="auditUser" />
+              <el-table-column label="入库时间" align="center" prop="auditDate" show-overflow-tooltip />
+              <el-table-column label="审核信息" align="center" prop="auditDate" />
+              <el-table-column label="创建时间" align="center" prop="lyhProcurementEntity.procurementFirstdate" show-overflow-tooltip />
+
+            </el-table>
+
+            <!--分页-->
+            <div class="fy_div">
+              <el-pagination
+                  @size-change="handleSizeChange"
+                  @current-change="handleCurrentChange"
+                  :current-page="currentPage"
+                  :page-sizes="[5, 10, 20, 40]"
+                  :page-size="pagesize"
+                  layout="total, sizes, prev, pager, next, jumper"
+                  :total="tableData2.length">
+              </el-pagination>
+            </div>
+          </el-form>
+
+
+
+        </div>
+        <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible=false">取 消</el-button>
+      <el-button type="primary" @click="addTableDate()">确 定</el-button>
+    </span>
+        </template>
+
+      </el-dialog>
     </el-card>
+
+
+
   </div>
 </template>
 <script>
-// 引入api
-// import { listPurchaseForPage, doAudit, doInvalid,doInventory } from '@/api/erp/purchase'
-// import { selectAllProvider } from '@/api/erp/provider'
+
 export default {
   // 过滤器
   filters: {
@@ -139,16 +182,18 @@ export default {
   // 定义页面数据
   data() {
     return {
+      dialogVisible: false,
       // 是否启用遮罩层
       loading: false,
       // 选中数组
       ids: [],
-      // 非单个禁用
-      single: false,
-      // 非多个禁用
-      multiple: true,
-      // 分页数据总条数
-      total: 0,
+      ruleFrom:{
+
+      },
+tableData2:[],
+tableDate:[],
+      currentPage:1, //初始页
+      pagesize:10,   //    每页的数据
       // 字典表格数据
       purchaseTableList: [],
       // 状态数据字典
@@ -162,147 +207,44 @@ export default {
         providerId: undefined,
         applyUserName: undefined,
         status: undefined
-      }
+      },
+      tableDateDetails:[],
     }
   },
-  // // 勾子
-  // created() {
-  //   // 使用全局的根据字典类型查询字典数据的方法查询字典数据
-  //   this.getDataByType('his_order_status').then(res => {
-  //     this.statusOptions = res.data
-  //   })
-  //   // 查询表格数据
-  //   this.getPurchaseList()
-  //   // 查询供应商列表
-  //   selectAllProvider().then(res => {
-  //     this.providerOptions = res.data
-  //   })
-  // },
-  // // 方法
-  // methods: {
-  //   // 查询表格数据
-  //   getPurchaseList() {
-  //     this.loading = false // 打开遮罩
-  //     listPurchaseForPage(this.queryParams).then(res => {
-  //       this.purchaseTableList = res.data
-  //       this.total = res.total
-  //       this.loading = true// 关闭遮罩
-  //     })
-  //   },
-  //   // 条件查询
-  //   handleQuery() {
-  //     this.getPurchaseList()
-  //   },
-  //   // 重置查询条件
-  //   resetQuery() {
-  //     this.resetForm('queryForm')
-  //     // 刷新页面
-  //     this.getPurchaseList()
-  //   },
-  //   // 数据表格的多选择框选择时触发
-  //   handleSelectionChnage(selection) {
-  //     this.ids = selection.map(item => item.purchaseId)
-  //     this.single = selection.length !== 1
-  //     this.multiple = !selection.length
-  //   },
-  //   // 分页pageSize变化时触发
-  //   handleSizeChange(val) {
-  //     this.queryParams.pageSize = val
-  //     // 重新查询
-  //     this.getPurchaseList()
-  //   },
-  //   // 点击上一页  下一页，跳转到哪一页面时触发
-  //   handleCurrentChange(val) {
-  //     this.queryParams.pageNum = val
-  //     // 重新查询
-  //     this.getPurchaseList()
-  //   },
-  //   // 翻译状态
-  //   statusFormatter(row) {
-  //     return this.selectDictLabel(this.statusOptions, row.status)
-  //   },
-  //   // 翻译供应商
-  //   providerFormatter(row) {
-  //     // 供应商名称
-  //     let name = ''
-  //     // 遍历供应商列表
-  //     this.providerOptions.filter(item => {
-  //       if (parseInt(row.providerId) === parseInt(item.providerId)) {
-  //         name = item.providerName
-  //       }
-  //     })
-  //     return name
-  //   },
-  //   // 提交审核
-  //   handleDoAudit() {
-  //     // 获取当前审核单据ID
-  //     const purchaseId = this.ids[0]
-  //     this.$confirm('确定要提交审核单据号为【' + purchaseId + '】的采购单吗?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       doAudit(purchaseId).then(res => {
-  //         this.msgSuccess('提交成功')
-  //         // 刷新
-  //         this.getPurchaseList()
-  //       }).catch(() => {
-  //         this.msgError('提交失败')
-  //       })
-  //     }).catch(() => {
-  //       this.msgError('提交已取消')
-  //     })
-  //   },
-  //   // 作废
-  //   handleDoInvalid(row) {
-  //     // 获取当前审核单据ID
-  //     const purchaseId = this.ids[0]
-  //     this.$confirm('确定要作废单据号为【' + purchaseId + '】的采购单吗?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       doInvalid(purchaseId).then(res => {
-  //         this.msgSuccess('作废成功')
-  //         // 刷新
-  //         this.getPurchaseList()
-  //       }).catch(() => {
-  //         this.msgError('作废失败')
-  //       })
-  //     }).catch(() => {
-  //       this.msgError('作废已取消')
-  //     })
-  //   },
-  //   // 提交入库
-  //   handleDoInventory() {
-  //     // 获取要入库的采购单ID
-  //     const purchaseId = this.ids[0]
-  //     // 为了防止this冲突所以将this赋值给tx
-  //     const tx = this
-  //     tx.$confirm('确定要入库单据号为【' + purchaseId + '】的采购单吗?', '提示', {
-  //       confirmButtonText: '确定',
-  //       cancelButtonText: '取消',
-  //       type: 'warning'
-  //     }).then(() => {
-  //       doInventory(purchaseId).then(res => {
-  //         tx.msgSuccess('入库成功')
-  //         // 刷新
-  //         tx.getPurchaseList()
-  //       }).catch(() => {
-  //         tx.msgError('入库失败')
-  //       })
-  //     }).catch(() => {
-  //       tx.msgError('入库已取消')
-  //     })
-  //   },
-  //   // 新增采购
-  //   handleToNewPurchase() {
-  //     // 跳转到新增采购的路由页面
-  //     this.$router.replace('/erp/purchase/newPurchase')
-  //   }
-  // }
+
+methods:{
+  selectionLineChangeHandle(val) {
+    this.tableDateDetails=val;
+  },
 
 
+  addTableDate(){
+    this.tableDate=this.tableDateDetails;
+    this.dialogVisible=false;
+  },
+
+
+  // 初始页currentPage、初始每页数据数pagesize和数据data
+  handleSizeChange: function (size) {
+    this.pagesize = size;
+    console.log(this.pagesize)  //每页下拉显示数据
+  },
+  handleCurrentChange: function(currentPage){
+    this.currentPage = currentPage;
+    console.log(this.currentPage)  //点击第几页
+  },
+
+
+  initDate() {
+    this.axios.get("http://localhost:8088/find-audit")
+        .then((v) => {
+          this.tableData2 = v.data;
+        })
+  },
+},
+  created() {
+    this.initDate();
+  }
 
 }
 

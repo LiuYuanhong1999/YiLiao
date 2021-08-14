@@ -136,7 +136,7 @@ export default {
       dialogVisible2: false,
       currentPage:1, //初始页
       pagesize:10,    //    每页的数据
-
+      providerOptions:[],
       ruleFrom:{
         pharmacyName:'',
         lyhDrugEntity:{
@@ -215,7 +215,10 @@ export default {
   },
   created() {
     this.initData();
-
+    this.axios.get("http://localhost:8088/find-supplierName")
+        .then((v) => {
+          this.providerOptions = v.data;
+        })
   },
 }
 </script>

@@ -473,7 +473,6 @@ deleteById(){
     reversedMessage: function () {
       var result=0;
       for(let i=0;i<this.lyhProcurementDetailsEntities.length;i++) {
-        console.log("qedqwdawa")
         result+= this.lyhProcurementDetailsEntities[i].drugPrice
       }
       return result;
@@ -483,7 +482,7 @@ deleteById(){
   created() {
 
     this.initDate();
-    this.axios.get("http://localhost:8088/find-supplier")
+    this.axios.get("http://localhost:8088/find-supplierName")
     .then((v) => {
       this.providerOptions = v.data;
     })

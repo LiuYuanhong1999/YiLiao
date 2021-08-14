@@ -253,6 +253,13 @@ const routes=[
               component:()=>import('/src/components/LYH/return.vue')
             },
             {
+               path: '/returnDetails',
+               name: 'returnDetails',
+               component:()=>import('/src/components/LYH/returnDetails.vue')
+
+
+            },
+            {
                 path: '/hsxq',
                 name:'hsxq',
                 component:()=>import('/src/components/TYH/hsxq.vue')

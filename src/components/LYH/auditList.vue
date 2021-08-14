@@ -289,7 +289,7 @@ export default {
   created() {
     this.user = eval("("+window.sessionStorage.getItem("token")+")");
     this.initDate();
-    this.axios.get("http://localhost:8088/find-supplier")
+    this.axios.get("http://localhost:8088/find-supplierName")
         .then((v) => {
           this.providerOptions = v.data;
         })
