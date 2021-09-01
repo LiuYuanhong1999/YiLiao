@@ -1,8 +1,9 @@
 <template  xmlns:el-form-item="http://www.w3.org/1999/xhtml">
   <el-form ref="ruleFrom" :model="ruleFrom"  label-width="100px">
     <el-page-header content="详情页" @back="goBack" />
-    <el-button @click="update()">发药</el-button>
+    <el-button @click="update(),insertByName()">发药</el-button>
     <!--数据表格-->
+
     <el-row>
       <el-col :span="24">
         <el-form-item>
@@ -41,6 +42,7 @@
               </el-table-column>
             </template>
           </el-table>
+
         </el-form-item>
       </el-col>
     </el-row>
@@ -60,6 +62,7 @@ export default {
       pagesize:10,    //    每页的数据
       dialogVisible: false,
       tableData:[],
+      XX:"1",
     }
 
 
@@ -67,28 +70,43 @@ export default {
 
   methods: {
 
+
+
+    insertByName(executedId){
+      this.axios.get("http://localhost:8088/add-recipes", {params:{
+        executeId:this.rcId,
+        recipesName:"six",
+        }})
+          .then((v) => {
+           console.log("success")
+          });
+
+
+    },
+
+
+
+
     update(){
-      for (var i = 0; i < this.tableData.length; i++) {
-        this.axios.get("http://localhost:8088/update3-execute", {params:{
-          id:this.tableData[i].executeId
-          }})
-        this.axios.get("http://localhost:8088/update-pharmacy2", {params:{
-            numbers:this.tableData[i].executedelNumber,
-            drugId:this.tableData[i].drugId
-          }
-        })
-        this.axios.get("http://localhost:8088/update-pharmacy", {params:{
-          numbers:this.tableData[i].executedelNumber,
-            drugId:this.tableData[i].drugId
-
-
-          }
-        })
-            .then((v) => {
-            this.goBack()
-
-            });
-      }
+      // for (var i = 0; i < this.tableData.length; i++) {
+      //   this.axios.get("http://localhost:8088/update3-execute", {params:{
+      //     id:this.tableData[i].executeId
+      //     }})
+      //   this.axios.get("http://localhost:8088/update-pharmacy2", {params:{
+      //       numbers:this.tableData[i].executedelNumber,
+      //       drugId:this.tableData[i].drugId
+      //     }
+      //   })
+      //   this.axios.get("http://localhost:8088/update-pharmacy", {params:{
+      //     numbers:this.tableData[i].executedelNumber,
+      //       drugId:this.tableData[i].drugId
+      //     }
+      //   })
+      //       .then((v) => {
+      //       this.goBack()
+      //
+      //       });
+      // }
     },
 
 
