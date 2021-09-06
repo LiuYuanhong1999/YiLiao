@@ -4,7 +4,7 @@
 
   <el-form ref="ruleFrom" :model="ruleFrom"  label-width="100px">
     <el-page-header content="详情页" @back="goBack" />
-    <el-button @click="update(),insertByName()">发药</el-button>
+
     <!--数据表格-->
 
     <el-row>
@@ -77,12 +77,12 @@ export default {
 
     insertByName(executedId){
       this.axios.get("http://localhost:8088/add-recipes", {params:{
-        executeId:this.rcId,
-        recipesName:"six",
+          executeId:this.rcId,
+          recipesName:"six",
           patientId:this.tableData[0].tyhExecuteEntity.tyhPatientEntity.patientId
         }})
           .then((v) => {
-           console.log("success")
+            console.log("success")
           });
 
 
@@ -117,7 +117,7 @@ export default {
 
     // 跳转返回指定的页面
     goBack() {
-      this.$message("发药成功");
+
       this.$router.push({
         path: '/recipe',
       })

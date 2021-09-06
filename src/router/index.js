@@ -256,9 +256,14 @@ const routes=[
                path: '/returnDetails',
                name: 'returnDetails',
                component:()=>import('/src/components/LYH/returnDetails.vue')
-
-
             },
+
+            {
+              path: '/recipesDetails',
+              name: 'recipesDetails',
+              component:()=>import('/src/components/LYH/recipesDetails.vue')
+            },
+
             {
                 path: '/hsxq',
                 name:'hsxq',
