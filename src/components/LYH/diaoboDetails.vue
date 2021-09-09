@@ -35,7 +35,7 @@
         </el-form-item>
       </el-form>
       <!-- 查询条件结束 -->
-<el-button @click="updateById2()">调拨</el-button>
+<el-button @click="updateById2(),updateById(1)">调拨</el-button>
       <el-table
 
 

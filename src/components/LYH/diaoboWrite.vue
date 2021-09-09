@@ -36,6 +36,10 @@
       </el-form>
       <!-- 查询条件结束 -->
 
+
+
+
+
       <el-table
 
 
@@ -43,35 +47,40 @@
           border stripe style="width: 100%;margin-top: 10px"
           :header-cell-style="{'text-align':'center'}"
           :cell-style="{'text-align':'center'}"
-          @selection-change="selectionLineChangeHandle2"
       >
-        <el-table-column label="药品名" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugName"/>
+        <el-table-column label="调拨单" prop="allotId"/>
 
-        <el-table-column label="剂型" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugJixin"/>
+        <el-table-column label="药品" prop="drugEntity.drugName"/>
 
-        <el-table-column label="规格" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugGuige"/>
+        <el-table-column label="药品单价" prop="drugEntity.drugPrice"/>
+
+
+        <el-table-column label="剂型" prop="drugEntity.drugJixin"/>
+
+
+        <el-table-column label="规格" prop="drugEntity.drugGuige"/>
 
         <el-table-column label="类型"
-                         prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugState">
+                         prop="drugEntity.drugState">
           <template #default="scope">
-            <template v-if="scope.row.allotEntity.pharmacyEntity.lyhDrugEntity.drugState =='1'">
+            <template v-if="scope.row.drugEntity.drugState =='1'">
               中药
             </template>
 
-            <template v-if="scope.row.allotEntity.pharmacyEntity.lyhDrugEntity.drugState =='2'">
+            <template v-if="scope.row.drugEntity.drugState =='2'">
               西药
             </template>
           </template>
         </el-table-column>
 
-        <el-table-column label="价格" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugPrice"/>
 
-        <el-table-column label="生产厂商" prop="allotEntity.pharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName"/>
-        <el-table-column prop="allotdetailsDate" label="申请时间"/>
+        <el-table-column label="供应商" prop="drugEntity.lyhSupplierEntity.supplierName"/>
 
-        <el-table-column label="申请调拨数量" prop="numbers"/>
 
-        <el-table-column prop="allotId" label="调拨编号" width="120"/>
+        <el-table-column label="调拨时间" prop="recordDate"/>
+
+
+        <el-table-column label="调拨数量" prop="recordNumbers" width="120"/>
       </el-table>
 
       <br>
@@ -107,60 +116,17 @@ export default {
       currentPage:1, //初始页
       pagesize:10,    //    每页的数据
 
-      ruleFrom:{
-        allotId:''
-      },
+
       drugInfosC:[],
     }
   },
   methods:{
 
 
-    //大表格
-    selectionLineChangeHandle2 (val) {
-      this.drugInfosC = val;
-      console.log(this.drugInfosC);
-      for(var i = 0; i< this.drugInfosC.length; i++){
-        console.log('id:'+this.drugInfosC[i].drugId)
-        console.log('number:'+this.drugInfosC[i])
-        console.log('编号:'+this.drugInfosC[i].drugId)
-        console.log('数量:'+this.drugInfosC[i])
-      }
-    },
 
 
-
-
-
-
-
-
-    updateById(allotState){
-      for (var i = 0; i < this.drugInfosC.length; i++) {
-
-        this.axios.get("http://localhost:8088/update-allot", {
-          params: {
-            allotState:allotState,
-            allotId: this.drugInfosC[i].allotId
-          }
-        })
-            .then((v) => {
-              this.$message("修改成功");
-              this.initDate();
-            });
-      }
-
-    },
-
-
-
-
-
-
-    initData(allotId){
-      this.axios.get("http://localhost:8088/find-allotDetails",{params:{
-          allotId:allotId
-        }})
+    initData(){
+      this.axios.get("http://localhost:8088/find-AllotRecord")
           .then((v) => {
             this.tableData = v.data;
           })
@@ -179,7 +145,7 @@ export default {
     },
   },
   created() {
-    this.initData(this.$route.query.key)
+    this.initData()
 
 
   },

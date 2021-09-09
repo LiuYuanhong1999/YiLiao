@@ -46,7 +46,7 @@
         <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
-
+ 
   <!-- 表格工具按钮开始 -->
   <el-row :gutter="10" style="margin-bottom: 8px;margin-top: -30px">
     <el-col :span="1.5">
@@ -349,11 +349,23 @@ name: "drugInfosC",
 
     },
 insert(){
+
       this.ruleFrom.lyhPharmacyDetailsEntities=this.gridDataDetails;
-  this.axios.post("http://localhost:8088/add-allot",this.ruleFrom)
-      .then((v) => {
-        console.log(this.drugInfosC)
-      })
+      if (this.ruleFrom.lyhPharmacyDetailsEntities == undefined || this.ruleFrom.lyhPharmacyDetailsEntities.length<=0){
+        this.$message("请选择需要调拨的药品")
+
+  }else {
+        this.axios.post("http://localhost:8088/add-allot",this.ruleFrom)
+            .then((v) => {
+              this.initData()
+              this.$message("申请成功");
+              this.dialogVisible=false;
+              console.log(this.drugInfosC)
+            })
+      }
+
+
+
 },
 
 
