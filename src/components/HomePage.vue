@@ -110,7 +110,6 @@
             <router-link to="/putlnStorage"><el-menu-item index="6-1">采购入库</el-menu-item></router-link>
             <router-link to="/auditList"><el-menu-item index="6-2">入库审核</el-menu-item></router-link>
             <router-link to="/drugCity"><el-menu-item index="6-3">药品库存</el-menu-item></router-link>
-            <router-link to="/CheckDrugStorage"><el-menu-item index="6-4">库存详情</el-menu-item></router-link>
             <router-link to="/pan"><el-menu-item index="6-5">药品盘点</el-menu-item></router-link>
             <router-link to="/diaobo"><el-menu-item index="6-6">药库调拨</el-menu-item></router-link>
             <router-link to="/diaoboWrite"><el-menu-item index="6-8">药库调拨记录</el-menu-item></router-link>

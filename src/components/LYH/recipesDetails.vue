@@ -92,28 +92,26 @@ export default {
 
 
     update(){
-      // for (var i = 0; i < this.tableData.length; i++) {
-      //   this.axios.get("http://localhost:8088/update3-execute", {params:{
-      //     id:this.tableData[i].executeId
-      //     }})
-      //   this.axios.get("http://localhost:8088/update-pharmacy2", {params:{
-      //       numbers:this.tableData[i].executedelNumber,
-      //       drugId:this.tableData[i].drugId
-      //     }
-      //   })
-      //   this.axios.get("http://localhost:8088/update-pharmacy", {params:{
-      //     numbers:this.tableData[i].executedelNumber,
-      //       drugId:this.tableData[i].drugId
-      //     }
-      //   })
-      //       .then((v) => {
-      //       this.goBack()
-      //
-      //       });
-      // }
+      for (var i = 0; i < this.tableData.length; i++) {
+        this.axios.get("http://localhost:8088/update3-execute", {params:{
+          id:this.tableData[i].executeId
+          }})
+        this.axios.get("http://localhost:8088/update-pharmacy2", {params:{
+            numbers:this.tableData[i].executedelNumber,
+            drugId:this.tableData[i].drugId
+          }
+        })
+        this.axios.get("http://localhost:8088/update-pharmacy", {params:{
+          numbers:this.tableData[i].executedelNumber,
+            drugId:this.tableData[i].drugId
+          }
+        })
+            .then((v) => {
+            this.goBack()
+
+            });
+      }
     },
-
-
 
     // 跳转返回指定的页面
     goBack() {
@@ -149,7 +147,7 @@ export default {
     console.log(this.rcId)
     this.initData()
   }
-
+  
 }
 </script>
 

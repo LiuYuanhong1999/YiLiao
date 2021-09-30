@@ -43,9 +43,10 @@
     <!-- 数据表格开始 -->
     <el-table  border :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                @selection-change="selectionLineChangeHandle">
+
       <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" />
 
-          <el-table-column label="供应商" width="160" align="center" prop="lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName"  >
+          <el-table-column label="供应商" width="160" align="center"  >
             <template  #default="scope">
               <router-link :to="{path: '/s',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
                 {{scope.row.lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName}}

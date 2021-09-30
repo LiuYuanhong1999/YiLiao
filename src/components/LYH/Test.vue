@@ -35,7 +35,7 @@
     <el-row>
       <el-col :span="24">
         <el-form-item>
-          <el-button style="width:80px;margin-left: 90%" type="primary" @click="updateById()">提交库存</el-button>
+          <el-button style="width:80px;margin-left: 90%" type="primary" @click="updateById(),updateById2(ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities[0].procurementId)">提交库存</el-button>
           <el-table
               :data="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities.slice((currentPage-1)*pagesize,currentPage*pagesize)"
               @selection-change="selectionLineChangeHandle"
@@ -120,7 +120,8 @@ export default {
         procurementId:"",
         lyhProcurementEntity:{
           lyhProcurementDetailsEntities:[],
-        }
+        },
+        piCi:'',
       },
       currentPage:1, //初始页
       pagesize:10,    //    每页的数据
@@ -144,6 +145,18 @@ export default {
       })
     },
 
+    updateById2(procurementId){
+
+
+        this.axios.get("http://localhost:8088/update-procurement", {
+          params: {
+            procurementState:4,
+            procurementId: procurementId
+          }
+        })
+    },
+
+
     update(numbers,proId){
 
       this.axios.get("http://localhost:8088/update-details",{params:{numbers:numbers,proId:proId}})
@@ -154,14 +167,13 @@ export default {
 
     updateById() {
       var json=JSON.stringify(this.tableDetails);
-
         this.axios.post("http://localhost:8088/update-drugstore",json,{headers:{"Content-Type":"application/x-www-from-urlencoded"}})
 
             .then((v) => {
 
-              this.$message("修改成功");
+              this.$message("入库成功");
               this.$router.push({
-                path: '/CheckDrugStorage'
+                path: '/auditList'
               })
             })
       }
@@ -184,9 +196,9 @@ export default {
       this.tableDetails = val;
       console.log(this.tableDetails);
       for (var i = 0; i < this.tableDetails.length; i++) {
-        console.log('number:' + this.tableDetails[i])
-        // console.log('编号:' + this.tableDetails[i].lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugId)
-        // console.log('数量:' +this.tableDetails[i].procurementId)
+
+
+
       }
     },
     //小表格提交

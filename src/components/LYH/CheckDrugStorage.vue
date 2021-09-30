@@ -49,7 +49,7 @@
 
         </el-table-column>
         <el-table-column
-            prop="drugstoreNumber"
+            prop="numbers"
             label="库存"
             width="50">
         </el-table-column>
@@ -73,6 +73,13 @@
             label="生产日期"
             width="120">
         </el-table-column>
+
+        <el-table-column>
+
+
+
+        </el-table-column>
+
 
         <el-table-column
             prop="lyhProcurementEntity.procurementName"
@@ -100,6 +107,7 @@
             label="进药方式"
             width="76">
         </el-table-column>
+        <el-table-column prop="piCi" label="批次"></el-table-column>
 
 <!--<el-table-column label="操作">-->
 <!--  <template  #default="scope">-->
@@ -151,7 +159,7 @@ export default {
   },
   methods:{
     initData(){
-      this.axios.get("http://localhost:8088/find-drugstore",{params:{
+      this.axios.get("http://localhost:8088/find-drugStoreDetails",{params:{
         drugId:this.$route.query.key
         }})
           .then((v) => {
@@ -173,7 +181,7 @@ export default {
 
   // this.ruleFrom=JSON.parse(this.$route.query.value)
   //   alert(this.ruleFrom.procurementId)
-    this.initData(this.$route.query.key);
+    this.initData();
 
   },
 }
