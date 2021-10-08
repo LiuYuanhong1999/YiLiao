@@ -46,13 +46,15 @@
         <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
       </el-form-item>
     </el-form>
- 
+
   <!-- 表格工具按钮开始 -->
   <el-row :gutter="10" style="margin-bottom: 8px;margin-top: -30px">
     <el-col :span="1.5">
       <el-button type="primary" icon="el-icon-plus" size="mini" @click="insertAllot() ">提交申请</el-button>
     </el-col>
-
+    <el-col :span="1.5">
+      <el-button type="primary" icon="el-icon-plus" size="mini" @click="insertAllot() ">添加药品</el-button>
+    </el-col>
   </el-row>
 
   <el-table
@@ -87,49 +89,36 @@
     <el-table-column
         prop="lyhDrugEntity.drugName"
         label="药品名称"
-        width="120">
+       >
     </el-table-column>
     <el-table-column
         prop="lyhDrugEntity.drugGuige"
         label="规格"
-        width="120">
+        >
     </el-table-column>
     <el-table-column
         prop="lyhDrugEntity.drugJixin"
         label="剂型"
-        width="120">
+       >
     </el-table-column>
     <el-table-column
         prop="lyhDrugEntity.drugDate"
         label="有效期至"
-        width="120">
+        >
     </el-table-column>
-    <el-table-column
-        prop="lyhDrugEntity.lyhSupplierEntity.supplierName"
-        label="厂家">
-    </el-table-column>
+
     <el-table-column
         prop="pharmacyNumber"
         label="库存（件/克）"
-        width="120">
+        >
     </el-table-column>
     <el-table-column
         prop="lyhDrugEntity.drugPrice"
         label="单价（元）"
-        width="120">
+     >
     </el-table-column>
 
-    <el-table-column  label="操作" width="80px">
-      <template  #default="scope">
-        <el-tooltip content="申请调拨" placement="top">
-          <el-button
-              icon="el-icon-view" size="mini"
-              @click="editDrug(scope.row)"></el-button>
-        </el-tooltip>
 
-
-      </template>
-    </el-table-column>
   </el-table>
   <br>
   <!--分页-->
@@ -145,35 +134,30 @@
     </el-pagination>
   </div>
 
-  <el-dialog
-      v-model="centerDialogVisible"
-      width="40%"
-      center>
-    <div style="margin-top: -10%"><span style="color:black;font-size:16px;font-weight:bold  ">产品参数</span></div>
-    <div style="margin-top: 40px">
-      <el-form :model="ruleFrom">
-        <ul class="T1">
-          <li><span style="color: gray;font-weight:bold">产品名称:</span><span style="margin-left: 40px"></span>{{ruleFrom.lyhDrugEntity.drugName}}</li>
-          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">产品名称:</span><span style="margin-left: 40px"></span>{{ruleFrom.lyhDrugEntity.drugName}}</li>
-          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">生产日期:</span><span style="margin-left: 40px"></span>{{ruleFrom.lyhDrugEntity.drugDate}}</li>
-          <li  style="margin-top: 10px"><span style="color: gray;font-weight:bold">剂型:</span><span style="margin-left:68px"></span>{{ruleFrom.lyhDrugEntity.drugJixin}}</li>
-          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">规格:</span><span style="margin-left: 68px"></span>{{ruleFrom.lyhDrugEntity.drugGuige}}</li>
-<!--          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">药品类型:</span><span style="margin-left: 40px"></span>{{ruleFrom.lyhDrugEntity.drugName}}</li>-->
-          <li style="margin-top: 10px"><span style="color: gray;font-weight:bold">供应商:</span><span style="margin-left: 54px"></span>{{ruleFrom.lyhDrugEntity.lyhSupplierEntity.supplierName}}</li>
-        </ul>
-      </el-form>
+<!--  <el-dialog-->
+<!--      v-model="centerDialogVisible"-->
+<!--      width="40%"-->
+<!--      center>-->
+<!--    <div style="margin-top: -10%"><span style="color:black;font-size:16px;font-weight:bold  ">产品参数</span></div>-->
+<!--    <div style="margin-top: 40px">-->
+<!--      <el-form :model="ruleFrom">-->
+<!--       -->
+<!--        -->
+<!--        -->
+<!--        -->
+<!--      </el-form>-->
 
 
-    </div>
+<!--    </div>-->
 
-    <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="centerDialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>
-    </span>
-    </template>
+<!--    <template #footer>-->
+<!--    <span class="dialog-footer">-->
+<!--      <el-button @click="centerDialogVisible = false">取 消</el-button>-->
+<!--      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
+<!--    </span>-->
+<!--    </template>-->
 
-  </el-dialog>
+<!--  </el-dialog>-->
 
 
 

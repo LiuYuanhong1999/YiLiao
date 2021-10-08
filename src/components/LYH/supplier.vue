@@ -112,7 +112,17 @@
 
             <el-form :model="ruleForm"  :rules="rules" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
+
+
+
               <el-row>
+                <el-col :span="10">
+                  <el-form-item label="药品编号:" prop="drugId">
+                    <el-input v-model="ruleForm.drugId" disabled></el-input>
+                  </el-form-item>
+                </el-col>
+
+
                 <el-col :span="10">
                   <el-form-item label="药品名:" prop="drugName">
                     <el-input v-model="ruleForm.drugName"></el-input>
@@ -171,7 +181,7 @@
             <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="insertDrug(),dialogVisible = false">确 定</el-button>
     </span>
             </template>
           </el-dialog>
@@ -289,6 +299,7 @@ export default {
       pagesize:10,   //    每页的数据
       tableDate:[],
       ruleForm:{
+        drugId:'',
         supplierId:'',
         drugGuige: '',
         drugState:"",
@@ -380,13 +391,15 @@ drugStates:[
         }})
           .then((v) => {
             this.tableDate=v.data;
+            this.ruleForm.drugId=this.getProjectNum()+ Math.floor(Math.random() * 10000);
           })
     },
 
 
 insertDrug(){
+  this.axios.post("http://localhost:8088/add-pharmacy",this.ruleForm)
+  this.axios.post("http://localhost:8088/add-drug",this.ruleForm)
 
-      this.axios.post("http://localhost:8088/add-drug",this.ruleForm)
           .then((v) => {
             this.$message("添加成功")
             this.initDate(0);
@@ -394,7 +407,25 @@ insertDrug(){
 },
 
 
-
+    // 获取当前日期的方法
+    getProjectNum () {
+      const projectTime = new Date() // 当前中国标准时间
+      const Year = projectTime.getFullYear() // 获取当前年份 支持IE和火狐浏览器.
+      const Month = projectTime.getMonth() + 1 // 获取中国区月份
+      const Day = projectTime.getDate() // 获取几号
+      var CurrentDate = Year
+      if (Month >= 10) { // 判断月份和几号是否大于10或者小于10
+        CurrentDate += Month
+      } else {
+        CurrentDate += '0' + Month
+      }
+      if (Day >= 10) {
+        CurrentDate += Day
+      } else {
+        CurrentDate += '0' + Day
+      }
+      return CurrentDate
+    },
 
 
 
