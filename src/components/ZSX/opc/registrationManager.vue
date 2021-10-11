@@ -230,9 +230,9 @@
     </div>
 </template>
 
-<script>
-    import qs from "qs";
-    export default {
+    <script>
+      import qs from "qs";
+      export default {
         name: "registrationManager",
         components: {},
 
@@ -369,7 +369,6 @@
                         this.dialogVisible=false;
                         this.$message('操作成功！');
                         this.initData(this.currentPage, this.pageSize);
-
                     })
             },
 
@@ -399,6 +398,10 @@
             handleClick(tab, event) {
                 console.log(tab, event);
             },
+          //默认选中当前时间
+          getdatatime(){
+              this.registration.registrationTime = new Date();
+          },
           // 获取当前日期的方法
           getProjectNum () {
             const projectTime = new Date() // 当前中国标准时间
@@ -418,6 +421,10 @@
             }
             return CurrentDate
           },
+        },
+        mounted() {
+          let that = this;
+          that.getdatatime()
         },
         created() {
             this.initData();

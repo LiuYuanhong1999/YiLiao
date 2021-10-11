@@ -29,37 +29,37 @@
                     :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             >
                 <el-table-column
-                        prop="eId"
+                        prop="operatingRoomId"
                         label="手术室编号"
                         width="120">
                 </el-table-column>
                 <el-table-column
-                        prop="eName"
+                        prop="operatingRoomName"
                         label="手术室名称"
                         width="100">
                 </el-table-column>
                 <el-table-column
-                        prop="eSex"
+                        prop="operatingRoomType"
                         label="手术类型"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="ePhone"
+                        prop="desk.deskName"
                         label="科室"
                         width="100">
                 </el-table-column>
                 <el-table-column
-                        prop="eDate"
+                        prop="operatingRoomPlace"
                         label="位置"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eDate"
+                        prop="operatingRoomCharge"
                         label="负责人"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eDate"
+                        prop="operatingRoomMaintain"
                         label="维护人"
                         width="180">
                 </el-table-column>
@@ -68,7 +68,7 @@
                         <el-tooltip content="编辑" placement="top">
                             <el-button
                                     icon="el-icon-edit" size="mini"
-                                    @click="editEmp(scope.row)"></el-button>
+                                    @click="editOperatingRoom(scope.row)"></el-button>
                         </el-tooltip>
 
 
@@ -100,55 +100,73 @@
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
-            <el-form :model="ruleForm" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form :model="operating" status-icon  ref="operating" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="编号" prop="eName">
-                            <el-input v-model="ruleForm.eName"></el-input>
+                        <el-form-item label="手术室名称" prop="eSex">
+                            <el-input v-model="operating.operatingRoomName"></el-input>
                         </el-form-item>
                     </el-col>
+
                     <el-col :span="10">
-                        <el-form-item label="名称" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="手术类型" prop="eSex">
-                            <el-select v-model="value" placeholder="请选择">
+                        <el-form-item label="手术室类型" prop="operatingRoom.operatingRoomTypeId">
+                            <el-select v-model="operating.operatingRoom.operatingRoomTypeId" placeholder="请选择">
                                 <el-option
-                                        v-for="item in options"
-                                        :key="item.value"
-                                        :label="item.label"
-                                        :value="item.value">
+                                        v-for="item in operatingRoomTypeTableData"
+                                        :key="item.operatingRoomTypeId"
+                                        :label="item.operatingRoomTypeName"
+                                        :value="item.operatingRoomTypeId">
                                 </el-option>
                             </el-select>
                         </el-form-item>
                     </el-col>
+
+                  <el-col :span="10">
+                    <el-form-item label="手术类型" prop="operatingRoomType">
+                      <el-select v-model="operating.operatingRoomType" placeholder="请选择">
+                        <el-option
+                            v-for="item in options"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+
+                  <el-col :span="10">
+                    <el-form-item label="科室" prop="desk.deskId">
+                      <el-select v-model="operating.desk.deskId" placeholder="请选择">
+                        <el-option
+                            v-for="desks in deskTableData"
+                            :key="desks.deskId"
+                            :label="desks.deskName"
+                            :value="desks.deskId">
+                        </el-option>
+                      </el-select>
+                    </el-form-item>
+                  </el-col>
+
                     <el-col :span="10">
-                        <el-form-item label="分类" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
+                        <el-form-item label="位置" prop="operatingRoomPlace">
+                            <el-input v-model="operating.operatingRoomPlace"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="科室" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
+                        <el-form-item label="负责人" prop="operatingRoomCharge">
+                            <el-input v-model="operating.operatingRoomCharge"></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="位置" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
+                        <el-form-item label="维护人" prop="operatingRoomMaintain">
+                            <el-input v-model="operating.operatingRoomMaintain"></el-input>
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="负责人" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="维护人" prop="eSex">
-                            <el-input v-model="ruleForm.eSex"></el-input>
-                        </el-form-item>
-                    </el-col>
+                  <el-col :span="10">
+                    <el-form-item label="使用说明" prop="operatingRoomEmploy">
+                      <el-input v-model="operating.operatingRoomEmploy"></el-input>
+                    </el-form-item>
+                  </el-col>
                 </el-row>
 
                 <el-row>
@@ -158,8 +176,8 @@
 
             <template #footer>
     <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button @click="ClearFrom">取 消</el-button>
+      <el-button type="primary" @click="saveOperatingRoom">确 定</el-button>
     </span>
             </template>
         </el-dialog>
@@ -182,31 +200,61 @@
                 dialogVisible: false,
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
-                ruleForm:{
-                    eId:'',
-                    eName:'',
-                    eSex:'',
-                    ePhone:'',
-                    eDate:''
-                }
+
+
+                operatingRoomTypeTableData:[],
+                deskTableData:[],
+                operating:{
+                  operatingRoomId:'',
+                  operatingRoomName:'',
+                  operatingRoomType:'',
+                  operatingRoomPlace:'',
+                  operatingRoomCharge:'',
+                  operatingRoomMaintain:'',
+                  operatingRoomEmploy:'',
+                  operatingRoom:{
+                    operatingRoomTypeId:'',
+                    operatingRoomTypeName:''
+                  },
+                  desk:{
+                    deskId:'',
+                    deskName:'',
+                    deskTime:''
+                  }
+                },
+
+              options: [{
+                value: '择期手术',
+                label: '择期手术'
+              }, {
+                value: '限期手术',
+                label: '限期手术'
+              }, {
+                value: '急诊手术',
+                label: '急诊手术'
+              }],
             }
         },
         methods:{
-
-            // initData(page,size){
-            //   this.axios.get("http://localhost:8088/emp-mgr", {params: {pageNum: page, size: size}})
-            //       .then((v) => {
-            //         this.tableData = v.data.rows;
-            //         this.totalSize = v.data.total;
-            //
-            //       })
-            // },
-
             initData(){
-                this.axios.get("http://localhost:8088/emp")
+                this.axios.get("http://localhost:8088/find_operating_room")
                     .then((v) => {
                         this.tableData = v.data;
                     })
+            },
+
+            findOperatingRoomType(){
+              this.axios.get("http://localhost:8088/find_operating_room_type")
+                  .then((v) => {
+                    this.operatingRoomTypeTableData = v.data
+                  })
+            },
+
+            findDesk(){
+              this.axios.get("http://localhost:8088/find_desk")
+                  .then((v) => {
+                    this.deskTableData = v.data
+                  })
             },
 
             // 初始页currentPage、初始每页数据数pagesize和数据data
@@ -218,25 +266,22 @@
                 this.currentPage = currentPage;
                 console.log(this.currentPage)  //点击第几页
             },
-            editEmp(row){
+            editOperatingRoom(row){
                 this.dialogVisible=true;
-                this.ruleForm.eName=row.eName;
-                this.ruleForm.ePhone=row.ePhone;
-                this.ruleForm.eId=row.eId;
-                this.ruleForm.eSex=row.eSex;
+              this.operating = Object.assign({}, row)
             },
 
             ClearFrom(){
-                this.ruleForm='';
-                this.dialogVisible=false;
+              this.$refs['operating'].resetFields()
+              this.operating = this.$options.data().operating
+              this.dialogVisible=false;
             },
-            addEmp(){
-                this.axios.post("http://localhost:8088/add-emp",this.ruleForm)
+            saveOperatingRoom(){
+                this.axios.post("http://localhost:8088/save_operating_room",this.operating)
                     .then((v) => {
                         this.dialogVisible=false;
                         this.$message('操作成功！');
-                        this.initData(this.currPage, this.pageSize);
-
+                        this.initData(this.currentPage, this.pageSize);
                     })
             },
 
@@ -249,7 +294,7 @@
                     })))
                     .then((v) => {
                         this.$message('删除成功！');
-                        this.initData(this.currPage, this.pageSize);
+                        this.initData(this.currentPage, this.pageSize);
                     })
             },
 
@@ -266,7 +311,8 @@
         },
         created() {
             this.initData();
-
+            this.findOperatingRoomType();
+            this.findDesk();
         },
     }
 </script>

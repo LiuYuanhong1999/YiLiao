@@ -96,10 +96,16 @@ const routes=[
                 meta:'手术室安排'
             },
             {
-                path:'/project',
-                name:'projectManager',
-                component:()=>import('/src/components/ZSX/operation/projectManager.vue'),
-                meta:'手术项目管理'
+                path:'/surgeryFor',
+                name:'surgeryForManager',
+                component:()=>import('/src/components/ZSX/operation/surgeryForManager.vue'),
+                meta:'手术申请'
+            },
+            {
+                path:'/surgeryArrange',
+                name:'surgeryArrangeManager',
+                component:()=>import('/src/components/ZSX/operation/surgeryArrangeManager.vue'),
+                meta:'手术安排'
             },
             //住院
             {
