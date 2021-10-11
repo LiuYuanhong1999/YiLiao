@@ -36,6 +36,7 @@
       </el-form>
       <!-- 查询条件结束 -->
 <el-button @click="updateById2(),updateById(1)">调拨</el-button>
+
       <el-table
 
 
@@ -47,6 +48,9 @@
       >
 
         <el-table-column width="50" type="selection"></el-table-column>
+
+
+        <el-table-column label="药品名" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugId"/>
 
         <el-table-column label="药品名" prop="allotEntity.pharmacyEntity.lyhDrugEntity.drugName"/>
 
@@ -92,7 +96,7 @@
       </div>
 
 
-
+<!--{{drugInfosC}}112121-->
     </el-card>
   </div>
 
@@ -134,11 +138,18 @@ export default {
 
     updateById2(){
       for (var i = 0; i < this.drugInfosC.length; i++) {
-
-        this.axios.get("http://localhost:8088/update-drugstore", {
+alert(this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugEntity.drugId)
+        this.axios.get("http://localhost:8088/update-pharmacyRecord", {
           params: {
             numbers:this.drugInfosC[i].numbers,
-            drugId:this.drugInfosC[i].drugId,
+            drugId:this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugEntity.drugId,
+            allotId:this.drugInfosC[i].allotId
+          }
+        })
+        this.axios.get("http://localhost:8088/update-drugstore2", {
+          params: {
+            numbers:this.drugInfosC[i].numbers,
+            drugId:this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugEntity.drugId,
             procurementId:this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugstoreEntity.procurementId,
             allotId:this.drugInfosC[i].allotId
           }

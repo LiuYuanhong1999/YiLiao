@@ -146,23 +146,23 @@ export default {
     },
 
     updateById2(procurementId){
-
-
-        this.axios.get("http://localhost:8088/update-procurement", {
-          params: {
-            procurementState:4,
-            procurementId: procurementId
-          }
-        })
+        //
+        //
+        // this.axios.get("http://localhost:8088/update-procurement", {
+        //   params: {
+        //     procurementState:4,
+        //     procurementId: procurementId
+        //   }
+        // })
     },
 
 
     update(numbers,proId){
-
-      this.axios.get("http://localhost:8088/update-details",{params:{numbers:numbers,proId:proId}})
-          .then((v) => {
-          this.$message("修改成功");
-          })
+      //
+      // this.axios.get("http://localhost:8088/update-details",{params:{numbers:numbers,proId:proId}})
+      //     .then((v) => {
+      //     this.$message("修改成功");
+      //     })
     },
 
     updateById() {
