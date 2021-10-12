@@ -6,7 +6,7 @@
         <el-breadcrumb separator-class="el-icon-arrow-right">
             <el-breadcrumb-item :to="{ path: '/s' }">首页</el-breadcrumb-item>
             <el-breadcrumb-item>手术管理</el-breadcrumb-item>
-            <el-breadcrumb-item>手术治疗</el-breadcrumb-item>
+            <el-breadcrumb-item>手术申请</el-breadcrumb-item>
         </el-breadcrumb>
 
 
@@ -28,8 +28,8 @@
                     :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
             >
                 <el-table-column
-                        prop="eId"
-                        label="手术号"
+                          prop="surgeryForNumber"
+                        label="手术申请号"
                         width="180">
                 </el-table-column>
                 <el-table-column
@@ -38,13 +38,13 @@
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="eSex"
-                        label="主刀医生"
+                        prop="surgeryForName"
+                        label="手术名称"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="ePhone"
-                        label="总金额"
+                        prop="surgeryForDoctor"
+                        label="主刀医生"
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
@@ -233,7 +233,7 @@
 <script>
     import qs from "qs";
     export default {
-        name: "projectManager",
+        name: "surgeryForManager",
         components: {},
 
 

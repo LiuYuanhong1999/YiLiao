@@ -174,7 +174,7 @@
           </el-col>
         </el-row>
         <el-row>
-            <el-form label-width="80px">
+            <el-form label-width="100px" style="width: 100%">
                 <el-button @click="xzxm=true">选择项目</el-button><br><br>
                 药品
                 <el-table style="width: 100%" :data="checkBoxData">
@@ -185,7 +185,7 @@
                   <el-table-column
                       label="数量">
                     <template  #default="scope">
-                      <el-input v-model="scope.row[prescription.prescriptionDetails.medicineCount]" @input="count(scope.$index,scope.row)"></el-input>
+                      <el-input onkeyup="value = value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')" v-model="scope.row[prescription.prescriptionDetails.medicineCount]" @input="count(scope.$index,scope.row)"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -195,7 +195,7 @@
                   <el-table-column
                       label="小计">
                     <template  #default="scope">
-                      {{ scope.row[prescription.prescriptionDetails[0].medicineCount]==null?0 : scope.row[prescription.prescriptionDetails[0].medicineCount]*scope.row.drugPrice}}
+                      {{ scope.row[prescription.prescriptionDetails.medicineCount]==null?0 : scope.row[prescription.prescriptionDetails.medicineCount]*scope.row.drugPrice}}
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -316,7 +316,8 @@
               <el-table
                   :data="ProjectData2"
                   style="width: 100%"
-                  @selection-change="changeFun2">
+                  @selection-change="changeFun2"
+              >
                 <el-table-column
                     type="selection">
                 </el-table-column>
@@ -342,7 +343,7 @@
       <template #footer>
     <span class="dialog-footer">
       <el-button @click="xzxm = false">取 消</el-button>
-      <el-button type="primary" @click="xzxm = false">确 定</el-button>
+      <el-button type="primary" @click="monkey">确 定</el-button>
     </span>
       </template>
     </el-dialog>
@@ -361,10 +362,18 @@ export default {
   data() {
     return {
       tableData:[],
+      //药品表
       DrugData:[],
+      //手术项目表
       ProjectData:[],
+      //体检项目表
       ProjectData2:[],
       RegistrationData:[],
+      //药品表赋值对象
+      drugdata1:[],
+      //项目表赋值对象
+      projectdata1:[],
+
       checkBoxData: [],
       checkBoxData2:[],
       checkBoxData3:[],
@@ -472,24 +481,33 @@ export default {
       this.prescription.registration.registrationId = row.registrationId
       this.dialogVisible = true;
     },
+
     //给弹窗赋值
     changeFun(val) {
-      this.checkBoxData = val;
+      this.drugdata1 = val;
     },
 
     changeFun2(val) {
-      this.checkBoxData2 = this.checkBoxData2.concat(val);
+      this.projectdata1 = val;
+      // this.checkBoxData2 = this.checkBoxData2.concat(val);
       this.count2()
-      this.checkBoxData2.forEach(v=>(
-          this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice
+      this.projectdata1.forEach(v=>(
+          Math.round(this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice)
       ))
     },
+
+    monkey(){
+      this.checkBoxData = this.drugdata1
+      this.checkBoxData2 = this.projectdata1
+      this.xzxm = false
+    },
+
     deleteyp(s){
       this.checkBoxData.splice(s,1);
       this.checkBoxData3.splice(s,1)
       this.count2()
       this.checkBoxData2.forEach(v=>(
-          this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice
+          Math.round(this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice)
       ))
     },
 
@@ -498,7 +516,7 @@ export default {
       this.checkBoxData2.splice(s,1);
       this.count2()
       this.checkBoxData2.forEach(v=>(
-          this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice
+          Math.round(this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice)
       ))
     },
     close(){
@@ -521,14 +539,14 @@ export default {
           this.count2()
         }catch (e){}
         this.checkBoxData2.forEach(v=>(
-            this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice
+            Math.round(this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice)
         ))
       })
     },
     count2(){
       this.prescription.prescriptionMoney=0
       this.checkBoxData3.forEach(v=>{
-        this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.undefined*v.drugPrice
+        Math.round(this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.undefined*v.drugPrice)
       })
 
     },
