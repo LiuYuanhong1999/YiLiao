@@ -17,22 +17,34 @@
                     <el-input v-model="findmohu" @input="initData"></el-input>
                 </el-col>
                 <!--打印导入导出-->
-                <el-button type="primary" style="margin-left: 800px" @click="dialogVisible = true">新增</el-button>
             </el-row>
             <el-table
                     :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                     stripe
                     style="width: 100%"
+                    @expand-change="expandSelect"
             >
-                <el-table-column
-                        prop="cashNum"
-                        label="押金收取号"
-                        width="">
-                </el-table-column>
-                <el-table-column
-                        prop="cashDate"
-                        label="缴纳日期"
-                        width="">
+                <el-table-column type="expand">
+                    <el-table
+                            :data="tableData4"
+                            stripe
+                    >
+                        <el-table-column
+                                prop="cashNum"
+                                label="押金收取号"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="cashDate"
+                                label="充值日期"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="cashPrice"
+                                label="充值金额"
+                                width="">
+                        </el-table-column>
+                    </el-table>
                 </el-table-column>
                 <el-table-column
                         prop="tyhHosregEntity.hosregNum"
@@ -40,13 +52,13 @@
                         width="">
                 </el-table-column>
                 <el-table-column
-                        prop="cashPrice"
-                        label="收取金额"
+                        prop="tyhHosregEntity.tyhPatientEntity.patientName"
+                        label="病人姓名"
                         width="">
                 </el-table-column>
                 <el-table-column
-                        prop="tyhHosregEntity.tyhPatientEntity.patientName"
-                        label="病人姓名"
+                        prop="tyhHosregEntity.tyhPatientEntity.patientSex"
+                        label="病人性别"
                         width="">
                 </el-table-column>
                 <el-table-column
@@ -56,10 +68,10 @@
                 </el-table-column>
                 <el-table-column  label="操作">
                     <template  #default="scope">
-                        <el-tooltip content="撤销" placement="top">
+                        <el-tooltip content="充值押金" placement="top">
                             <el-button
-                                    @click="delcas(scope.row)"
-                                    icon="el-icon-delete" size="mini">
+                                    @click="dialogVisible = true,sss(scope.row.tyhHosregEntity.hosregNum,scope.row.tyhHosregEntity.tyhPatientEntity.patientName)"
+                                    icon="el-icon-edit" size="mini">
 
                             </el-button>
                         </el-tooltip>
@@ -79,16 +91,7 @@
                 <el-row>
                     <el-col :span="10">
                         <el-form-item label="住院号:" prop="procurementId" >
-                            <el-select v-model="hosregFrom.hosregNum" filterable @change="numpi(hosregFrom.hosregNum)">
-
-                                <el-option
-                                        v-for="provider in tableData2"
-                                        :key="provider.hosregNum"
-                                        :label="provider.hosregNum"
-                                        :value="provider.hosregNum"
-                                />
-
-                            </el-select>
+                            <el-input v-model="hosregFrom.hosregNum" disabled></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
@@ -156,6 +159,7 @@
                 tableData:[],
                 tableData2:[],
                 tableData3:[],
+                tableData4:[],
                 findmohu:'',
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
@@ -192,12 +196,13 @@
             }
         },
         methods:{
-            delcas(s){
-                this.axios.post("http://localhost:8088/del-cash2",s)
-                    .then((v) => {
-                        alert("撤销成功")
-                        this.initData()
-                    })
+            expandSelect:function (row) {
+                this.initData1(row)
+            },
+
+            sss(s,b){
+                this.hosregFrom.hosregNum=s
+                this.hosregFrom.tyhPatientEntity.patientName=b
             },
 
             addcash(){
@@ -257,6 +262,15 @@
                 this.axios.get("http://localhost:8088/findAll-cash",{params:{cha:this.findmohu}})
                     .then((v) => {
                         this.tableData = v.data;
+                        console.log(this.tableData)
+                    })
+            },
+
+            initData1(row) {
+                this.axios.get("http://localhost:8088/findAll-cash1",{params:{cha:row.tyhHosregEntity.hosregNum}})
+                    .then((v) => {
+                        this.tableData4 = v.data;1
+                        console.log(this.tableData4)
                     })
             },
 

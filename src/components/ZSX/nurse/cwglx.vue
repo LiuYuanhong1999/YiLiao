@@ -131,7 +131,7 @@
                         <el-select v-model="rzFrom.hosnotNum" filterable @change="initData3(rzFrom.hosnotNum)">
 
                             <el-option
-                                    v-for="provider in tableData2"
+                                    v-for="provider in tableData3"
                                     :key="provider.hosnotNum"
                                     :label="provider.hosnotNum"
                                     :value="provider.hosnotNum"
@@ -160,8 +160,16 @@
                 <el-col :span="10">
 
                     <el-form-item label="病人姓名" prop="">
-                        <el-input disabled v-model="tyhHosnotEntity.tyhPatientEntity.patientName"></el-input>
+                        <el-select v-model="tyhHosnotEntity.tyhPatientEntity.patientName" filterable @change="aa(tyhHosnotEntity.tyhPatientEntity.patientName)">
 
+                            <el-option
+                                    v-for="provider in tableData3"
+                                    :key="provider.tyhPatientEntity.patientId"
+                                    :label="provider.tyhPatientEntity.patientName"
+                                    :value="provider.tyhPatientEntity.patientId"
+                            />
+
+                        </el-select>
                     </el-form-item>
                 </el-col>
             </el-row>
@@ -235,6 +243,7 @@
                 dialogVisible2: false,
                 tableData:[],
                 tableData2:[],
+                tableData3:[],
                 cwxFrom:{
                     hospitalId:0,
                     inpId:0,
@@ -285,6 +294,14 @@
         },
 
         methods: {
+            aa(s){
+                this.axios.get("http://localhost:8088/find-regx",{params:{num:s}})
+                    .then((v) => {
+                        this.tyhHosnotEntity = v.data
+                        this.rzFrom.hosnotNum=this.tyhHosnotEntity.hosnotNum
+                    })
+            },
+
             diaohuan(row){
                 this.cwxFrom={
                     hospitalName:row.hospitalName,
@@ -305,6 +322,7 @@
                     })
             },
 
+
             apcw(row){
                 this.cwxFrom={
                     hospitalName:row.hospitalName,
@@ -319,6 +337,7 @@
                 }
             },
 
+
             initData2() {
                 this.axios.get("http://localhost:8088/find-not2")
                     .then((v) => {
@@ -330,6 +349,13 @@
                 this.axios.get("http://localhost:8088/find-reg",{params:{num:num}})
                     .then((v) => {
                         this.tyhHosnotEntity = v.data
+                    })
+            },
+
+            initData4() {
+                this.axios.get("http://localhost:8088/find-brn")
+                    .then((v) => {
+                        this.tableData3 = v.data;
                     })
             },
 
@@ -375,7 +401,7 @@
                     .then((v) => {
                         this.tableData = v.data;
                         console.log(this.tableData)
-                        this.initData2()
+                        this.initData4()
                     })
             },
 
