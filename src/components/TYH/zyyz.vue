@@ -14,7 +14,7 @@
             <!--表头-->
             <el-row>
                 <el-col :span="20">
-                    <el-input placeholder="病人"></el-input>
+                    <el-input placeholder="病人" v-model="cha" @input="initData"></el-input>
                 </el-col>
                 <el-table :data="tableData1" style="margin-top: 20px">
                     <el-table-column
@@ -421,6 +421,7 @@
         data() {
 
             return {
+                cha:'',
                 xiaoji:0,
                 a:0,
                 dialogVisible: false,
@@ -531,10 +532,15 @@
             addchufang(){
                 this.rdFrom.durg=this.checkBoxData4
                 this.rdFrom.project=this.checkBoxData5
+
                 console.log(this.rdFrom)
                 this.axios.post("http://localhost:8088/add-chufang",this.rdFrom)
                     .then((v) => {
-                        alert("新开处方成功")
+                        if (v.data==1){
+                             this.$message.success("新开处方成功")
+                        }else if (v.data==2){
+                            this.$message.error("病人已被锁定")
+                        }
                     })
             },
 
@@ -618,7 +624,7 @@
             },
 
             initData() {
-                this.axios.get("http://localhost:8088/find-chub")
+                this.axios.get("http://localhost:8088/find-chub",{params:{cha:this.cha}})
                     .then((v) => {
                         this.tableData1 = v.data;
                     })
