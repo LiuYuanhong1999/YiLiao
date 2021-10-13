@@ -158,24 +158,24 @@
 
                     <el-col :span="10">
                         <el-form-item label="病人姓名" prop="patientDataName">
-                          <el-input v-model="registration.patient.patientDataName"></el-input>
+                          <el-input v-model="registration.patient.patientDataName" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
 
                     <el-col :span="10">
                         <el-form-item label="身份证号码" prop="patientDataCard">
-                            <el-input v-model="registration.patient.patientDataCard"></el-input>
+                            <el-input v-model="registration.patient.patientDataCard" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                   <el-col :span="10">
                     <el-form-item label="病人电话" prop="patientDataPhone">
-                      <el-input v-model="registration.patient.patientDataPhone"></el-input>
+                      <el-input v-model="registration.patient.patientDataPhone" :disabled="true"></el-input>
                     </el-form-item>
                   </el-col>
 
                   <el-col :span="10">
                     <el-form-item label="病人性别" prop="patientDataSex">
-                      <el-input v-model="registration.patient.patientDataSex"></el-input>
+                      <el-input v-model="registration.patient.patientDataSex" :disabled="true"></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -231,7 +231,7 @@
 </template>
 
     <script>
-      import qs from "qs";
+    import qs from "qs";
       export default {
         name: "registrationManager",
         components: {},
@@ -350,7 +350,7 @@
             },
             editEmp(row){
                 this.registration = Object.assign({}, row)
-                this.registration.room = row.desk.deskId
+                // this.registration.room = row.desk.deskId
                 this.dialogVisible=true;
             },
 

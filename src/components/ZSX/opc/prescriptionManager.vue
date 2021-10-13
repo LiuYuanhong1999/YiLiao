@@ -522,6 +522,8 @@ export default {
     close(){
       this.$refs['prescription'].resetFields()
       this.prescription = this.$options.data().prescription
+      this.checkBoxData = []
+      this.checkBoxData2 = []
       this.dialogVisible=false;
     },
     //计算价格  x是下标，a是本行数据
@@ -572,7 +574,15 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event);
-    }
+    },
+    //默认选中当前时间
+    getdatatime(){
+      this.prescription.prescriptionTime = new Date();
+    },
+  },
+  mounted() {
+    let that = this;
+    that.getdatatime()
   },
   created() {
     this.initData();

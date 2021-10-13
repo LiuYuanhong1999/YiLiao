@@ -35,6 +35,7 @@
                 <el-table-column
                         prop="chargeTime"
                         label="收费日期"
+                        :formatter="dateformat"
                         width="180">
                 </el-table-column>
                 <el-table-column
@@ -261,6 +262,7 @@
 
 <script>
     import qs from "qs";
+    import moment from "moment"
     export default {
         name: "chargeManager",
         components: {},
@@ -291,6 +293,13 @@
             }
         },
         methods:{
+          dateformat(row , column){
+            const data = row[column.property]
+            if (data == undefined){
+              return
+            }
+            return moment(data).format("yyyy-MM-ss")
+          },
             initData(){
                 this.axios.get("http://localhost:8088/charge")
                     .then((v) => {
