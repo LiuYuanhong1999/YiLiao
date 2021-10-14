@@ -6,7 +6,7 @@
       <el-breadcrumb-item>处方发药</el-breadcrumb-item>
     </el-breadcrumb>
     <el-tabs v-model="activeName" @tab-click="handleClick" style="margin-top: 20px">
-      <el-tab-pane label="发药管理" name="first">
+      <el-tab-pane label="住院发药" name="first">
 
 
         <el-card style="margin-top: -0px">
@@ -120,7 +120,8 @@
 
 
       </el-tab-pane>
-      <el-tab-pane label="发药记录" name="second">
+      <el-tab-pane label="医嘱发药" name="second"></el-tab-pane>
+      <el-tab-pane label="住院发药记录" name="three">
 
 
 
@@ -209,6 +210,7 @@
         </el-card>
 
       </el-tab-pane>
+      <el-tab-pane label="医嘱发药记录" name="four"></el-tab-pane>
     </el-tabs>
 
   </div>

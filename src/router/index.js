@@ -263,7 +263,12 @@ const routes=[
                name: 'returnDetails',
                component:()=>import('/src/components/LYH/returnDetails.vue')
             },
+            {
+                path: '/returnDetails2',
+                name: 'recipesDetails2',
+               component:()=>import('/src/components/LYH/returnDetails2.vue')
 
+            },
             {
               path: '/recipesDetails',
               name: 'recipesDetails',

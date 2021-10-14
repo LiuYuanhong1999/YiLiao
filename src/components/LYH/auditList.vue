@@ -44,19 +44,20 @@
     <el-table  border :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                @selection-change="selectionLineChangeHandle">
 
-      <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" />
-
-          <el-table-column label="供应商" width="160" align="center"  >
-            <template  #default="scope">
-              <router-link :to="{path: '/s',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
-                {{scope.row.lyhProcurementEntity.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName}}
-              </router-link>
-            </template>
-          </el-table-column>
+      <el-table-column label="采购编号" align="center" width="200" prop="lyhProcurementEntity.procurementId" >
+        <template  #default="scope">
+          <router-link :to="{path: '/s',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
+          {{scope.row.lyhProcurementEntity.procurementId}}
+          </router-link>
+        </template>
 
 
-      <el-table-column label="采购批发总额" align="center" prop="lyhProcurementEntity.procurementPrice">
       </el-table-column>
+
+
+
+
+
       <el-table-column label="状态" prop="auditState" align="center"  >
         <template #default="scope">
           <template v-if="scope.row.auditState =='0'">
@@ -179,6 +180,7 @@ export default {
       tableDate: [],
       ruleForm: {
         supplierId: '',
+
       },
       providerOptions: [],
 

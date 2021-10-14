@@ -84,11 +84,11 @@
             <el-menu-item-group>
 <!--              <template #title>中药房</template>-->
 
-              <router-link to="/recipe"><el-menu-item index="5-1"> 处理处方 </el-menu-item></router-link>
+              <router-link to="/recipe"><el-menu-item index="5-1">处方发药 </el-menu-item></router-link>
 
 
               <router-link to="/drugInfosC"><el-menu-item index="5-2">药品库存</el-menu-item></router-link>
-              <router-link to="/drugApplyC"><el-menu-item index="5-3">药品调拨详情</el-menu-item></router-link>
+<!--              <router-link to="/drugApplyC"><el-menu-item index="5-3">药品调拨详情</el-menu-item></router-link>-->
             </el-menu-item-group>
 
 <!--            <el-menu-item-group>-->
@@ -110,9 +110,9 @@
             <router-link to="/putlnStorage"><el-menu-item index="6-1">采购入库</el-menu-item></router-link>
             <router-link to="/auditList"><el-menu-item index="6-2">入库审核</el-menu-item></router-link>
             <router-link to="/drugCity"><el-menu-item index="6-3">药品库存</el-menu-item></router-link>
-            <router-link to="/pan"><el-menu-item index="6-5">药品盘点</el-menu-item></router-link>
+<!--            <router-link to="/pan"><el-menu-item index="6-5">药品盘点</el-menu-item></router-link>-->
             <router-link to="/diaobo"><el-menu-item index="6-6">药库调拨</el-menu-item></router-link>
-            <router-link to="/diaoboWrite"><el-menu-item index="6-8">药库调拨记录</el-menu-item></router-link>
+<!--            <router-link to="/diaoboWrite"><el-menu-item index="6-8">药库调拨记录</el-menu-item></router-link>-->
             <router-link to="/return"><el-menu-item index="6-9">采购退货</el-menu-item></router-link>
             <router-link to="/supplier"><el-menu-item index="6-10">药品管理</el-menu-item></router-link>
             <router-link to="/drug"><el-menu-item index="6-11">供应商</el-menu-item></router-link>

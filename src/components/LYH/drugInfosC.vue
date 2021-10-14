@@ -6,205 +6,118 @@
     <el-breadcrumb-item>药品库存</el-breadcrumb-item>
   </el-breadcrumb>
 
+  <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tab-pane label="药品库存" name="first">
+
+      <el-card>
 
 
+        <!-- 查询条件开始 -->
+        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+          <el-form-item label="药品类型" prop="providerId" style="margin-left: 0%">
+            <el-select v-model="queryParams.drugState" value-key="id">
+              <el-option v-for="item in drugStates" :key="item.id" :label="item.name" :value="item.id">
 
-<el-card>
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="药品名" >
+            <el-input
+                placeholder="请输入药品名"
+                clearable
+                v-model="queryParams.drugName"
+                size="small"
+                style="width:180px"
+            />
+          </el-form-item>
 
+          <el-form-item label="选择剂型">
+            <el-select v-model="queryParams.drugJixin">
+              <el-option v-for="item in drugJiXins" :key="item.id" :label="item.name" :value="item.name"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="选择厂商">
 
-    <!-- 查询条件开始 -->
-    <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
-      <el-form-item label="药品类型" prop="providerId" style="margin-left: 0%">
-        <el-select v-model="queryParams.drugState" value-key="id">
-          <el-option v-for="item in drugStates" :key="item.id" :label="item.name" :value="item.id">
+            <el-input v-model="queryParams.supplierName"></el-input>
+          </el-form-item>
 
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="药品名" >
-        <el-input
-            placeholder="请输入药品名"
-            clearable
-            v-model="queryParams.drugName"
-            size="small"
-            style="width:180px"
-        />
-      </el-form-item>
+          <el-form-item style="margin-left: 80%">
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="initData(queryParams.drugName,queryParams.drugState,queryParams.drugJixin,queryParams.supplierName)">搜索</el-button>
+            <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
 
-      <el-form-item label="选择剂型">
-        <el-select v-model="queryParams.drugJixin">
-          <el-option v-for="item in drugJiXins" :key="item.id" :label="item.name" :value="item.name"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="选择厂商">
-
-        <el-input v-model="queryParams.supplierName"></el-input>
-      </el-form-item>
-
-      <el-form-item style="margin-left: 80%">
-        <el-button type="primary" icon="el-icon-search" size="mini" @click="initData(queryParams.drugName,queryParams.drugState,queryParams.drugJixin,queryParams.supplierName)">搜索</el-button>
-        <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-      </el-form-item>
-    </el-form>
-
-  <!-- 表格工具按钮开始 -->
-  <el-row :gutter="10" style="margin-bottom: 8px;margin-top: -30px">
-    <el-col :span="1.5">
-      <el-button type="primary" icon="el-icon-plus" size="mini" @click="insertAllot() ">提交申请</el-button>
-    </el-col>
-    <el-col :span="1.5">
-      <el-button type="primary" icon="el-icon-plus" size="mini" @click="insertAllot() ">添加药品</el-button>
-    </el-col>
-  </el-row>
-
-  <el-table
-
-
-      :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-      border stripe style="width: 100%;margin-top: -10px"
-      :header-cell-style="{'text-align':'center'}"
-      :cell-style="{'text-align':'center'}"
-      @selection-change="selectionLineChangeHandle2"
-  >
-
-    <el-table-column width="50" type="selection"></el-table-column>
-
-    <el-table-column
-        prop="lyhDrugEntity.drugState"
-        label="类别"
-        width="80">
-
-      <template #default="scope">
-        <template v-if="scope.row.lyhDrugEntity.drugState =='1'">
-          中药
-        </template>
-
-        <template v-if="scope.row.lyhDrugEntity.drugState =='2'">
-          西药
-        </template>
-      </template>
-
-
-    </el-table-column>
-    <el-table-column
-        prop="lyhDrugEntity.drugName"
-        label="药品名称"
-       >
-    </el-table-column>
-    <el-table-column
-        prop="lyhDrugEntity.drugGuige"
-        label="规格"
-        >
-    </el-table-column>
-    <el-table-column
-        prop="lyhDrugEntity.drugJixin"
-        label="剂型"
-       >
-    </el-table-column>
-    <el-table-column
-        prop="lyhDrugEntity.drugDate"
-        label="有效期至"
-        >
-    </el-table-column>
-
-    <el-table-column
-        prop="pharmacyNumber"
-        label="库存（件/克）"
-        >
-    </el-table-column>
-    <el-table-column
-        prop="lyhDrugEntity.drugPrice"
-        label="单价（元）"
-     >
-    </el-table-column>
-
-
-  </el-table>
-  <br>
-  <!--分页-->
-  <div class="fy_div">
-    <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 20, 40]"
-        :page-size="pagesize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="tableData.length">
-    </el-pagination>
-  </div>
-
-<!--  <el-dialog-->
-<!--      v-model="centerDialogVisible"-->
-<!--      width="40%"-->
-<!--      center>-->
-<!--    <div style="margin-top: -10%"><span style="color:black;font-size:16px;font-weight:bold  ">产品参数</span></div>-->
-<!--    <div style="margin-top: 40px">-->
-<!--      <el-form :model="ruleFrom">-->
-<!--       -->
-<!--        -->
-<!--        -->
-<!--        -->
-<!--      </el-form>-->
-
-
-<!--    </div>-->
-
-<!--    <template #footer>-->
-<!--    <span class="dialog-footer">-->
-<!--      <el-button @click="centerDialogVisible = false">取 消</el-button>-->
-<!--      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
-<!--    </span>-->
-<!--    </template>-->
-
-<!--  </el-dialog>-->
-
-
-
-
-  <el-dialog
-
-      v-model="dialogVisible"
-      width="80%"
-      :before-close="handleClose">
-    <div style="margin-top: -30px">—————————————————————<span style="color:red">申请药品调拨</span>———————————————————————</div>
-    <div style="margin-top: 10px">
-      <el-form :model="ruleFrom" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
-
-        <el-row >
-
-          <el-col :span="10">
-            <el-form-item label="调拨编号:">
-              <el-input v-model="ruleFrom.allotId" :disabled="true"></el-input>
-            </el-form-item>
+        <!-- 表格工具按钮开始 -->
+        <el-row :gutter="10" style="margin-bottom: 8px;margin-top: -30px">
+          <el-col :span="1.5">
+            <el-button type="primary" icon="el-icon-plus" size="mini" @click="insertAllot() ">提交申请</el-button>
           </el-col>
-
         </el-row>
 
-
-
-
         <el-table
-            :data="gridData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-            style="width: 100%;"
-            max-height="200"
+
+
+            :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            border stripe style="width: 100%;margin-top: -10px"
+            :header-cell-style="{'text-align':'center'}"
             :cell-style="{'text-align':'center'}"
-            :header-cell-style="{background:'#D6E9FC',color:'#606266','text-align':'center'}"
-            @selection-change="selectionLineChangeHandle3"
+            @selection-change="selectionLineChangeHandle2"
         >
 
           <el-table-column width="50" type="selection"></el-table-column>
-          <el-table-column property="lyhDrugEntity.drugName" label="药品名" width="150"></el-table-column>
-          <el-table-column property="lyhDrugEntity.drugJixin" label="单价" width="200"></el-table-column>
-          <el-table-column property="lyhDrugEntity.drugJixin" label="生产日期"></el-table-column>
 
-          <el-table-column property="" label="数量">
+          <el-table-column
+              prop="lyhDrugEntity.drugState"
+              label="类别"
+              width="80">
+
             <template #default="scope">
-              <el-input-number v-model.number="scope.row.numbers"></el-input-number>
-            </template>
-          </el-table-column>
-        </el-table>
+              <template v-if="scope.row.lyhDrugEntity.drugState =='1'">
+                中药
+              </template>
 
+              <template v-if="scope.row.lyhDrugEntity.drugState =='2'">
+                西药
+              </template>
+            </template>
+
+
+          </el-table-column>
+          <el-table-column
+              prop="lyhDrugEntity.drugName"
+              label="药品名称"
+          >
+          </el-table-column>
+          <el-table-column
+              prop="lyhDrugEntity.drugGuige"
+              label="规格"
+          >
+          </el-table-column>
+          <el-table-column
+              prop="lyhDrugEntity.drugJixin"
+              label="剂型"
+          >
+          </el-table-column>
+          <el-table-column
+              prop="lyhDrugEntity.drugDate"
+              label="有效期至"
+          >
+          </el-table-column>
+
+          <el-table-column
+              prop="pharmacyNumber"
+              label="库存（件/克）"
+          >
+          </el-table-column>
+          <el-table-column
+              prop="lyhDrugEntity.drugPrice"
+              label="单价（元）"
+          >
+          </el-table-column>
+
+
+        </el-table>
+        <br>
         <!--分页-->
         <div class="fy_div">
           <el-pagination
@@ -214,25 +127,107 @@
               :page-sizes="[5, 10, 20, 40]"
               :page-size="pagesize"
               layout="total, sizes, prev, pager, next, jumper"
-              :total="gridData.length">
+              :total="tableData.length">
           </el-pagination>
         </div>
-      </el-form>
+
+        <!--  <el-dialog-->
+        <!--      v-model="centerDialogVisible"-->
+        <!--      width="40%"-->
+        <!--      center>-->
+        <!--    <div style="margin-top: -10%"><span style="color:black;font-size:16px;font-weight:bold  ">产品参数</span></div>-->
+        <!--    <div style="margin-top: 40px">-->
+        <!--      <el-form :model="ruleFrom">-->
+        <!--       -->
+        <!--        -->
+        <!--        -->
+        <!--        -->
+        <!--      </el-form>-->
+
+
+        <!--    </div>-->
+
+        <!--    <template #footer>-->
+        <!--    <span class="dialog-footer">-->
+        <!--      <el-button @click="centerDialogVisible = false">取 消</el-button>-->
+        <!--      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
+        <!--    </span>-->
+        <!--    </template>-->
+
+        <!--  </el-dialog>-->
 
 
 
-    </div>
-    <template #footer>
+
+        <el-dialog
+
+            v-model="dialogVisible"
+            width="80%"
+            :before-close="handleClose">
+          <div style="margin-top: -30px">—————————————————————<span style="color:red">申请药品调拨</span>———————————————————————</div>
+          <div style="margin-top: 10px">
+            <el-form :model="ruleFrom" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+
+              <el-row >
+
+                <el-col :span="10">
+                  <el-form-item label="调拨编号:">
+                    <el-input v-model="ruleFrom.allotId" :disabled="true"></el-input>
+                  </el-form-item>
+                </el-col>
+
+              </el-row>
+
+
+
+
+              <el-table
+                  :data="gridData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                  style="width: 100%;"
+                  max-height="200"
+                  :cell-style="{'text-align':'center'}"
+                  :header-cell-style="{background:'#D6E9FC',color:'#606266','text-align':'center'}"
+                  @selection-change="selectionLineChangeHandle3"
+              >
+
+                <el-table-column width="50" type="selection"></el-table-column>
+                <el-table-column property="lyhDrugEntity.drugName" label="药品名" width="150"></el-table-column>
+                <el-table-column property="lyhDrugEntity.drugJixin" label="单价" width="200"></el-table-column>
+                <el-table-column property="lyhDrugEntity.drugJixin" label="生产日期"></el-table-column>
+
+                <el-table-column property="" label="数量">
+                  <template #default="scope">
+                    <el-input-number v-model.number="scope.row.numbers"></el-input-number>
+                  </template>
+                </el-table-column>
+              </el-table>
+
+              <!--分页-->
+              <div class="fy_div">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[5, 10, 20, 40]"
+                    :page-size="pagesize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="gridData.length">
+                </el-pagination>
+              </div>
+            </el-form>
+
+
+
+          </div>
+          <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogVisible=false">取 消</el-button>
       <el-button type="primary" @click="insert()">确 定</el-button>
     </span>
-    </template>
+          </template>
 
-  </el-dialog>
-  <!-- 分页控件结束 -->
-
-
+        </el-dialog>
+        <!-- 分页控件结束 -->
 
 
 
@@ -243,7 +238,377 @@
 
 
 
-</el-card>
+
+
+      </el-card>
+
+    </el-tab-pane>
+    <el-tab-pane label="药品详情" name="second">
+
+      <el-card>
+
+
+        <!-- 查询条件开始 -->
+        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+          <el-form-item label="药品类型" prop="providerId" style="margin-left: 0%">
+            <el-select v-model="queryParams.drugState" value-key="id">
+              <el-option v-for="item in drugStates" :key="item.id" :label="item.name" :value="item.id">
+
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="药品名" >
+            <el-input
+                placeholder="请输入药品名"
+                clearable
+                v-model="queryParams.drugName"
+                size="small"
+                style="width:180px"
+            />
+          </el-form-item>
+
+          <el-form-item label="选择剂型">
+            <el-select v-model="queryParams.drugJixin">
+              <el-option v-for="item in drugJiXins" :key="item.id" :label="item.name" :value="item.name"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="选择厂商">
+
+            <el-input v-model="queryParams.supplierName"></el-input>
+          </el-form-item>
+
+          <el-form-item style="margin-left: 80%">
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="initData(queryParams.drugName,queryParams.drugState,queryParams.drugJixin,queryParams.supplierName)">搜索</el-button>
+            <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+
+
+
+        <el-table
+
+
+            :data="tableData2.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            border stripe style="width: 100%;margin-top: -10px"
+            :header-cell-style="{'text-align':'center'}"
+            :cell-style="{'text-align':'center'}"
+
+        >
+
+
+
+          <el-table-column
+              prop="lyhDrugEntity.drugState"
+              label="类别"
+              width="80">
+
+            <template #default="scope">
+              <template v-if="scope.row.lyhDrugEntity.drugState =='1'">
+                中药
+              </template>
+
+              <template v-if="scope.row.lyhDrugEntity.drugState =='2'">
+                西药
+              </template>
+            </template>
+
+
+          </el-table-column>
+          <el-table-column
+              prop="lyhDrugEntity.drugName"
+              label="药品名称"
+          >
+          </el-table-column>
+          <el-table-column
+              prop="lyhDrugEntity.drugGuige"
+              label="规格"
+          >
+          </el-table-column>
+          <el-table-column
+              prop="lyhDrugEntity.drugJixin"
+              label="剂型"
+          >
+          </el-table-column>
+
+          <el-table-column
+              prop="lyhDrugEntity.drugPrice"
+              label="单价（元）"
+          >
+          </el-table-column>
+          <el-table-column
+              prop="numbers"
+              label="数量"
+          >
+          </el-table-column>
+
+
+          <el-table-column label="批次" prop="piCi"></el-table-column>
+
+          <el-table-column prop="recordDate" label="发药时间"></el-table-column>
+        </el-table>
+        <br>
+        <!--分页-->
+        <div class="fy_div">
+          <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[5, 10, 20, 40]"
+              :page-size="pagesize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="tableData2.length">
+          </el-pagination>
+        </div>
+
+        <!--  <el-dialog-->
+        <!--      v-model="centerDialogVisible"-->
+        <!--      width="40%"-->
+        <!--      center>-->
+        <!--    <div style="margin-top: -10%"><span style="color:black;font-size:16px;font-weight:bold  ">产品参数</span></div>-->
+        <!--    <div style="margin-top: 40px">-->
+        <!--      <el-form :model="ruleFrom">-->
+        <!--       -->
+        <!--        -->
+        <!--        -->
+        <!--        -->
+        <!--      </el-form>-->
+
+
+        <!--    </div>-->
+
+        <!--    <template #footer>-->
+        <!--    <span class="dialog-footer">-->
+        <!--      <el-button @click="centerDialogVisible = false">取 消</el-button>-->
+        <!--      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
+        <!--    </span>-->
+        <!--    </template>-->
+
+        <!--  </el-dialog>-->
+
+
+
+
+        <el-dialog
+
+            v-model="dialogVisible"
+            width="80%"
+            :before-close="handleClose">
+          <div style="margin-top: -30px">—————————————————————<span style="color:red">申请药品调拨</span>———————————————————————</div>
+          <div style="margin-top: 10px">
+            <el-form :model="ruleFrom" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+
+              <el-row >
+
+                <el-col :span="10">
+                  <el-form-item label="调拨编号:">
+                    <el-input v-model="ruleFrom.allotId" :disabled="true"></el-input>
+                  </el-form-item>
+                </el-col>
+
+              </el-row>
+
+
+
+
+              <el-table
+                  :data="gridData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+                  style="width: 100%;"
+                  max-height="200"
+                  :cell-style="{'text-align':'center'}"
+                  :header-cell-style="{background:'#D6E9FC',color:'#606266','text-align':'center'}"
+                  @selection-change="selectionLineChangeHandle3"
+              >
+
+                <el-table-column width="50" type="selection"></el-table-column>
+                <el-table-column property="lyhDrugEntity.drugName" label="药品名" width="150"></el-table-column>
+                <el-table-column property="lyhDrugEntity.drugJixin" label="单价" width="200"></el-table-column>
+                <el-table-column property="lyhDrugEntity.drugJixin" label="生产日期"></el-table-column>
+
+                <el-table-column property="" label="数量">
+                  <template #default="scope">
+                    <el-input-number v-model.number="scope.row.numbers"></el-input-number>
+                  </template>
+                </el-table-column>
+              </el-table>
+
+              <!--分页-->
+              <div class="fy_div">
+                <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[5, 10, 20, 40]"
+                    :page-size="pagesize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="gridData.length">
+                </el-pagination>
+              </div>
+            </el-form>
+
+
+
+          </div>
+          <template #footer>
+    <span class="dialog-footer">
+      <el-button @click="dialogVisible=false">取 消</el-button>
+      <el-button type="primary" @click="insert()">确 定</el-button>
+    </span>
+          </template>
+
+        </el-dialog>
+        <!-- 分页控件结束 -->
+
+
+
+
+
+
+
+
+
+
+
+
+      </el-card>
+
+
+
+
+
+
+
+
+
+
+
+    </el-tab-pane>
+
+
+
+    <el-tab-pane label="申请记录" name="three">
+
+      <el-card>
+
+        <!-- 查询条件开始 -->
+        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+          <el-form-item label="药品类型" prop="providerId" style="margin-left: 0%">
+            <el-select v-model="queryParams.drugState" value-key="id">
+              <el-option v-for="item in drugStates" :key="item.id" :label="item.name" :value="item.id">
+
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="药品名" >
+            <el-input
+                placeholder="请输入药品名"
+                clearable
+                v-model="queryParams.drugName"
+                size="small"
+                style="width:180px"
+            />
+          </el-form-item>
+
+          <el-form-item label="选择剂型">
+            <el-select v-model="queryParams.drugJixin">
+              <el-option v-for="item in drugJiXins" :key="item.id" :label="item.name" :value="item.name"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="选择厂商">
+
+            <el-input v-model="queryParams.supplierName"></el-input>
+          </el-form-item>
+
+          <el-form-item style="margin-left: 80%">
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="initData(queryParams.drugName,queryParams.drugState,queryParams.drugJixin,queryParams.supplierName)">搜索</el-button>
+            <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+          </el-form-item>
+        </el-form>
+
+        <el-table
+
+
+            :data="tableData3.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+            border stripe style="width: 100%;margin-top: 10px"
+            :header-cell-style="{'text-align':'center'}"
+            :cell-style="{'text-align':'center'}"
+        >
+
+
+          <el-table-column
+              prop="lyhPharmacyEntity.lyhDrugEntity.drugState"
+              label="类别"
+              width="80">
+
+            <template #default="scope">
+              <template v-if="scope.row.lyhPharmacyEntity.lyhDrugEntity.drugState =='1'">
+                中药
+              </template>
+
+              <template v-if="scope.row.lyhPharmacyEntity.lyhDrugEntity.drugState =='2'">
+                西药
+              </template>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="detailsDate" label="申请时间"></el-table-column>
+
+          <el-table-column
+              prop="lyhPharmacyEntity.lyhDrugEntity.drugName"
+              label="药品名称"
+              width="120">
+          </el-table-column>
+          <el-table-column
+              prop="lyhPharmacyEntity.lyhDrugEntity.drugGuige"
+              label="规格"
+              width="120">
+          </el-table-column>
+          <el-table-column
+              prop="lyhPharmacyEntity.lyhDrugEntity.drugJixin"
+              label="剂型"
+              width="120">
+          </el-table-column>
+          <el-table-column
+              prop="lyhPharmacyEntity.lyhDrugEntity.drugDate"
+              label="有效期至"
+              width="120">
+          </el-table-column>
+          <el-table-column
+              prop="lyhPharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName"
+              label="厂家">
+          </el-table-column>
+          <el-table-column
+              prop="numbers"
+              label="申请调拨数量"
+              width="120">
+          </el-table-column>
+          <el-table-column
+              prop="lyhPharmacyEntity.lyhDrugEntity.drugPrice"
+              label="单价（元）"
+              width="120">
+          </el-table-column>
+        </el-table>
+        <br>
+        <!--分页-->
+        <div class="fy_div">
+          <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[5, 10, 20, 40]"
+              :page-size="pagesize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="tableData3.length">
+          </el-pagination>
+        </div>
+
+      </el-card>
+
+
+    </el-tab-pane>
+  </el-tabs>
+
+
+
 </div>
 
 
@@ -254,6 +619,7 @@ export default {
 name: "drugInfosC",
   data(){
       return{
+        activeName: 'first',
         queryParams:{
           drugState:'',
           drugName:'',
@@ -272,7 +638,8 @@ name: "drugInfosC",
           lyhPharmacyDetailsEntities:[],
          },
         drugInfosC:[],
-
+        tableData2:[],
+        tableData3:[],
         gridDataDetails:[],
         drugStates:[
           {
@@ -300,7 +667,9 @@ name: "drugInfosC",
       }
   },
   methods:{
-
+    handleClick(tab, event) {
+      console.log(tab, event)
+    },
     //大表格
     selectionLineChangeHandle2 (val) {
       this.drugInfosC = val;
@@ -368,6 +737,32 @@ insert(){
           })
     },
 
+
+    initData2(){
+      this.axios.get("http://localhost:8088/find-pharmacyRecord")
+          .then((v) => {
+            this.tableData2 = v.data;
+
+          })
+    },
+
+
+    initData3(drugName,drugState,drugJixin,supplierName){
+      this.axios.get("http://localhost:8088/find-pharmacyDetails",{params:{
+
+          drugName:drugName,
+          drugState:drugState,
+          drugJixin:drugJixin,
+          supplierName:supplierName
+
+        }})
+          .then((v) => {
+            this.tableData3 = v.data;
+
+          })
+    },
+
+
     findByName(pharmacyName){
       this.axios.get("http://localhost:8088/find-pharmacyName",{params:{pharmacyName:pharmacyName}})
       .then((v)=>{
@@ -411,7 +806,8 @@ insert(){
   },
   created() {
     this.initData();
-
+    this.initData2();
+    this.initData3();
   },
 }
 </script>

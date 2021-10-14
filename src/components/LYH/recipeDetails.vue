@@ -4,7 +4,7 @@
 
   <el-form ref="ruleFrom" :model="ruleFrom"  label-width="100px">
     <el-page-header content="详情页" @back="goBack" />
-    <el-button @click="update(),insertByName()">发药</el-button>
+    <el-button @click="update(),insertByName()" type="primary">发药</el-button>
     <!--数据表格-->
 
     <el-row>
@@ -83,6 +83,7 @@ export default {
         }})
           .then((v) => {
            console.log("success")
+            this.goBack()
           });
 
 
@@ -92,32 +93,31 @@ export default {
 
 
     update(){
-      // for (var i = 0; i < this.tableData.length; i++) {
-      //   this.axios.get("http://localhost:8088/update3-execute", {params:{
-      //     id:this.tableData[i].executeId
-      //     }})
-      //   this.axios.get("http://localhost:8088/update-pharmacy2", {params:{
-      //       numbers:this.tableData[i].executedelNumber,
-      //       drugId:this.tableData[i].drugId
-      //     }
-      //   })
-      //   this.axios.get("http://localhost:8088/update-pharmacy", {params:{
-      //     numbers:this.tableData[i].executedelNumber,
-      //       drugId:this.tableData[i].drugId
-      //     }
-      //   })
-      //       .then((v) => {
-      //       this.goBack()
-      //
-      //       });
-      // }
+      for (var i = 0; i < this.tableData.length; i++) {
+        this.axios.get("http://localhost:8088/update3-execute", {params:{
+          id:this.tableData[i].executeId
+          }})
+        this.axios.get("http://localhost:8088/update-pharmacy2", {params:{
+            numbers:this.tableData[i].executedelNumber,
+            drugId:this.tableData[i].drugId
+          }
+        })
+        this.axios.get("http://localhost:8088/update-pharmacy", {params:{
+          numbers:this.tableData[i].executedelNumber,
+            drugId:this.tableData[i].drugId
+          }
+        })
+            .then((v) => {
+            this.goBack()
+
+            });
+      }
     },
 
 
 
     // 跳转返回指定的页面
     goBack() {
-      this.$message("发药成功");
       this.$router.push({
         path: '/recipe',
       })

@@ -35,7 +35,7 @@
     <el-row>
       <el-col :span="24">
         <el-form-item>
-          <el-button style="width:80px;margin-left: 90%" type="primary" @click="updateById()">提交审核</el-button>
+          <el-button style="width:80px;margin-left: 90%" type="primary" @click="insert()">提交申请</el-button>
           <el-table
               :data="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities.slice((currentPage-1)*pagesize,currentPage*pagesize)"
               @selection-change="selectionLineChangeHandle"
@@ -109,6 +109,7 @@ export default {
       piCi:'',
       customerData: [],
       ruleFrom:{
+        meiYon:0,
         procurementId:"",
         lyhProcurementEntity:{
           lyhProcurementDetailsEntities:[],
@@ -129,35 +130,62 @@ export default {
   },
 
   methods: {
-    // 跳转返回指定的页面
-    goBack() {
-      this.$router.push({
-        path: '/auditList'
-      })
-    },
+    insert(){
 
-    update(numbers,proId){
-
-      this.axios.get("http://localhost:8088/update-details",{params:{numbers:numbers,proId:proId}})
-          .then((v) => {
-            this.$message("修改成功");
-          })
-    },
-
-    updateById() {
-      var json=JSON.stringify(this.tableDetails);
-
-      this.axios.post("http://localhost:8088/update-drugstore",json,{headers:{"Content-Type":"application/x-www-from-urlencoded"}})
-
-          .then((v) => {
-
-            this.$message("修改成功");
-            this.$router.push({
-              path: '/return'
+      this.axios.post("http://localhost:8088/add-report",this.ruleFrom)
+            .then((v) => {
+              this.$message("1");
             })
-          })
-    }
-    ,
+    },
+// 获取当前日期的方法
+    getProjectNum () {
+      const projectTime = new Date() // 当前中国标准时间
+      const Year = projectTime.getFullYear() // 获取当前年份 支持IE和火狐浏览器.
+      const Month = projectTime.getMonth() + 1 // 获取中国区月份
+      const Day = projectTime.getDate() // 获取几号
+      var CurrentDate = Year
+      if (Month >= 10) { // 判断月份和几号是否大于10或者小于10
+        CurrentDate += Month
+      } else {
+        CurrentDate += '0' + Month
+      }
+      if (Day >= 10) {
+        CurrentDate += Day
+      } else {
+        CurrentDate += '0' + Day
+      }
+      return CurrentDate
+    },
+
+    // 跳转返回指定的页面
+    // goBack() {
+    //   this.$router.push({
+    //     path: '/auditList'
+    //   })
+    // },
+
+    // update(numbers,proId){
+    //
+    //   this.axios.get("http://localhost:8088/update-details",{params:{numbers:numbers,proId:proId}})
+    //       .then((v) => {
+    //         this.$message("修改成功");
+    //       })
+    // },
+
+    // updateById() {
+    //   var json=JSON.stringify(this.tableDetails);
+    //
+    //   this.axios.post("http://localhost:8088/update-drugstore",json,{headers:{"Content-Type":"application/x-www-from-urlencoded"}})
+    //
+    //       .then((v) => {
+    //
+    //         this.$message("修改成功");
+    //         this.$router.push({
+    //           path: '/return'
+    //         })
+    //       })
+    // }
+    // ,
 
 
 
@@ -194,6 +222,7 @@ export default {
   created() {
 
     this.ruleFrom=JSON.parse(this.$route.query.value);
+    this.ruleFrom.meiYon=this.getProjectNum()+ Math.floor(Math.random() * 10000);
     console.log(this.ruleFrom)
   }
 

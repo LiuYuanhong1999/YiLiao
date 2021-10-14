@@ -257,7 +257,129 @@
 
 
       </el-tab-pane>
-      <el-tab-pane label="已审核" name="second">Config</el-tab-pane>
+      <el-tab-pane label="已审核" name="second">
+        <el-card style="margin-top: 10px">
+
+          <!-- 查询条件开始 -->
+          <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
+            <el-form-item label="供应商名称" prop="providerId" >
+              <el-select v-model="ruleForm.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName">
+                <!--            v-model="queryParams.providerId"-->
+                <!--            placeholder="供应商名称"-->
+                <!--            clearable-->
+                <!--            size="small"-->
+                <!--            style="width:240px"-->
+                <!--        >-->
+                <el-option
+                    v-for="provider in providerOptions"
+                    :key="provider.supplierId"
+                    :label="provider.supplierName"
+                    :value="provider.supplierId"
+                />
+              </el-select>
+            </el-form-item>
+            <el-form-item label="申请人" prop="applyUserName">
+              <!--      -->
+            </el-form-item>
+            <el-form-item label="单据状态" prop="status">
+              <el-select>
+                <!--            v-model="queryParams.status"-->
+                <!--            placeholder="单据状态"-->
+                <!--            clearable-->
+                <!--            size="small"-->
+                <!--            style="width:240px"-->
+                <!--        >-->
+                <!--          <el-option-->
+                <!--              v-for="dict in statusOptions"-->
+                <!--              :key="dict.dictValue"-->
+                <!--              :label="dict.dictLabel"-->
+                <!--              :value="dict.dictValue"-->
+                <!--          />-->
+              </el-select>
+            </el-form-item>
+
+            <el-form-item>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            </el-form-item>
+          </el-form>
+          <!-- 查询条件结束 -->
+
+
+          <!-- 表格工具按钮结束 -->
+
+          <!-- 数据表格开始 -->
+          <el-table
+              :data="tableDate.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              @selection-change="selectionLineChangeHandle2">
+            <el-table-column type="selection" width="55" align="center" />
+            <el-table-column label="单据ID" align="center" width="200" prop="procurementId">
+
+            </el-table-column>
+            <el-table-column label="供应商" width="200" align="center" >
+              <template #default="scope">
+                <router-link :to="{path: '/Test2',query:{key:scope.row.procurementId,value:JSON.stringify(scope.row)}}">
+                  {{scope.row.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName}}
+                </router-link>
+              </template>
+
+
+
+            </el-table-column>
+
+            <el-table-column label="状态" prop="procurementState" align="center"  >
+              <template #default="scope">
+                <template v-if="scope.row.procurementState =='0'">
+                  未审核
+                </template>
+
+                <template v-if="scope.row.procurementState =='1'">
+                  审核中
+                </template>
+
+                <template v-if="scope.row.procurementState =='2'">
+                  已作废
+                </template>
+
+                <template v-if="scope.row.procurementState =='3'">
+                  提交审核
+                </template>
+                <template v-if="scope.row.procurementState =='4'">
+                  审核通过
+                </template>
+                <template v-if="scope.row.procurementState =='5'">
+                  审核不通过
+                </template>
+              </template>
+            </el-table-column>
+            <el-table-column label="申请人" align="center" prop="userName" />
+            <el-table-column label="入库操作人" align="center" prop="procurementName"/>
+            <el-table-column label="入库时间" align="center" prop="procurementDate"  />
+
+            <el-table-column label="创建时间" align="center" prop="procurementFirstdate" />
+          </el-table>
+
+
+
+          <div class="fy_div">
+            <el-pagination
+                @size-change="handleSizeChange"
+                @current-change="handleCurrentChange"
+                :current-page="currentPage"
+                :page-sizes="[5, 10, 20, 40]"
+                :page-size="pagesize"
+                layout="total, sizes, prev, pager, next, jumper"
+                :total="tableDate.length">
+            </el-pagination>
+          </div>
+
+
+          <!-- 分页控件结束 -->
+        </el-card>
+
+
+
+      </el-tab-pane>
 
     </el-tabs>
 
@@ -328,6 +450,19 @@ export default {
 
   methods:{
     handleClick(tab, event) {
+    if (tab.index ==0){
+
+
+      this.initDate(0)
+
+    }else {
+      this.axios.get("http://localhost:8088/find-procurement2")
+          .then((v) => {
+            this.tableDate=v.data;
+          })
+    }
+
+
 
     },
     allPrice(){
@@ -416,8 +551,11 @@ deleteById(){
   this.ruleForm.drugPrice="";
   this.gridData=this.ss;
 },
-    initDate(){
-      this.axios.get("http://localhost:8088/find-procurement")
+    initDate(procurementState){
+      this.axios.get("http://localhost:8088/find-procurement",{params:{
+        procurementState:procurementState
+
+        }})
           .then((v) => {
            this.tableDate=v.data;
             this.ruleForm.procurementId=this.getProjectNum()+ Math.floor(Math.random() * 10000)
@@ -487,7 +625,7 @@ deleteById(){
 
   created() {
 
-    this.initDate();
+    this.initDate(0);
     this.axios.get("http://localhost:8088/find-supplierName")
     .then((v) => {
       this.providerOptions = v.data;
