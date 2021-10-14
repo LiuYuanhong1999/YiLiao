@@ -39,8 +39,8 @@
                         width="100">
                 </el-table-column>
                 <el-table-column
-                        prop="operatingRoomType"
-                        label="手术类型"
+                        prop="operatingRoom.operatingRoomTypeName"
+                        label="手术室类型"
                         width="180">
                 </el-table-column>
                 <el-table-column

@@ -63,6 +63,12 @@ const routes=[
                 component:()=>import('/src/components/ZSX/opc/prescriptionManager.vue'),
                 meta:'门诊处方'
             },
+            {
+                path: '/prescriptionDetails',
+                name:'prescriptionDetailsManager',
+                component:()=>import('/src/components/ZSX/opc/prescriptionDetailsManager.vue'),
+                meta:'门诊处方详情'
+            },
             //护士工作站
             {
                 path:'/dispensing',

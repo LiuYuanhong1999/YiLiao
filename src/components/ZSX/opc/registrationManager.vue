@@ -55,6 +55,7 @@
                 <el-table-column
                         prop="registrationTime"
                         label="挂号日期"
+                        :formatter="dateformat"
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
@@ -232,6 +233,7 @@
 
     <script>
     import qs from "qs";
+    import moment from "moment";
       export default {
         name: "registrationManager",
         components: {},
@@ -312,6 +314,13 @@
             }
         },
         methods:{
+          dateformat(row , column){
+            const data = row[column.property]
+            if (data == undefined){
+              return
+            }
+            return moment(data).format("yyyy-MM-ss HH:mm:ss")
+          },
             initData(){
                 this.axios.get("http://localhost:8088/registration")
                     .then((v) => {

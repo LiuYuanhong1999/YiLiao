@@ -19,7 +19,7 @@
 
                 <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
                 <!--打印导入导出-->
-                <el-button type="primary" @click="dialogVisible = true">增加</el-button>
+                <el-button type="primary" @click="dialogVisible = true">门诊手术申请</el-button>
             </el-row>
             <el-table
 
@@ -29,23 +29,23 @@
             >
                 <el-table-column
                           prop="surgeryForNumber"
-                        label="手术申请号"
-                        width="180">
+                        label="手术申请号">
                 </el-table-column>
+              <el-table-column
+                  prop="prescription.prescriptionId"
+                  label="门诊处方号">
+              </el-table-column>
                 <el-table-column
-                        prop="eName"
-                        label="病人姓名"
-                        width="180">
+                        prop="prescription.registration.patient.patientDataName"
+                        label="病人姓名">
                 </el-table-column>
                 <el-table-column
                         prop="surgeryForName"
-                        label="手术名称"
-                        width="180">
+                        label="手术名称">
                 </el-table-column>
                 <el-table-column
                         prop="surgeryForDoctor"
-                        label="主刀医生"
-                        width="180">
+                        label="主刀医生">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
                     <template  #default="scope">
@@ -79,6 +79,78 @@
             </div>
 
         </el-card>
+
+
+
+      <el-card>
+        <!--表头-->
+        <el-row>
+          <el-col :span="4">
+            <el-input placeholder="请输入审批单号" v-model="eaaOrderNumber"  ></el-input>
+          </el-col>
+
+          <el-button  icon="el-icon-search" type="primary" @click="initData2(currPage,pageSize,eaaOrderNumber)"></el-button>
+          <!--打印导入导出-->
+          <el-button type="primary" @click="dialogVisible = true">住院手术申请</el-button>
+        </el-row>
+        <el-table
+
+            stripe
+            style="width: 100%"
+            :data="tableData1.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+        >
+          <el-table-column
+              prop="surgeryForNumber"
+              label="手术申请号">
+          </el-table-column>
+          <el-table-column
+              prop="recipeEntity.recipeId"
+              label="住院处方号">
+          </el-table-column>
+          <el-table-column
+              prop="recipeEntity.tyhPatientEntity.patientName"
+              label="病人姓名">
+          </el-table-column>
+          <el-table-column
+              prop="surgeryForName"
+              label="手术名称">
+          </el-table-column>
+          <el-table-column
+              prop="surgeryForDoctor"
+              label="主刀医生">
+          </el-table-column>
+          <el-table-column  label="操作" width="130px">
+            <template  #default="scope">
+              <el-tooltip content="编辑" placement="top">
+                <el-button
+                    icon="el-icon-edit" size="mini"
+                    @click="editEmp(scope.row)"></el-button>
+              </el-tooltip>
+
+
+              <el-tooltip content="删除" placement="top">
+                <el-button
+                    icon="el-icon-delete" size="mini"
+                    @click="deleteEmp(scope.row.eId)"></el-button>
+              </el-tooltip>
+            </template>
+          </el-table-column>
+        </el-table>
+        <br>
+        <!--分页-->
+        <div class="fy_div">
+          <el-pagination
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+              :current-page="currentPage"
+              :page-sizes="[5, 10, 20, 40]"
+              :page-size="pagesize"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="tableData.length">
+          </el-pagination>
+        </div>
+
+      </el-card>
         <el-dialog
                 title="新增手术治疗"
                 v-model="dialogVisible"
@@ -240,6 +312,7 @@
         data() {
             return {
                 tableData:[],
+                tableData1:[],
                 dialogVisible: false,
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
@@ -264,11 +337,17 @@
             // },
 
             initData(){
-                this.axios.get("http://localhost:8088/emp")
+                this.axios.get("http://localhost:8088/find_surgery_for_prescription")
                     .then((v) => {
                         this.tableData = v.data;
                     })
             },
+          initData1(){
+            this.axios.get("http://localhost:8088/find_surgery_for_recipe")
+                .then((v) => {
+                  this.tableData1 = v.data;
+                })
+          },
 
             // 初始页currentPage、初始每页数据数pagesize和数据data
             handleSizeChange: function (size) {
@@ -327,6 +406,7 @@
         },
         created() {
             this.initData();
+            this.initData1();
 
         },
     }
