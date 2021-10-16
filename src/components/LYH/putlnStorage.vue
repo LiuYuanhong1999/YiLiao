@@ -11,15 +11,10 @@
         <el-card>
 
           <!-- 查询条件开始 -->
-          <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
+          <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="98px">
             <el-form-item label="供应商名称" prop="providerId" >
-              <el-select v-model="ruleForm.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName">
-                <!--            v-model="queryParams.providerId"-->
-                <!--            placeholder="供应商名称"-->
-                <!--            clearable-->
-                <!--            size="small"-->
-                <!--            style="width:240px"-->
-                <!--        >-->
+              <el-select v-model="queryParams.supplierId">
+
                 <el-option
                     v-for="provider in providerOptions"
                     :key="provider.supplierId"
@@ -29,22 +24,11 @@
               </el-select>
             </el-form-item>
             <el-form-item label="申请人" prop="applyUserName">
-              <!--      -->
+
             </el-form-item>
             <el-form-item label="单据状态" prop="status">
               <el-select>
-                <!--            v-model="queryParams.status"-->
-                <!--            placeholder="单据状态"-->
-                <!--            clearable-->
-                <!--            size="small"-->
-                <!--            style="width:240px"-->
-                <!--        >-->
-                <!--          <el-option-->
-                <!--              v-for="dict in statusOptions"-->
-                <!--              :key="dict.dictValue"-->
-                <!--              :label="dict.dictLabel"-->
-                <!--              :value="dict.dictValue"-->
-                <!--          />-->
+
               </el-select>
             </el-form-item>
 
@@ -60,21 +44,14 @@
             <el-col :span="1.5">
               <el-button type="primary" icon="el-icon-plus" size="mini" @click="dialogVisible=true ">新增采购</el-button>
             </el-col>
-            <!--      <el-col :span="1.5">-->
-            <!--        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(1)">提交审核</el-button>-->
-            <!--      </el-col>-->
+
             <el-col :span="1.5">
               <el-button type="danger" icon="el-icon-edi" size="mini" :disabled="single" @click="deleteById()">作废</el-button>
             </el-col>
             <el-col :span="1.5">
               <el-button type="success" icon="el-icon-delete" size="mini" :disabled="single" @click="updateById(3);insertAudit()">提交入库审核</el-button>
             </el-col>
-            <!--      <el-col :span="1.5">-->
-            <!--        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3);insertAudit()">审核通过</el-button>-->
-            <!--      </el-col>-->
-            <!--      <el-col :span="1.5">-->
-            <!--        <el-button type="success" icon="el-icon-edit" size="mini" :disabled="single" @click="updateById(3);insertAudit()">审核不通过</el-button>-->
-            <!--      </el-col>-->
+
           </el-row>
           <!-- 表格工具按钮结束 -->
 
@@ -405,15 +382,8 @@ export default {
   data() {
     return {
       activeName: 'first',
-      tableDate:[
-
-
-
-      ],
-      gridData: [
-
-
-      ],
+      tableDate:[],
+      gridData: [],
       ss:[],
       dialogVisible:false,
       ruleForm: {
@@ -435,6 +405,14 @@ export default {
           }
         ],
       },
+      queryParams:{
+        supplierId:'',
+        procurementId:'',
+        procurementName:'',
+        procurementState:''
+      },
+
+
       currentPage:1, //初始页
       pagesize:10,   //    每页的数据
 
@@ -452,8 +430,8 @@ export default {
     handleClick(tab, event) {
     if (tab.index ==0){
 
-
-      this.initDate(0)
+this.queryParams.procurementState=0
+      this.initDate(this.queryParams)
 
     }else {
       this.axios.get("http://localhost:8088/find-procurement2")
@@ -552,10 +530,7 @@ deleteById(){
   this.gridData=this.ss;
 },
     initDate(procurementState){
-      this.axios.get("http://localhost:8088/find-procurement",{params:{
-        procurementState:procurementState
-
-        }})
+      this.axios.post("http://localhost:8088/find-procurement",this.queryParams)
           .then((v) => {
            this.tableDate=v.data;
             this.ruleForm.procurementId=this.getProjectNum()+ Math.floor(Math.random() * 10000)
@@ -624,8 +599,8 @@ deleteById(){
   },
 
   created() {
-
-    this.initDate(0);
+      this.queryParams.procurementState=0;
+    this.initDate(this.queryParams);
     this.axios.get("http://localhost:8088/find-supplierName")
     .then((v) => {
       this.providerOptions = v.data;

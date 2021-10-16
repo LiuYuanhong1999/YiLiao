@@ -131,33 +131,6 @@
           </el-pagination>
         </div>
 
-        <!--  <el-dialog-->
-        <!--      v-model="centerDialogVisible"-->
-        <!--      width="40%"-->
-        <!--      center>-->
-        <!--    <div style="margin-top: -10%"><span style="color:black;font-size:16px;font-weight:bold  ">产品参数</span></div>-->
-        <!--    <div style="margin-top: 40px">-->
-        <!--      <el-form :model="ruleFrom">-->
-        <!--       -->
-        <!--        -->
-        <!--        -->
-        <!--        -->
-        <!--      </el-form>-->
-
-
-        <!--    </div>-->
-
-        <!--    <template #footer>-->
-        <!--    <span class="dialog-footer">-->
-        <!--      <el-button @click="centerDialogVisible = false">取 消</el-button>-->
-        <!--      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
-        <!--    </span>-->
-        <!--    </template>-->
-
-        <!--  </el-dialog>-->
-
-
-
 
         <el-dialog
 
@@ -232,14 +205,6 @@
 
 
 
-
-
-
-
-
-
-
-
       </el-card>
 
     </el-tab-pane>
@@ -249,9 +214,9 @@
 
 
         <!-- 查询条件开始 -->
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form ref="queryForm" :model="queryParams2" :inline="true" label-width="68px">
           <el-form-item label="药品类型" prop="providerId" style="margin-left: 0%">
-            <el-select v-model="queryParams.drugState" value-key="id">
+            <el-select v-model="queryParams2.lyhDrugEntity.drugState" value-key="id">
               <el-option v-for="item in drugStates" :key="item.id" :label="item.name" :value="item.id">
 
               </el-option>
@@ -261,25 +226,35 @@
             <el-input
                 placeholder="请输入药品名"
                 clearable
-                v-model="queryParams.drugName"
+                v-model="queryParams2.lyhDrugEntity.drugName"
                 size="small"
                 style="width:180px"
             />
           </el-form-item>
 
           <el-form-item label="选择剂型">
-            <el-select v-model="queryParams.drugJixin">
+            <el-select v-model="queryParams2.lyhDrugEntity.drugJixin">
               <el-option v-for="item in drugJiXins" :key="item.id" :label="item.name" :value="item.name"></el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="选择厂商">
+          <el-form-item label="选择批次">
 
-            <el-input v-model="queryParams.supplierName"></el-input>
+            <el-input v-model="queryParams2.piCi"></el-input>
           </el-form-item>
+          <el-form-item label="供应商" style="margin-left: 00px">
 
+            <el-select v-model="queryParams2.lyhDrugEntity.lyhSupplierEntity.supplierName" value-key="supplierName">
+        <el-option v-for="item in tableData2" :key="item.lyhDrugEntity.lyhSupplierEntity.supplierName" :label="item.lyhDrugEntity.lyhSupplierEntity.supplierName" :value="item.lyhDrugEntity.lyhSupplierEntity.supplierName">
+
+        </el-option>
+
+
+
+            </el-select>
+          </el-form-item>
           <el-form-item style="margin-left: 80%">
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="initData(queryParams.drugName,queryParams.drugState,queryParams.drugJixin,queryParams.supplierName)">搜索</el-button>
-            <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="initData2()">搜索</el-button>
+            <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery2">重置</el-button>
           </el-form-item>
         </el-form>
 
@@ -359,31 +334,6 @@
               :total="tableData2.length">
           </el-pagination>
         </div>
-
-        <!--  <el-dialog-->
-        <!--      v-model="centerDialogVisible"-->
-        <!--      width="40%"-->
-        <!--      center>-->
-        <!--    <div style="margin-top: -10%"><span style="color:black;font-size:16px;font-weight:bold  ">产品参数</span></div>-->
-        <!--    <div style="margin-top: 40px">-->
-        <!--      <el-form :model="ruleFrom">-->
-        <!--       -->
-        <!--        -->
-        <!--        -->
-        <!--        -->
-        <!--      </el-form>-->
-
-
-        <!--    </div>-->
-
-        <!--    <template #footer>-->
-        <!--    <span class="dialog-footer">-->
-        <!--      <el-button @click="centerDialogVisible = false">取 消</el-button>-->
-        <!--      <el-button type="primary" @click="centerDialogVisible = false">确 定</el-button>-->
-        <!--    </span>-->
-        <!--    </template>-->
-
-        <!--  </el-dialog>-->
 
 
 
@@ -490,9 +440,9 @@
       <el-card>
 
         <!-- 查询条件开始 -->
-        <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="68px">
+        <el-form ref="queryForm" :model="queryParams3" :inline="true" label-width="68px">
           <el-form-item label="药品类型" prop="providerId" style="margin-left: 0%">
-            <el-select v-model="queryParams.drugState" value-key="id">
+            <el-select v-model="queryParams3.lyhPharmacyEntity.lyhDrugEntity.drugState" value-key="id">
               <el-option v-for="item in drugStates" :key="item.id" :label="item.name" :value="item.id">
 
               </el-option>
@@ -502,25 +452,28 @@
             <el-input
                 placeholder="请输入药品名"
                 clearable
-                v-model="queryParams.drugName"
+                v-model="queryParams3.lyhPharmacyEntity.lyhDrugEntity.drugName"
                 size="small"
                 style="width:180px"
             />
           </el-form-item>
 
           <el-form-item label="选择剂型">
-            <el-select v-model="queryParams.drugJixin">
+            <el-select v-model="queryParams3.lyhPharmacyEntity.lyhDrugEntity.drugJixin">
               <el-option v-for="item in drugJiXins" :key="item.id" :label="item.name" :value="item.name"></el-option>
             </el-select>
           </el-form-item>
+
           <el-form-item label="选择厂商">
 
-            <el-input v-model="queryParams.supplierName"></el-input>
+            <el-select v-model="queryParams3.lyhPharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName" value-key="supplierName" @click="quChong">
+                  <el-option v-for="item in tableData3" :key="item.lyhPharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName" :label="item.lyhPharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName" :value="item.lyhPharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName"></el-option>
+            </el-select>
           </el-form-item>
 
           <el-form-item style="margin-left: 80%">
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="initData(queryParams.drugName,queryParams.drugState,queryParams.drugJixin,queryParams.supplierName)">搜索</el-button>
-            <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+            <el-button type="primary" icon="el-icon-search" size="mini" @click="initData3()">搜索</el-button>
+            <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery3">重置</el-button>
           </el-form-item>
         </el-form>
 
@@ -619,13 +572,39 @@ export default {
 name: "drugInfosC",
   data(){
       return{
-        activeName: 'first',
+        activeName: 'second',
         queryParams:{
           drugState:'',
           drugName:'',
           drugJixin:'',
           supplierName:''
         },
+        queryParams2:{
+          piCi:'',
+          lyhDrugEntity:{
+            drugName:'',
+            drugJixin:'',
+            drugState:'',
+
+
+            lyhSupplierEntity:{
+              supplierName:'',
+            },
+          },
+        },
+        queryParams3:{
+          lyhPharmacyEntity:{
+            lyhDrugEntity:{
+              drugName:'',
+              drugJixin:'',
+              drugState:'',
+              lyhSupplierEntity:{
+                supplierName:'',
+              }
+            }
+          }
+        },
+
         centerDialogVisible:false,
         tableData:[],
         dialogVisible: false,
@@ -664,9 +643,40 @@ name: "drugInfosC",
             name: '片剂'
           },
         ],
+
+        supplier:{
+          supplierState:0
+        },
+        providerOptions:[]
       }
   },
   methods:{
+    quChong(){
+
+    },
+
+    resetQuery(){
+      this.queryParams.drugJixin="",
+          this.queryParams.drugName="",
+          this.queryParams.drugState="",
+          this.queryParams.supplierName=""
+    },
+
+    resetQuery2(){
+      this.queryParams2.piCi='',
+          this.queryParams2.lyhDrugEntity.lyhSupplierEntity.supplierName="",
+          this.queryParams2.lyhDrugEntity.drugState="";
+          this.queryParams2.lyhDrugEntity.drugJixin="";
+          this.queryParams2.lyhDrugEntity.drugName="";
+    },
+
+    resetQuery3(){
+      this.queryParams3.lyhPharmacyEntity.lyhDrugEntity.drugState='';
+      this.queryParams3.lyhPharmacyEntity.lyhDrugEntity.drugJixin='';
+      this.queryParams3.lyhPharmacyEntity.lyhDrugEntity.drugName='';
+      this.queryParams3.lyhPharmacyEntity.lyhDrugEntity.lyhSupplierEntity.supplierName='';
+    },
+
     handleClick(tab, event) {
       console.log(tab, event)
     },
@@ -701,7 +711,7 @@ name: "drugInfosC",
         this.dialogVisible=true;
 
     },
-insert(){
+    insert(){
 
       this.ruleFrom.lyhPharmacyDetailsEntities=this.gridDataDetails;
       if (this.ruleFrom.lyhPharmacyDetailsEntities == undefined || this.ruleFrom.lyhPharmacyDetailsEntities.length<=0){
@@ -739,23 +749,15 @@ insert(){
 
 
     initData2(){
-      this.axios.get("http://localhost:8088/find-pharmacyRecord")
+      this.axios.post("http://localhost:8088/find-pharmacyRecord",this.queryParams2)
           .then((v) => {
             this.tableData2 = v.data;
-
           })
     },
 
 
-    initData3(drugName,drugState,drugJixin,supplierName){
-      this.axios.get("http://localhost:8088/find-pharmacyDetails",{params:{
-
-          drugName:drugName,
-          drugState:drugState,
-          drugJixin:drugJixin,
-          supplierName:supplierName
-
-        }})
+    initData3(){
+      this.axios.post("http://localhost:8088/find-pharmacyDetails",this.queryParams3)
           .then((v) => {
             this.tableData3 = v.data;
 
@@ -808,6 +810,12 @@ insert(){
     this.initData();
     this.initData2();
     this.initData3();
+    this.axios.post("http://localhost:8088/find-supplier",this.supplier)
+        .then((v) => {
+          this.providerOptions = v.data;
+        })
+
+
   },
 }
 </script>
