@@ -14,54 +14,42 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="结账号"></el-input>
+                    <el-input placeholder=""></el-input>
                 </el-col>
-                <!--打印导入导出-->
-                <el-button type="primary" style="margin-left: 800px" @click="dialogVisible = true">新增</el-button>
             </el-row>
             <el-table
-
+                    :data="tableData"
                     stripe
                     style="width: 100%"
             >
                 <el-table-column
-                        prop=""
-                        label="结账号"
-                        width="120">
-                </el-table-column>
-                <el-table-column
-                        prop=""
-                        label="结账日期"
-                        width="120">
-                </el-table-column>
-                <el-table-column
-                        prop=""
+                        prop="tyhHosregEntity.hosregNum"
                         label="住院号"
-                        width="120">
+                        width="">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="收取金额"
-                        width="120">
-                </el-table-column>
-                <el-table-column
-                        prop=""
+                        prop="tyhHosregEntity.tyhPatientEntity.patientName"
                         label="病人姓名"
-                        width="120">
+                        width="">
                 </el-table-column>
-                <el-table-column  label="操作" width="130px">
+                <el-table-column
+                        prop="tyhHosregEntity.tyhPatientEntity.patientSex"
+                        label="病人性别"
+                        width="">
+                </el-table-column>
+                <el-table-column
+                        prop="tyhHosregEntity.tyhPatientEntity.patientYue"
+                        label="押金余额"
+                        width="">
+                </el-table-column>
+                <el-table-column  label="操作">
                     <template  #default="scope">
-                        <el-tooltip content="编辑" placement="top">
+                        <el-tooltip content="结算" placement="top">
                             <el-button
-                                    icon="el-icon-edit" size="mini"
-                                    @click=""></el-button>
-                        </el-tooltip>
+                                    @click="dialogVisible = true,dian(scope.row)"
+                                    icon="el-icon-edit" size="mini">
 
-
-                        <el-tooltip content="删除" placement="top">
-                            <el-button
-                                    icon="el-icon-delete" size="mini"
-                                    @click=""></el-button>
+                            </el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -78,14 +66,19 @@
             <el-form status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="借账号" prop="">
-                            <el-input></el-input>
-
+                        <el-form-item label="结账日期" prop="">
+                                <el-date-picker
+                                        format="YYYY-MM-DD HH:mm:ss"
+                                        v-model="jieFrom.jieData"
+                                        type="datetime"
+                                        placeholder="选择日期时间">
+                                </el-date-picker>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="结账日期" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="病人姓名" prop="">
+                            <el-input v-model="jieFrom.jieName" disabled></el-input>
+
                         </el-form-item>
                     </el-col>
                 </el-row>
@@ -93,65 +86,111 @@
                 <el-row>
                     <el-col :span="10">
                         <el-form-item label="住院号" prop="">
-                            <el-input></el-input>
+                            <el-input v-model="jieFrom.hosregNum" disabled></el-input>
 
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
                         <el-form-item label="结账金额" prop="">
-                            <el-input></el-input>
+                            <el-input v-model="jieFrom.jiePrice" disabled></el-input>
 
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="病人姓名" prop="">
-                            <el-input></el-input>
 
-                        </el-form-item>
-                    </el-col>
                 </el-row>
 项目清单
-                <el-table
 
-                        stripe
-                        style="width: 100%"
-                >
-                    <el-table-column
-                            prop=""
-                            label="项目名称"
-                            width="120">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="项目日期"
-                            width="120">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="项目金额"
-                            width="120">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="病人姓名"
-                            width="120">
-                    </el-table-column>
-                    <el-table-column
-                            prop=""
-                            label="负责医生"
-                            width="120">
-                    </el-table-column>
-                </el-table>
+
+
+                <el-form status-icon  ref="ruleForm" class="demo-ruleForm">
+                    <el-row>
+                        <el-tabs>
+                            <el-tab-pane label="药品清单" name="first">
+                                <el-table
+                                        :data="tableData2"
+                                        style="width: 100%">
+                                    <el-table-column
+                                            prop="drugId"
+                                            label="药品编号">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="lyhDrugEntity.drugName"
+                                            label="药品名称">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="lyhDrugEntity.drugPrice"
+                                            label="药品单价">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="executedelNumber"
+                                            label="数量">
+                                    </el-table-column>
+                                    <el-table-column
+                                            label="小计">
+                                        <template  #default="scope">
+                                            {{scope.row.lyhDrugEntity.drugPrice*scope.row.executedelNumber.toFixed(2)}}
+                                        </template>
+
+                                    </el-table-column>
+                                </el-table>
+                            </el-tab-pane>
+                            <el-tab-pane label="手术项目清单" name="second">
+                                <el-table
+                                        :data="tableData3"
+                                        style="width: 100%">
+                                    <el-table-column
+                                            prop="tyhRecipedetailEntity.yxjProjectEntity.projectId"
+                                            label="手术项目编号">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="tyhRecipedetailEntity.yxjProjectEntity.projectName"
+                                            label="手术项目名称">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="tyhRecipedetailEntity.yxjProjectEntity.projectPrice"
+                                            label="手术项目价格"
+                                            width="180">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="operDate"
+                                            label="手术时间"
+                                            width="180">
+                                    </el-table-column>
+                                </el-table>
+                            </el-tab-pane>
+                            <el-tab-pane label="体检项目清单" name="third">
+                                <el-table
+                                        :data="tableData4"
+                                        style="width: 100%">
+                                    <el-table-column
+                                            prop="tyhRecipedetailEntity.yxjProjectEntity.projectId"
+                                            label="体检项目编号">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="tyhRecipedetailEntity.yxjProjectEntity.projectName"
+                                            label="体检项目名称">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="tyhRecipedetailEntity.yxjProjectEntity.projectPrice"
+                                            label="体检项目价格">
+                                    </el-table-column>
+                                    <el-table-column
+                                            prop="recordTime"
+                                            label="体检时间">
+                                    </el-table-column>
+                                </el-table>
+                            </el-tab-pane>
+                        </el-tabs>
+                    </el-row>
+                </el-form>
             </el-form>
 
-            <template #footer>
+
     <span class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="dialogVisible = false,addjie()">确 定</el-button>
     </span>
-            </template>
         </el-dialog>
-
 
 
     </div>
@@ -162,14 +201,103 @@
         name:"zyfyjz",
         components: {},
 
-
         data() {
             return {
                 dialogVisible: false,
+                tableData:[],
+                tableData2:[],
+                tableData3:[],
+                tableData4:[],
+                tableData5:[],
+                tableData6:[],
+                tableData7:[],
+                jieFrom:{
+                    jieData:'',
+                    jiePrice:0,
+                    jieName:'',
+                    hosregNum:'',
+                    tyhJiexes:{
+
+                    }
+                }
             }
         },
         methods:{
+            addjie(){
+                console.log(this.jieFrom)
+                let a = 0
+                this.jieFrom.drug.forEach(v=>{
+                    this.tableData5.splice(a,0,v.lyhDrugEntity)
+                    a=a+1
+                })
+                // let b=0
+                // this.jieFrom.project.forEach(v=>{
+                //     this.tableData6.splice(a,0,v.tyhRecipedetailEntity.yxjProjectEntity)
+                //     b=b+1
+                // })
+                // let c=0
+                // this.jieFrom.project2.forEach(v=>{
+                //     this.tableData6.splice(a,a,v.tyhRecipedetailEntity.yxjProjectEntity)
+                //     c=c+1
+                // })
+                // this.tableData5.splice(b+a,b+a,this.tableData6)
+                this.jieFrom.tyhJiexes=this.tableData5
+                console.log(this.jieFrom)
+                this.axios.post("http://localhost:8088/add-jie",this.jieFrom)
+                    .then((v) => {
+                            this.$message.success("結算成功")
+                    })
+            },
 
+            dian(s){
+                this.jieFrom.jieName=s.tyhHosregEntity.tyhPatientEntity.patientName
+                this.jieFrom.hosregNum=s.tyhHosregEntity.hosregNum
+                this.initData2(s.tyhHosregEntity.tyhPatientEntity.patientId)
+                this.initData3(s.tyhHosregEntity.tyhPatientEntity.patientId)
+                this.initData4(s.tyhHosregEntity.tyhPatientEntity.patientId)
+            },
+
+            initData() {
+                this.axios.get("http://localhost:8088/findAll-cash",{params:{cha:this.findmohu}})
+                    .then((v) => {
+                        this.tableData = v.data;
+                    })
+            },
+
+            initData2(s){
+                this.axios.get("http://localhost:8088/find-jie",{params:{id:s}})
+                    .then((v) => {
+                        this.tableData2 = v.data;
+
+                        this.tableData2.forEach(v=>{
+                            v.executedelPrice=v.executedelNumber*v.lyhDrugEntity.drugPrice
+                            this.jieFrom.jiePrice=this.jieFrom.jiePrice+v.executedelPrice
+                        })
+                        this.jieFrom.drug=this.tableData2
+                    })
+            },
+
+            initData3(s){
+                this.axios.get("http://localhost:8088/find-oper",{params:{id:s}})
+                    .then((v) => {
+                        this.tableData3 = v.data;
+                        this.tableData3.forEach(v=>{
+                            this.jieFrom.jiePrice=this.jieFrom.jiePrice+v.tyhRecipedetailEntity.yxjProjectEntity.projectPrice
+                        })
+                        this.jieFrom.project=this.tableData3
+                    })
+            },
+
+            initData4(s){
+                this.axios.get("http://localhost:8088/find-record",{params:{id:s}})
+                    .then((v) => {
+                        this.tableData4 = v.data;
+                        this.tableData4.forEach(v=>{
+                            this.jieFrom.jiePrice=this.jieFrom.jiePrice+v.tyhRecipedetailEntity.yxjProjectEntity.projectPrice
+                        })
+                        this.jieFrom.project2=this.tableData4
+                    })
+            },
 
 
             // 初始页currentPage、初始每页数据数pagesize和数据data
@@ -185,6 +313,7 @@
             }
         },
         created() {
+            this.initData()
         },
     }
 

@@ -83,6 +83,12 @@ const routes=[
                 meta:'住院医嘱执行'
             },
             {
+                path:'/zxjl',
+                name:'zxjl',
+                component:()=>import('/src/components/ZSX/nurse/zxjl.vue'),
+                meta:'住院医嘱执行记录'
+            },
+            {
                 path:'/cwgl',
                 name:'cwgl',
                 component:()=>import('/src/components/ZSX/nurse/cwgl.vue'),
