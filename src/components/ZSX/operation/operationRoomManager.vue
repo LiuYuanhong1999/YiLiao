@@ -199,7 +199,7 @@
                 tableData:[],
                 dialogVisible: false,
                 currentPage:1, //初始页
-                pagesize:10,    //    每页的数据
+                pagesize:5,    //    每页的数据
 
 
                 operatingRoomTypeTableData:[],

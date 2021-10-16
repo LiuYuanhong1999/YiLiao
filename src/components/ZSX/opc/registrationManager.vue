@@ -249,12 +249,7 @@
                 list:[],
                 deskTableData:[],
                 patientTableData:[],
-                findPatient:[
-                  {
-                    patientDataId:'',
-                    patientDataName:'',
-                    patientDataCard:'',
-                  }],
+
                 dialogVisible: false,
                 currentPage:1, //初始页
                 pageSize:10,    //    每页的数据
@@ -343,6 +338,7 @@
                 this.axios.get("http://localhost:8088/find-by-patient",{params:{
                     medicalCardNumber:medicalCardNumber}})
                     .then((v)=>{
+                      console.log(v.data)
                       //这不就变了嘛，本身你这样查询的话返回一个对象就行了，都不要返回什么数组
                       this.registration.patient = Object.assign(this.registration.patient,v.data[0])
                     })

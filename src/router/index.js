@@ -125,6 +125,12 @@ const routes=[
                 component:()=>import('/src/components/ZSX/operation/surgeryArrangeManager.vue'),
                 meta:'手术安排'
             },
+            {
+                path:'/operation',
+                name:'operationManager',
+                component:()=>import('/src/components/ZSX/operation/operationManager.vue'),
+                meta:'手术治疗'
+            },
             //住院
             {
                 path: '/zytz',
