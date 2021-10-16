@@ -52,111 +52,26 @@
             <el-row>
                 <el-table :data="tableData2">
                     <el-table-column
-                            width="150">
-                        <el-button @click="drawer = true" type="primary" style="margin-left: 16px;">
-                            临时处方
-                        </el-button>
-
-                        <el-drawer
-                                v-model="drawer"
-                                :direction="direction"
-                                :before-close="handleClose" destroy-on-close>
-                            <el-form status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                                <el-row>
-                                    <el-col :span="10">
-                                        <el-form-item label="处方号" prop="">
-                                            <el-input></el-input>
-
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="10">
-                                        <el-form-item label="处方时间" prop="">
-                                            <el-input></el-input>
-                                        </el-form-item>
-                                    </el-col>
-                                </el-row>
-
-                                <el-row>
-                                    <el-col :span="10">
-                                        <el-form-item label="住院病人" prop="">
-                                            <el-input></el-input>
-
-                                        </el-form-item>
-                                    </el-col>
-                                    <el-col :span="10">
-                                        <el-form-item label="处方金额" prop="">
-                                            <el-input></el-input>
-
-                                        </el-form-item>
-                                    </el-col>
-                                </el-row><br><br>
-
-                                处方内容<br><br><br>
-                                <el-form ref="form" :rules="formRules" :inline="true" :model="form" label-width="80px">
-                                    <div v-for="(item, index) in form.dynamicItem" :key="index">
-                                        <el-form-item
-                                                label="名称"
-                                                style="margin-right: 100px"
-                                        >
-                                            <el-input v-model="item.name" @click="xzxm=true"></el-input>
-                                        </el-form-item>
-                                        <el-form-item
-                                                label="医嘱"
-                                        >
-                                            <el-input v-model="item.name"></el-input>
-                                        </el-form-item>
-                                        <el-form-item
-                                                label="单价"
-                                        >
-                                            <el-input v-model="item.phone"></el-input>
-                                        </el-form-item>
-                                        <el-form-item
-                                                label="数量"
-                                        >
-                                            <el-input v-model="item.phone"></el-input>
-                                        </el-form-item>
-                                        <el-form-item>
-                                            <el-button v-if="index+1 == form.dynamicItem.length" @click="addItem" type="primary">增加</el-button>
-                                            <el-button v-if="index !== 0" @click="deleteItem(item, index)" type="danger">删除</el-button>
-                                        </el-form-item>
-                                    </div>
-                                </el-form>
-                            </el-form>
-
-                            <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
-    </span>
-                            </template>
-                        </el-drawer>
-                    </el-table-column>
-                    <el-table-column
                             prop="recipeId"
-                            label="处方号"
-                            width="60">
+                            label="处方号">
                     </el-table-column>
                     <el-table-column
                             prop="tyhPatientEntity.patientName"
-                            label="病人姓名"
-                            width="70">
+                            label="病人姓名">
                     </el-table-column>
                     <el-table-column
                             prop="recipeDate"
-                            label="处方时间"
-                            width="150">
+                            label="处方时间">
                     </el-table-column>
                     <el-table-column
                             prop="recipeDay"
-                            label="执行天数"
-                            width="70">
+                            label="执行天数">
                     </el-table-column>
                     <el-table-column
                             prop="recipePrice"
-                            label="处方金额"
-                            width="70">
+                            label="处方金额">
                     </el-table-column>
-                    <el-table-column  label="操作" width="150px">
+                    <el-table-column  label="操作">
                         <template  #default="scope">
                             <el-tooltip content="查看" placement="top">
                                 <el-button
@@ -532,8 +447,6 @@
             addchufang(){
                 this.rdFrom.durg=this.checkBoxData4
                 this.rdFrom.project=this.checkBoxData5
-
-                console.log(this.rdFrom)
                 this.axios.post("http://localhost:8088/add-chufang",this.rdFrom)
                     .then((v) => {
                         if (v.data==1){
