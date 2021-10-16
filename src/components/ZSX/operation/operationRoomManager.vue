@@ -39,8 +39,8 @@
                         width="100">
                 </el-table-column>
                 <el-table-column
-                        prop="operatingRoomType"
-                        label="手术类型"
+                        prop="operatingRoom.operatingRoomTypeName"
+                        label="手术室类型"
                         width="180">
                 </el-table-column>
                 <el-table-column
@@ -199,7 +199,7 @@
                 tableData:[],
                 dialogVisible: false,
                 currentPage:1, //初始页
-                pagesize:10,    //    每页的数据
+                pagesize:5,    //    每页的数据
 
 
                 operatingRoomTypeTableData:[],

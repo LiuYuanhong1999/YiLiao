@@ -35,10 +35,11 @@
                 <el-table-column
                         prop="chargeTime"
                         label="收费日期"
+                        :formatter="dateformat"
                         width="180">
                 </el-table-column>
                 <el-table-column
-                        prop="patient.patientDataName"
+                        prop="registration.patient.patientDataName"
                         label="病人姓名"
                         width="180">
                 </el-table-column>
@@ -261,6 +262,7 @@
 
 <script>
     import qs from "qs";
+    import moment from "moment"
     export default {
         name: "chargeManager",
         components: {},
@@ -273,24 +275,52 @@
                 currentPage:1, //初始页
                 pagesize:10,    //    每页的数据
                 charge:{
-                    chargeId:'',
-                    chargeTime:'',
-                    chargeOperatorId:'',
-                    dotor:'',
-                    chargeMoney:'',
+                  chargeId:'',
+                  chargeTime:'',
+                  chargePatientName:'',
+                  chargeOperatorId:'',
+                  dotor:'',
+                  chargeMoney:'',
+                  registration:{
+                    registrationId:'',
+                    registrationNumber:'',
+                    patientDataId:'',
+                    room:'',
+                    doctot:'',
+                    registrationTime:'',
+                    registrationFee:'',
+                    registrationState:'',
+                    registrationType:'',
+                    registrationName:'',
                     patient:{
                       patientDataId:'',
                       patientDataCard:'',
                       patientDataName:'',
                       patientDataPhone:'',
                       patientDataSex:'',
-                      medicalCardNumber:''
+                      medicalCardNumber:'',
+                      medicalCard:''
+                    }
+                  },
+                  prescription:{
+                    prescriptionId:'',
+                    doctor:'',
+                    prescriptionTime:'',
+                    registrationId:'',
+                    prescriptionMoney:'',
                   }
                 },
               activeName: 'second'
             }
         },
         methods:{
+          dateformat(row , column){
+            const data = row[column.property]
+            if (data == undefined){
+              return
+            }
+            return moment(data).format("yyyy-MM-ss HH:mm:ss")
+          },
             initData(){
                 this.axios.get("http://localhost:8088/charge")
                     .then((v) => {

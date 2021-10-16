@@ -125,8 +125,9 @@
             </template>
             <router-link to="/surgeryFor"><el-menu-item index="7-1">手术申请</el-menu-item></router-link>
             <router-link to="/surgeryArrange"><el-menu-item index="7-2">手术安排</el-menu-item></router-link>
-            <router-link to="/operationRoom"><el-menu-item index="7-3">手术室管理</el-menu-item></router-link>
-            <router-link to="/operationNote"><el-menu-item index="7-4">手术记录</el-menu-item></router-link>
+            <router-link to="/operation"><el-menu-item index="7-3">手术治疗</el-menu-item></router-link>
+            <router-link to="/operationRoom"><el-menu-item index="7-4">手术室管理</el-menu-item></router-link>
+            <router-link to="/operationNote"><el-menu-item index="7-5">手术记录</el-menu-item></router-link>
           </el-submenu>
 
 

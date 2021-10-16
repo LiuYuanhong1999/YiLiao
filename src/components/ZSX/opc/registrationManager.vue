@@ -55,6 +55,7 @@
                 <el-table-column
                         prop="registrationTime"
                         label="挂号日期"
+                        :formatter="dateformat"
                         width="180">
                 </el-table-column>
                 <el-table-column  label="操作" width="130px">
@@ -158,24 +159,24 @@
 
                     <el-col :span="10">
                         <el-form-item label="病人姓名" prop="patientDataName">
-                          <el-input v-model="registration.patient.patientDataName"></el-input>
+                          <el-input v-model="registration.patient.patientDataName" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
 
                     <el-col :span="10">
                         <el-form-item label="身份证号码" prop="patientDataCard">
-                            <el-input v-model="registration.patient.patientDataCard"></el-input>
+                            <el-input v-model="registration.patient.patientDataCard" :disabled="true"></el-input>
                         </el-form-item>
                     </el-col>
                   <el-col :span="10">
                     <el-form-item label="病人电话" prop="patientDataPhone">
-                      <el-input v-model="registration.patient.patientDataPhone"></el-input>
+                      <el-input v-model="registration.patient.patientDataPhone" :disabled="true"></el-input>
                     </el-form-item>
                   </el-col>
 
                   <el-col :span="10">
                     <el-form-item label="病人性别" prop="patientDataSex">
-                      <el-input v-model="registration.patient.patientDataSex"></el-input>
+                      <el-input v-model="registration.patient.patientDataSex" :disabled="true"></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -231,7 +232,8 @@
 </template>
 
     <script>
-      import qs from "qs";
+    import qs from "qs";
+    import moment from "moment";
       export default {
         name: "registrationManager",
         components: {},
@@ -247,12 +249,7 @@
                 list:[],
                 deskTableData:[],
                 patientTableData:[],
-                findPatient:[
-                  {
-                    patientDataId:'',
-                    patientDataName:'',
-                    patientDataCard:'',
-                  }],
+
                 dialogVisible: false,
                 currentPage:1, //初始页
                 pageSize:10,    //    每页的数据
@@ -312,6 +309,13 @@
             }
         },
         methods:{
+          dateformat(row , column){
+            const data = row[column.property]
+            if (data == undefined){
+              return
+            }
+            return moment(data).format("yyyy-MM-ss HH:mm:ss")
+          },
             initData(){
                 this.axios.get("http://localhost:8088/registration")
                     .then((v) => {
@@ -334,6 +338,7 @@
                 this.axios.get("http://localhost:8088/find-by-patient",{params:{
                     medicalCardNumber:medicalCardNumber}})
                     .then((v)=>{
+                      console.log(v.data)
                       //这不就变了嘛，本身你这样查询的话返回一个对象就行了，都不要返回什么数组
                       this.registration.patient = Object.assign(this.registration.patient,v.data[0])
                     })
@@ -350,7 +355,7 @@
             },
             editEmp(row){
                 this.registration = Object.assign({}, row)
-                this.registration.room = row.desk.deskId
+                // this.registration.room = row.desk.deskId
                 this.dialogVisible=true;
             },
 

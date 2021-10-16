@@ -71,7 +71,8 @@
         </el-table-column>
         <el-table-column
             prop="registration.patient.patientDataName"
-            label="病人姓名">
+            label="病人姓名"
+            width="70">
         </el-table-column>
         <el-table-column
             prop="prescriptionTime"
@@ -79,14 +80,15 @@
         </el-table-column>
         <el-table-column
             prop="prescriptionMoney"
-            label="处方金额">
+            label="处方金额"
+        width="70">
         </el-table-column>
         <el-table-column  label="操作" width="130px">
           <template  #default="scope">
-            <el-tooltip content="编辑" placement="top">
+            <el-tooltip content="详情" placement="top">
               <el-button
                   icon="el-icon-edit" size="mini"
-                  @click="editPrescription(scope.row)"></el-button>
+                  @click="prescriptionDetails(scope.row)"></el-button>
             </el-tooltip>
 
             <el-tooltip content="删除" placement="top">
@@ -137,16 +139,16 @@
               <el-input v-model="prescription.registration.patient.patientDataName" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
+          <el-col :span="10" style="display:none">
             <el-form-item label="挂号id" prop="patientDataId">
-              <el-input v-model="prescription.registration.registrationId" :disabled="true"></el-input>
+              <el-input v-model="prescription.registration.registrationId" :disabled="true" ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
-            <el-form-item label="注意事项" prop="prescriptionDetailsAttention">
-              <el-input v-model="prescription.prescriptionDetails[0].prescriptionDetailsAttention"></el-input>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="10">-->
+<!--            <el-form-item label="注意事项" prop="prescriptionDetailsAttention">-->
+<!--              <el-input v-model="prescription.prescriptionDetails.prescriptionDetailsAttention"></el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
           <el-col :span="10">
             <el-form-item label="处方日期" prop="prescriptionTime">
               <el-date-picker
@@ -162,16 +164,16 @@
               <el-input v-model="prescription.prescriptionMoney" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="10">
-            <el-form-item label="说明" prop="prescriptionDetailsExplain">
-              <el-input
-                  type="textarea"
-                  :rows="2"
-                  placeholder="请输入内容"
-                  v-model="prescription.prescriptionDetails[0].prescriptionDetailsExplain">
-              </el-input>
-            </el-form-item>
-          </el-col>
+<!--          <el-col :span="10">-->
+<!--            <el-form-item label="说明" prop="prescriptionDetailsExplain">-->
+<!--              <el-input-->
+<!--                  type="textarea"-->
+<!--                  :rows="2"-->
+<!--                  placeholder="请输入内容"-->
+<!--                  v-model="prescription.prescriptionDetails.prescriptionDetailsExplain">-->
+<!--              </el-input>-->
+<!--            </el-form-item>-->
+<!--          </el-col>-->
         </el-row>
         <el-row>
             <el-form label-width="100px" style="width: 100%">
@@ -185,7 +187,7 @@
                   <el-table-column
                       label="数量">
                     <template  #default="scope">
-                      <el-input onkeyup="value = value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')" v-model="scope.row[prescription.prescriptionDetails.medicineCount]" @input="count(scope.$index,scope.row)"></el-input>
+                      <el-input onkeyup="value = value.replace(/^\D*(\d*(?:\.\d{0,2})?).*$/g, '$1')" v-model="scope.row.numbers" @input="count(scope.$index,scope.row)"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column
@@ -195,13 +197,13 @@
                   <el-table-column
                       label="小计">
                     <template  #default="scope">
-                      {{ scope.row[prescription.prescriptionDetails.medicineCount]==null?0 : scope.row[prescription.prescriptionDetails.medicineCount]*scope.row.drugPrice}}
+                      {{ scope.row.numbers==null?0 : scope.row.numbers*scope.row.drugPrice}}
                     </template>
                   </el-table-column>
                   <el-table-column
                       label="注意事项">
                     <template  #default="scope">
-                      <el-input  ></el-input>
+                      <el-input v-model="scope.row.prescriptionDetailsAttention" @input="drugNotes(scope.row,scope.$index)"></el-input>
                     </template>
                   </el-table-column>
                   <el-table-column  label="操作">
@@ -229,7 +231,9 @@
                 </el-table-column>
                 <el-table-column
                     label="注意事项">
-                  <el-input></el-input>
+                  <template  #default="scope">
+                    <el-input v-model="scope.row.prescriptionDetailsAttention" @input="projectNotes(scope.row,scope.$index)"></el-input>
+                  </template>
                 </el-table-column>
                 <el-table-column  label="操作">
                   <template  #default="scope">
@@ -377,6 +381,10 @@ export default {
       checkBoxData: [],
       checkBoxData2:[],
       checkBoxData3:[],
+      checkBoxData4:[],
+      checkBoxData5:[],
+
+      numbers:[],
       xzxm: false,
       dialogVisible: false,
       currentPage:1, //初始页
@@ -426,6 +434,9 @@ export default {
     }
   },
   methods:{
+    prescriptionDetails(s){
+      this.$router.push({path: '/prescriptionDetails',query:{ id:s.prescriptionId}});
+    },
     //查询处方
     initData(){
       this.axios.get("http://localhost:8088/find-prescription")
@@ -464,8 +475,10 @@ export default {
     savePrescription(){
       this.prescription.prescriptionDetails[0].drug=this.checkBoxData
       this.prescription.prescriptionDetails[0].project=this.checkBoxData2
-      console.log(this.prescription)
+
+      this.dialogVisible=false
       this.axios.post("http://localhost:8088/add-prescription",this.prescription).then((v)=>{
+        this.initData(this.currentPage, this.pageSize);
         alert("处方开张")
       })
     },
@@ -496,6 +509,35 @@ export default {
       ))
     },
 
+    //项目注意事项
+    projectNotes(s,a){
+      this.checkBoxData5.splice(a,0,s)
+      let j = 0
+      this.checkBoxData5.forEach(v => {
+        if (s.projectId==v.projectId){
+          j=j+1
+          if (j==2){
+            this.checkBoxData5.splice(a,1)
+          }
+        }
+      })
+      console.log(this.checkBoxData5)
+    },
+    //药品注意事项
+    drugNotes(s,a){
+      this.checkBoxData4.splice(a,0,s)
+      let j = 0
+      this.checkBoxData4.forEach(v => {
+        if (s.drugId==v.drugId){
+          j=j+1
+          if (j==2){
+            this.checkBoxData4.splice(a,1)
+          }
+        }
+      })
+      console.log(this.checkBoxData4)
+    },
+    //点击赋值
     monkey(){
       this.checkBoxData = this.drugdata1
       this.checkBoxData2 = this.projectdata1
@@ -504,7 +546,8 @@ export default {
 
     deleteyp(s){
       this.checkBoxData.splice(s,1);
-      this.checkBoxData3.splice(s,1)
+      this.checkBoxData3.splice(s,1);
+      this.checkBoxData4.splice(s,1);
       this.count2()
       this.checkBoxData2.forEach(v=>(
           Math.round(this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.projectPrice)
@@ -522,6 +565,8 @@ export default {
     close(){
       this.$refs['prescription'].resetFields()
       this.prescription = this.$options.data().prescription
+      this.checkBoxData = []
+      this.checkBoxData2 = []
       this.dialogVisible=false;
     },
     //计算价格  x是下标，a是本行数据
@@ -546,7 +591,7 @@ export default {
     count2(){
       this.prescription.prescriptionMoney=0
       this.checkBoxData3.forEach(v=>{
-        Math.round(this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.undefined*v.drugPrice)
+        Math.round(this.prescription.prescriptionMoney=this.prescription.prescriptionMoney+v.numbers*v.drugPrice)
       })
 
     },
@@ -572,7 +617,15 @@ export default {
     },
     handleClick(tab, event) {
       console.log(tab, event);
-    }
+    },
+    //默认选中当前时间
+    getdatatime(){
+      this.prescription.prescriptionTime = new Date();
+    },
+  },
+  mounted() {
+    let that = this;
+    that.getdatatime()
   },
   created() {
     this.initData();
