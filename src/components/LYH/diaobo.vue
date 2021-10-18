@@ -6,37 +6,12 @@
       <el-breadcrumb-item>药库调拨</el-breadcrumb-item>
     </el-breadcrumb>
 
-    <el-tabs v-model="activeName" @tab-click="handleClick">
+    <el-tabs v-model="activeName" @tab-click="handleClick" >
       <el-tab-pane label="药库调拨" name="first">
 
 
         <el-card>
 
-          <!-- 查询条件开始 -->
-          <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
-            <el-form-item label="供应商名称" prop="providerId" >
-              <el-select >
-
-                <el-option
-
-                />
-              </el-select>
-            </el-form-item>
-            <el-form-item label="申请人" prop="applyUserName">
-              <!--      -->
-            </el-form-item>
-            <el-form-item label="单据状态" prop="status">
-              <el-select>
-
-              </el-select>
-            </el-form-item>
-
-            <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-              <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-            </el-form-item>
-          </el-form>
-          <!-- 查询条件结束 -->
 
           <!-- 表格工具按钮开始 -->
           <el-row :gutter="10" style="margin-bottom: 8px;">
@@ -127,166 +102,85 @@
 
 
 
-      </el-tab-pane>
-      <el-tab-pane label="调拨记录" name="second"> <el-card>
-        <!-- 查询条件开始 -->
-        <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
-          <el-form-item label="供应商名称" prop="providerId" >
-            <el-select >
-
-              <el-option
-
-              />
-            </el-select>
-          </el-form-item>
-          <el-form-item label="申请人" prop="applyUserName">
-            <!--      -->
-          </el-form-item>
-          <el-form-item label="单据状态" prop="status">
-            <el-select>
-
-            </el-select>
-          </el-form-item>
-
-          <el-form-item>
-            <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-            <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
-          </el-form-item>
-        </el-form>
-        <!-- 查询条件结束 -->
-
-
-
-
-
-        <el-table
-
-
-            :data="tableData2.slice((currentPage-1)*pagesize,currentPage*pagesize)"
-            border stripe style="width: 100%;margin-top: 10px"
-            :header-cell-style="{'text-align':'center'}"
-            :cell-style="{'text-align':'center'}"
-        >
-          <el-table-column label="调拨单" prop="allotId"/>
-
-          <el-table-column label="药品" prop="drugEntity.drugName"/>
-
-          <el-table-column label="药品单价" prop="drugEntity.drugPrice"/>
-
-
-          <el-table-column label="剂型" prop="drugEntity.drugJixin"/>
-
-
-          <el-table-column label="规格" prop="drugEntity.drugGuige"/>
-
-          <el-table-column label="类型"
-                           prop="drugEntity.drugState">
-            <template #default="scope">
-              <template v-if="scope.row.drugEntity.drugState =='1'">
-                中药
-              </template>
-
-              <template v-if="scope.row.drugEntity.drugState =='2'">
-                西药
-              </template>
-            </template>
-          </el-table-column>
-
-
-          <el-table-column label="供应商" prop="drugEntity.lyhSupplierEntity.supplierName"/>
-
-
-          <el-table-column label="调拨时间" prop="recordDate"/>
-
-
-          <el-table-column label="调拨数量" prop="recordNumbers" width="120"/>
-        </el-table>
-
-        <br>
-        <!--分页-->
-        <div class="fy_div">
-          <el-pagination
-              @size-change="handleSizeChange"
-              @current-change="handleCurrentChange"
-              :current-page="currentPage"
-              :page-sizes="[5, 10, 20, 40]"
-              :page-size="pagesize"
-              layout="total, sizes, prev, pager, next, jumper"
-              :total="tableData2.length">
-          </el-pagination>
-        </div>
-
-
-
-      </el-card></el-tab-pane>
-
-
-      <el-tab-pane label="详情记录" name="three">
+      </el-tab-pane >
+      <el-tab-pane label="调拨记录" name="second">
         <el-card>
-          <!-- 查询条件开始 -->
-          <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
-            <el-form-item label="供应商名称" prop="providerId" >
-              <el-select >
 
-                <el-option
 
-                />
-              </el-select>
+          <el-form ref="queryForm" :model="queryParams" :inline="true" label-width="98px">
+            <el-form-item label="调拨编号">
+            <el-input v-model="queryParams.allotId"></el-input>
             </el-form-item>
-            <el-form-item label="申请人" prop="applyUserName">
-              <!--      -->
-            </el-form-item>
-            <el-form-item label="单据状态" prop="status">
-              <el-select>
+
+
+            <el-form-item label="类别">
+              <el-select v-model="queryParams.allotState">
+
+
+
 
               </el-select>
             </el-form-item>
+
 
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="initData3">搜索</el-button>
               <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
           </el-form>
-          <!-- 查询条件结束 -->
-
-
-
-
+          <!-- 表格工具按钮结束 -->
 
           <el-table
 
 
-              :data="tableData3.slice((currentPage-1)*pagesize,currentPage*pagesize)"
+              :data="tableData2.slice((currentPage-1)*pagesize,currentPage*pagesize)"
               border stripe style="width: 100%;margin-top: 10px"
               :header-cell-style="{'text-align':'center'}"
               :cell-style="{'text-align':'center'}"
           >
 
-            <el-table-column label="药品" prop="drugEntity.drugName"/>
+            <el-table-column
+                prop="allotId"
+                label="调拨编号"
+                width="120">
+            </el-table-column>
+            <el-table-column
+                prop="allotTime"
+                label="申请时间">
 
-            <el-table-column label="类型"
-                             prop="drugEntity.drugState">
+            </el-table-column>
+            <el-table-column
+                prop="allotNowtime"
+                label="更新时间">
+            </el-table-column>
+
+            <el-table-column
+                label="状态">
               <template #default="scope">
-                <template v-if="scope.row.drugEntity.drugState =='1'">
-                  中药
+                <template v-if="scope.row.allotState ==0">
+                  未审核
                 </template>
 
-                <template v-if="scope.row.drugEntity.drugState =='2'">
-                  西药
+                <template v-if="scope.row.allotState ==1">
+                  审核通过
+                </template>
+                <template v-if="scope.row.allotState ==2">
+                  审核未通过
                 </template>
               </template>
             </el-table-column>
+            <el-table-column label="操作">
+              <template #default="scope">
+                <el-tooltip content="查看详情" placement="top">
+                  <router-link :to="{path: '/diaoboWrite',query:{key:scope.row.allotId,value:JSON.stringify(scope.row)}}">
+                    <el-button
+                        icon="el-icon-view" size="mini"
+                        type="primary"
+                    ></el-button></router-link>
+                </el-tooltip>
 
-
-            <el-table-column label="供应商" prop="drugEntity.lyhSupplierEntity.supplierName"/>
-            <el-table-column label="批次数量" prop="numbers" width="120"/>
-
-            <el-table-column label="采购编号" prop="procurementId"/>
-            <el-table-column prop="piCi" label="批次"/>
-            <el-table-column label="发药时间" prop="recodeDate"/>
-
-
-
+              </template>
+            </el-table-column>
           </el-table>
 
           <br>
@@ -299,13 +193,14 @@
                 :page-sizes="[5, 10, 20, 40]"
                 :page-size="pagesize"
                 layout="total, sizes, prev, pager, next, jumper"
-                :total="tableData3.length">
+                :total="tableData2.length">
             </el-pagination>
           </div>
 
 
 
         </el-card>
+
 
       </el-tab-pane>
     </el-tabs>
@@ -323,7 +218,6 @@ export default {
     return{
 
       tableData2:[],
-      tableData3:[],
       centerDialogVisible:false,
       tableData:[],
       dialogVisible: false,
@@ -343,11 +237,40 @@ export default {
             supplierName:'',
           },},},
       drugInfosC:[],
+      queryParams:{
+        allotState: '',
+        allotId:'',
+      },
     }
   },
   methods:{
+
+    resetQuery(){
+
+      this.queryParams.allotState="";
+      this.queryParams.allotId='';
+
+
+    },
+
+
+
     handleClick(tab, event) {
-      console.log(tab, event)
+     if (tab.index ==0){
+        this.queryParams.allotState=0
+       this.axios.get("http://localhost:8088/find-allot")
+           .then((v) => {
+             this.tableData = v.data;
+           })
+
+     }else {
+       this.axios.get("http://localhost:8088/find-allot2")
+           .then((v) => {
+             this.tableData2 = v.data;
+           })
+
+
+     }
     },
 
     updateById(allotState){
@@ -367,11 +290,6 @@ export default {
 
     },
 
-
-
-
-
-
     initData(){
       this.axios.get("http://localhost:8088/find-allot")
           .then((v) => {
@@ -387,15 +305,9 @@ export default {
           })
     },
     initData3(){
-      this.axios.get("http://localhost:8088/find-AllotRecord")
+      this.axios.post("http://localhost:8088/find-allot2",this.queryParams)
           .then((v) => {
             this.tableData2 = v.data;
-          })
-    },
-    initData4(){
-      this.axios.get("http://localhost:8088/find-drugRecord")
-          .then((v) => {
-            this.tableData3 = v.data;
           })
     },
     // 初始页currentPage、初始每页数据数pagesize和数据data
@@ -411,7 +323,7 @@ export default {
   created() {
     this.initData();
     this.initData3();
-    this.initData4();
+
     this.axios.get("http://localhost:8088/find-supplierName")
         .then((v) => {
           this.providerOptions = v.data;

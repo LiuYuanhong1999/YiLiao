@@ -35,7 +35,7 @@
     <el-row>
       <el-col :span="24">
         <el-form-item>
-          <el-button style="width:80px;margin-left: 90%" type="primary" @click="updateById(),updateById2(ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities[0].procurementId)">提交库存</el-button>
+          <el-button style="width:80px;margin-left: 90%" type="primary" @click="updateById(),updateById2(ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities[0].procurementId),updateById3()">提交库存</el-button>
           <el-table
               :data="ruleFrom.lyhProcurementEntity.lyhProcurementDetailsEntities.slice((currentPage-1)*pagesize,currentPage*pagesize)"
               @selection-change="selectionLineChangeHandle"
@@ -53,8 +53,6 @@
               <template #default="scope">
 
                 <el-input placeholder="请输入内容" v-show="scope.row.show" v-model.number="scope.row.numbers"></el-input>
-<!--                <span v-show="!scope.row.show">{{scope.row.numbers}}</span>-->
-
               </template>
 
 
@@ -117,6 +115,7 @@ export default {
     piCi:'',
       customerData: [],
       ruleFrom:{
+        auditId:'',
         procurementId:"",
         lyhProcurementEntity:{
           lyhProcurementDetailsEntities:[],
@@ -146,14 +145,25 @@ export default {
     },
 
     updateById2(procurementId){
-        //
-        //
-        // this.axios.get("http://localhost:8088/update-procurement", {
-        //   params: {
-        //     procurementState:4,
-        //     procurementId: procurementId
-        //   }
-        // })
+
+
+        this.axios.get("http://localhost:8088/update-procurement", {
+          params: {
+            procurementState:4,
+            procurementId: procurementId
+          }
+        })
+    },
+
+
+    updateById3(auditId){
+
+      this.axios.get("http://localhost:8088/update-audit", {
+        params: {
+          auditState:4,
+          auditId: this.ruleFrom.auditId
+        }
+      })
     },
 
 

@@ -8,6 +8,9 @@
     <el-tabs v-model="activeName" @tab-click="handleClick">
       <el-tab-pane label="未审核" name="first" style="margin-top: -40px">
 
+
+
+
         <el-card>
 
           <!-- 查询条件开始 -->
@@ -23,17 +26,15 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="申请人" prop="applyUserName">
-
+            <el-form-item label="申请人" prop="procurementName">
+          <el-input v-model="queryParams.procurementName"></el-input>
             </el-form-item>
-            <el-form-item label="单据状态" prop="status">
-              <el-select>
-
-              </el-select>
+            <el-form-item label="采购编号" prop="procurementId">
+              <el-input v-model="queryParams.procurementId"></el-input>
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="initDate">搜索</el-button>
               <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
             </el-form-item>
           </el-form>
@@ -137,9 +138,7 @@
 
 
                   <el-col :span="10">
-                    <el-form-item label="供应商:" prop="procurementId"
-
-                    >
+                    <el-form-item label="供应商:" prop="procurementId">
                       <el-select v-model="ruleForm.supplierId" @change="findById(ruleForm.supplierId)">
 
                         <el-option
@@ -152,25 +151,10 @@
                       </el-select>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="10">
-                    <el-form-item label="预计金额:" prop='drugPrice'
-                                  :rules="[
-                 {required: true,message: '总金额不能为空'},
-              ]"
-                    >
-                      <el-input ty v-model="ruleForm.zPrice" autocomplete="off" style="width: 200px;"></el-input>
-                    </el-form-item>
-                  </el-col>
 
 
-                  <el-col :span="10">
-                    <el-form-item label="搜索">
 
-                      <el-input>
-                      </el-input>
 
-                    </el-form-item>
-                  </el-col>
                 </el-row>
 
 
@@ -238,15 +222,9 @@
         <el-card style="margin-top: 10px">
 
           <!-- 查询条件开始 -->
-          <el-form ref="queryForm" :model="ruleForm" :inline="true" label-width="98px">
-            <el-form-item label="供应商名称" prop="providerId" >
-              <el-select v-model="ruleForm.lyhProcurementDetailsEntities[0].drugEntity.lyhSupplierEntity.supplierName">
-                <!--            v-model="queryParams.providerId"-->
-                <!--            placeholder="供应商名称"-->
-                <!--            clearable-->
-                <!--            size="small"-->
-                <!--            style="width:240px"-->
-                <!--        >-->
+          <el-form ref="queryForm2" :model="queryForm2" :inline="true" label-width="98px">
+            <el-form-item label="供应商名称" prop="supplierId" >
+              <el-select v-model="queryForm2.supplierId">
                 <el-option
                     v-for="provider in providerOptions"
                     :key="provider.supplierId"
@@ -255,35 +233,29 @@
                 />
               </el-select>
             </el-form-item>
-            <el-form-item label="申请人" prop="applyUserName">
-              <!--      -->
+            <el-form-item label="申请人" prop="procurementName">
+             <el-input v-model="queryForm2.procurementName"></el-input>
             </el-form-item>
-            <el-form-item label="单据状态" prop="status">
-              <el-select>
-                <!--            v-model="queryParams.status"-->
-                <!--            placeholder="单据状态"-->
-                <!--            clearable-->
-                <!--            size="small"-->
-                <!--            style="width:240px"-->
-                <!--        >-->
-                <!--          <el-option-->
-                <!--              v-for="dict in statusOptions"-->
-                <!--              :key="dict.dictValue"-->
-                <!--              :label="dict.dictLabel"-->
-                <!--              :value="dict.dictValue"-->
-                <!--          />-->
+            <el-form-item label="采购编号" prop="procurementId">
+              <el-input v-model="queryForm2.procurementId"></el-input>
+            </el-form-item>
+            <el-form-item label="单据状态" prop="procurementState">
+              <el-select v-model="queryForm2.procurementState" value-key="id">
+                <el-option v-for="item in stateDate" :key="item.id" :label="item.name" :value="item.id">
+
+                </el-option>
               </el-select>
             </el-form-item>
 
             <el-form-item>
-              <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
-              <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
+              <el-button type="primary" icon="el-icon-search" size="mini" @click="initDate2">搜索</el-button>
+              <el-button type="primary" icon="el-icon-refresh" size="mini" @click="resetQuery2">重置</el-button>
             </el-form-item>
           </el-form>
           <!-- 查询条件结束 -->
 
 
-          <!-- 表格工具按钮结束 -->
+
 
           <!-- 数据表格开始 -->
           <el-table
@@ -319,13 +291,13 @@
                 </template>
 
                 <template v-if="scope.row.procurementState =='3'">
-                  提交审核
+                  正在入库
                 </template>
                 <template v-if="scope.row.procurementState =='4'">
-                  审核通过
+                  已入库
                 </template>
                 <template v-if="scope.row.procurementState =='5'">
-                  审核不通过
+                  已驳回
                 </template>
               </template>
             </el-table-column>
@@ -411,17 +383,39 @@ export default {
         procurementName:'',
         procurementState:''
       },
+      queryForm2:{
+        supplierId:'',
+        procurementId:'',
+        procurementName:'',
+        procurementState:''
 
 
+    },
       currentPage:1, //初始页
       pagesize:10,   //    每页的数据
 
       putlnStorageOptions:[],
-
-
       // 供应商列表
       lyhProcurementDetailsEntities:[],
       providerOptions: [],
+
+      stateDate:[
+        {
+          id:3,
+          name:"已提交审核"
+        },
+        {
+          id:4,
+          name: "已入库"
+        },
+        {
+          id:5,
+          name: "已驳回"
+        }
+
+
+
+      ],
 
     }
   },
@@ -434,7 +428,7 @@ this.queryParams.procurementState=0
       this.initDate(this.queryParams)
 
     }else {
-      this.axios.get("http://localhost:8088/find-procurement2")
+      this.axios.post("http://localhost:8088/find-procurement2",this.queryForm2)
           .then((v) => {
             this.tableDate=v.data;
           })
@@ -493,8 +487,13 @@ this.queryParams.procurementState=0
       }
     },
 
+    resetQuery(){
+    this.queryParams.procurementId="";
+      this.queryParams.procurementName="";
+      this.queryParams.supplierId="";
 
-deleteById(){
+},
+    deleteById(){
   for (var i = 0; i < this.putlnStorageOptions.length; i++) {
     this.axios.get("http://localhost:8088/delete-procurement",{params:{
       procurementId:this.putlnStorageOptions[i].procurementId
@@ -505,7 +504,12 @@ deleteById(){
         });
   }
 },
-
+    resetQuery2(){
+      this.queryForm2.procurementId='';
+      this.queryForm2.procurementState="";
+      this.queryForm2.procurementName="";
+      this.queryForm2.supplierId="";
+    },
 
 
 
@@ -515,7 +519,7 @@ deleteById(){
         this.axios.post("http://localhost:8088/add-procurement",this.ruleForm)
             .then((v) => {
             this.clearFrom();
-         this.initDate();
+            this.initDate();
             })
     },
     insertAudit(){
@@ -523,7 +527,7 @@ deleteById(){
           .then((v) => {
            this.initDate();
           })    },
-  clearFrom(){
+    clearFrom(){
     this.dialogVisible=false;
       this.ruleForm.supplierId="";
   this.ruleForm.drugPrice="";
@@ -536,6 +540,14 @@ deleteById(){
             this.ruleForm.procurementId=this.getProjectNum()+ Math.floor(Math.random() * 10000)
           })
     },
+
+
+    initDate2(){
+      this.axios.post("http://localhost:8088/find-procurement2",this.queryForm2)
+          .then((v) => {
+            this.tableDate=v.data;
+          })
+    },
     updateById(procurementState){
       for (var i = 0; i < this.putlnStorageOptions.length; i++) {
 
@@ -546,7 +558,7 @@ deleteById(){
           }
         })
             .then((v) => {
-              this.$message("修改成功");
+              this.$message("已提交审核");
               this.initDate();
             });
       }

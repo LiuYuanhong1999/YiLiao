@@ -35,7 +35,13 @@
         </el-form-item>
       </el-form>
       <!-- 查询条件结束 -->
-<el-button @click="updateById2(),updateById(1)">调拨</el-button>
+      <el-row>
+        <el-col>
+          <el-button @click="updateById2(),updateById(1)">调拨</el-button>
+        </el-col>
+        <el-col> <el-button @click="updateById(2) "> 驳回</el-button></el-col>
+      </el-row>
+
 
       <el-table
 
@@ -96,7 +102,7 @@
       </div>
 
 
-<!--{{drugInfosC}}112121-->
+
     </el-card>
   </div>
 
@@ -138,7 +144,6 @@ export default {
 
     updateById2(){
       for (var i = 0; i < this.drugInfosC.length; i++) {
-alert(this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugEntity.drugId)
         this.axios.get("http://localhost:8088/update-pharmacyRecord", {
           params: {
             numbers:this.drugInfosC[i].numbers,
@@ -155,8 +160,9 @@ alert(this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugEntity.drugId)
           }
         })
             .then((v) => {
-              this.$message("修改成功");
-              this.initData();
+              this.$router.push({
+                path: '/diaobo'
+              })
             });
       }
     },
@@ -175,8 +181,9 @@ alert(this.drugInfosC[i].allotEntity.pharmacyEntity.lyhDrugEntity.drugId)
           }
         })
             .then((v) => {
-              this.$message("修改成功");
-              this.initData();
+              this.$router.push({
+                path: '/diaobo'
+              })
             });
       }
 
