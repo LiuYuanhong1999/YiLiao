@@ -63,6 +63,9 @@
                                 <template v-if="scope.row.executeZt =='3'">
                                     执行完毕
                                 </template>
+                                <template v-if="scope.row.executeZt =='4'">
+                                    执行完毕
+                                </template>
                             </template>
                         </el-table-column>
                         <el-table-column  label="操作">
@@ -84,7 +87,7 @@
 
 
                                 </template>
-                                <template v-if="scope.row.executeZt =='2'">
+                                <template v-if="scope.row.executeZt =='2'||(scope.row.executeDay!=1&&scope.row.executeZt==0)">
                                     <el-tooltip content="执行完毕" placement="top">
                                         <el-button
                                                 icon="el-icon-success" size="mini"

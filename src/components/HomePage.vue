@@ -65,7 +65,6 @@
             <router-link to="/zyfyjz"><el-menu-item index="3-6">住院费用结账</el-menu-item></router-link>
             <router-link to="/yjtf"><el-menu-item index="3-7">押金退费</el-menu-item></router-link>
             <router-link to="/cyjl"><el-menu-item index="3-8">出院记录</el-menu-item></router-link>
-            <router-link to="/zysd"><el-menu-item index="3-9">住院锁定与解锁</el-menu-item></router-link>
 
 
           </el-submenu>
