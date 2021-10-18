@@ -144,11 +144,6 @@
               <el-input v-model="prescription.registration.registrationId" :disabled="true" ></el-input>
             </el-form-item>
           </el-col>
-<!--          <el-col :span="10">-->
-<!--            <el-form-item label="注意事项" prop="prescriptionDetailsAttention">-->
-<!--              <el-input v-model="prescription.prescriptionDetails.prescriptionDetailsAttention"></el-input>-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
           <el-col :span="10">
             <el-form-item label="处方日期" prop="prescriptionTime">
               <el-date-picker
@@ -164,16 +159,6 @@
               <el-input v-model="prescription.prescriptionMoney" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
-<!--          <el-col :span="10">-->
-<!--            <el-form-item label="说明" prop="prescriptionDetailsExplain">-->
-<!--              <el-input-->
-<!--                  type="textarea"-->
-<!--                  :rows="2"-->
-<!--                  placeholder="请输入内容"-->
-<!--                  v-model="prescription.prescriptionDetails.prescriptionDetailsExplain">-->
-<!--              </el-input>-->
-<!--            </el-form-item>-->
-<!--          </el-col>-->
         </el-row>
         <el-row>
             <el-form label-width="100px" style="width: 100%">

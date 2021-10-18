@@ -41,22 +41,27 @@
         </el-table-column>
         <el-table-column
             prop="operationTime"
+            :formatter="dateformat"
             label="手术开始时间">
         </el-table-column>
         <el-table-column
             prop="operationEndTime"
+            :formatter="dateformat"
             label="手术结束时间">
         </el-table-column>
         <el-table-column
             prop="operationDoctor"
+            width="70"
             label="主刀医生">
         </el-table-column>
         <el-table-column
             prop="operationNurse"
+            width="70"
             label="负责护士">
         </el-table-column>
         <el-table-column
             prop="operationAnestheaia"
+            width="70"
             label="麻醉师">
         </el-table-column>
         <el-table-column
@@ -141,6 +146,7 @@
 
 <script>
 import qs from "qs";
+import moment from "moment";
 export default {
   name: "operationManager",
   components: {},
@@ -162,16 +168,13 @@ export default {
     }
   },
   methods:{
-
-    // initData(page,size){
-    //   this.axios.get("http://localhost:8088/emp-mgr", {params: {pageNum: page, size: size}})
-    //       .then((v) => {
-    //         this.tableData = v.data.rows;
-    //         this.totalSize = v.data.total;
-    //
-    //       })
-    // },
-
+    dateformat(row , column){
+      const data = row[column.property]
+      if (data == undefined){
+        return
+      }
+      return moment(data).format("yyyy-MM-ss HH:mm:ss")
+    },
     initData(){
       this.axios.get("http://localhost:8088/find_operation")
           .then((v) => {
