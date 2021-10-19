@@ -14,54 +14,66 @@
             <!--表头-->
             <el-row>
                 <el-col :span="4">
-                    <el-input placeholder="请输入退费号"></el-input>
+                    <el-input v-model="findmohu" @input="initData"></el-input>
                 </el-col>
                 <!--打印导入导出-->
-                <el-button type="primary" style="margin-left: 800px" @click="dialogVisible = true">新增</el-button>
             </el-row>
             <el-table
-
+                    :data="tableData.slice((currentPage-1)*pagesize,currentPage*pagesize)"
                     stripe
                     style="width: 100%"
+                    @expand-change="expandSelect"
             >
-                <el-table-column
-                        prop=""
-                        label="退费号"
-                        width="120">
+                <el-table-column type="expand">
+                    <el-table
+                            :data="tableData4"
+                            stripe
+                    >
+                        <el-table-column
+                                prop="cashNum"
+                                label="押金收取号"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="cashDate"
+                                label="充值日期"
+                                width="">
+                        </el-table-column>
+                        <el-table-column
+                                prop="cashPrice"
+                                label="充值金额"
+                                width="">
+                        </el-table-column>
+                    </el-table>
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="退费日期"
-                        width="120">
+                        prop="tyhHosregEntity.hosregNum"
+                        label="住院号"
+                        width="">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="出院通知号"
-                        width="120">
+                        prop="tyhHosregEntity.tyhPatientEntity.patientName"
+                        label="病人姓名"
+                        width="">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="经办人"
-                        width="120">
+                        prop="tyhHosregEntity.tyhPatientEntity.patientSex"
+                        label="病人性别"
+                        width="">
                 </el-table-column>
                 <el-table-column
-                        prop=""
-                        label="备注"
-                        width="120">
+                        prop="tyhHosregEntity.tyhPatientEntity.patientYue"
+                        label="押金余额"
+                        width="">
                 </el-table-column>
-                <el-table-column  label="操作" width="130px">
+                <el-table-column  label="操作">
                     <template  #default="scope">
-                        <el-tooltip content="编辑" placement="top">
+                        <el-tooltip content="退费" placement="top">
                             <el-button
-                                    icon="el-icon-edit" size="mini"
-                                    @click=""></el-button>
-                        </el-tooltip>
+                                    @click="dialogVisible = true,sss(scope.row)"
+                                    icon="el-icon-edit" size="mini">
 
-
-                        <el-tooltip content="删除" placement="top">
-                            <el-button
-                                    icon="el-icon-delete" size="mini"
-                                    @click=""></el-button>
+                            </el-button>
                         </el-tooltip>
                     </template>
                 </el-table-column>
@@ -75,72 +87,208 @@
                 v-model="dialogVisible"
                 width="60%"
                 :before-close="handleClose">
-            <el-form status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
+            <el-form status-icon  ref="hosregFrom" label-width="100px" class="demo-ruleForm">
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="退费号" prop="">
-                            <el-input></el-input>
-
+                        <el-form-item label="住院号:" prop="procurementId" >
+                            <el-input v-model="hosregFrom.hosregNum" disabled></el-input>
                         </el-form-item>
                     </el-col>
                     <el-col :span="10">
-                        <el-form-item label="退费日期" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="病人姓名">
+                            <el-input v-model="hosregFrom.tyhPatientEntity.patientName" disabled></el-input>
+
                         </el-form-item>
                     </el-col>
                 </el-row>
 
                 <el-row>
                     <el-col :span="10">
-                        <el-form-item label="出院通知号" prop="">
-                            <el-input></el-input>
-
+                        <el-form-item label="收取日期">
+                            <el-date-picker
+                                    format="YYYY-MM-DD HH:mm:ss"
+                                    v-model="cashFrom.cashDate"
+                                    type="datetime"
+                                    placeholder="选择日期时间">
+                            </el-date-picker>
                         </el-form-item>
                     </el-col>
+
                     <el-col :span="10">
-                        <el-form-item label="经办人" prop="">
-                            <el-input></el-input>
+                        <el-form-item label="退费金额">
+                            <el-input v-model="cashFrom.cashPrice" disabled></el-input>
 
                         </el-form-item>
                     </el-col>
-                    <el-col :span="10">
-                        <el-form-item label="备注" prop="">
-                            <el-input></el-input>
 
-                        </el-form-item>
-                    </el-col>
                 </el-row>
             </el-form>
 
             <template #footer>
     <span class="dialog-footer">
       <el-button @click="dialogVisible = false">取 消</el-button>
-      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+      <el-button type="primary" @click="dialogVisible = false,addcash()">确 定</el-button>
     </span>
             </template>
         </el-dialog>
 
-
+        <div class="fy_div">
+            <el-pagination
+                    @size-change="handleSizeChange"
+                    @current-change="handleCurrentChange"
+                    :current-page="currentPage"
+                    :page-sizes="[5, 10, 20, 40]"
+                    :page-size="pagesize"
+                    layout="total, sizes, prev, pager, next, jumper"
+                    :total="tableData.length">
+            </el-pagination>
+        </div>
 
     </div>
 </template>
 <script>
     import qs from "qs";
     export default{
-        name:"yjtf",
+        name:"yjsq",
         components: {},
 
 
         data() {
             return {
                 dialogVisible: false,
+                tableData:[],
+                tableData2:[],
+                tableData3:[],
+                tableData4:[],
+                findmohu:'',
+                currentPage:1, //初始页
+                pagesize:10,    //    每页的数据
+                cashFrom:{
+                    cashNum:'',
+                    cashDate:'',
+                    hosregNum:'',
+                    cashPrice:'',
+                    patientId:'',
+                    tyhHosregEntity:{
+                        hosregNum:'',
+                        hosregDate:'',
+                        hosnotNum:'',
+                        patientId:0,
+                        tyhPatientEntity:{
+                            patientId:'',
+                            patientName:'',
+                            patientSex:'',
+                            patientYue:''
+                        }
+                    }
+                },
+                hosregFrom:{
+                    hosregNum:'',
+                    hosregDate:'',
+                    hosnotNum:'',
+                    patientId:'',
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:''
+                    }
+                }
             }
         },
         methods:{
+            expandSelect:function (row) {
+                this.initData1(row)
+            },
 
+            sss(s){
+                this.hosregFrom.hosregNum=s.tyhHosregEntity.hosregNum
+                this.hosregFrom.tyhPatientEntity.patientName=s.tyhHosregEntity.tyhPatientEntity.patientName
+                this.cashFrom.cashPrice=s.tyhHosregEntity.tyhPatientEntity.patientYue
+                this.cashFrom.patientId=s.tyhHosregEntity.tyhPatientEntity.patientId
+            },
 
+            addcash(){
+                this.cashFrom.hosregNum=this.hosregFrom.hosregNum
+                console.log(this.cashFrom)
+                this.axios.post("http://localhost:8088/del-tcash",this.cashFrom)
+                    .then((v) => {
+                        alert("缴纳成功")
+                        this.initData()
+                        this.initData2()
+                        this.clearFrom()
+                    })
+            },
 
-            // 初始页currentPage、初始每页数据数pagesize和数据data
+            numpi(num){
+                this.axios.get("http://localhost:8088/find-num2",{params:{num:num}})
+                    .then((v) => {
+                        this.hosregFrom = v.data;
+                        console.log(this.hosregFrom)
+                    })
+            },
+
+            clearFrom() {
+                this.hosregFrom={
+                    hosregNum:'',
+                    hosregDate:'',
+                    hosnotNum:'',
+                    patientId:'',
+                    tyhPatientEntity:{
+                        patientId:'',
+                        patientName:'',
+                        patientSex:'',
+                        patientYue:''
+                    }
+                }
+                this.cashFrom={
+                    cashNum:'',
+                    cashDate:'',
+                    hosregNum:'',
+                    cashPrice:'',
+                    tyhHosregEntity:{
+                        hosregNum:'',
+                        hosregDate:'',
+                        hosnotNum:'',
+                        patientId:'',
+                        tyhPatientEntity:{
+                            patientId:'',
+                            patientName:'',
+                            patientSex:'',
+                            patientYue:''
+                        }
+                    }
+                }
+            },
+
+            initData() {
+                this.axios.get("http://localhost:8088/findAll-tcash",{params:{cha:this.findmohu}})
+                    .then((v) => {
+                        this.tableData = v.data;
+                        console.log(v.data)
+                    })
+            },
+
+            initData1(row) {
+                this.axios.get("http://localhost:8088/findAll-cash1",{params:{cha:row.tyhHosregEntity.hosregNum}})
+                    .then((v) => {
+                        this.tableData4 = v.data;
+                    })
+            },
+
+            initData2() {
+                this.axios.get("http://localhost:8088/find-num")
+                    .then((v) => {
+                        this.tableData2 = v.data;
+                    })
+            },
+
+            handleSizeChange: function (size) {
+                this.pagesize = size;
+            },
+            handleCurrentChange: function(currentPage){
+                this.currentPage = currentPage;
+            },
 
 
 
@@ -153,6 +301,8 @@
             }
         },
         created() {
+            this.initData();
+            this.initData2();
         },
     }
 
@@ -178,6 +328,6 @@
     }
     .fy_div{
         margin-top:20px;
-        margin-left: 450px;
+        margin-left: -200px;
     }
 </style>

@@ -169,6 +169,11 @@ const routes=[
                 component:()=>import('/src/components/TYH/zyfyjz.vue'),
             },
             {
+                path: '/zyfyjzx',
+                name:'zyfyjzx',
+                component:()=>import('/src/components/TYH/zyfyjzx.vue'),
+            },
+            {
                 path: '/yjtf',
                 name:'yjtf',
                 component:()=>import('/src/components/TYH/yjtf.vue'),
@@ -182,11 +187,6 @@ const routes=[
                 path: '/zysd',
                 name:'zysd',
                 component:()=>import('/src/components/TYH/zysd.vue'),
-            },
-            {
-                path: '/zyjs',
-                name:'zyjs',
-                component:()=>import('/src/components/TYH/zyjs.vue'),
             },
             {
                 path: '/zyyz',

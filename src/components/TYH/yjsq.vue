@@ -262,15 +262,13 @@
                 this.axios.get("http://localhost:8088/findAll-cash",{params:{cha:this.findmohu}})
                     .then((v) => {
                         this.tableData = v.data;
-                        console.log(this.tableData)
                     })
             },
 
             initData1(row) {
                 this.axios.get("http://localhost:8088/findAll-cash1",{params:{cha:row.tyhHosregEntity.hosregNum}})
                     .then((v) => {
-                        this.tableData4 = v.data;1
-                        console.log(this.tableData4)
+                        this.tableData4 = v.data;
                     })
             },
 

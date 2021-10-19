@@ -51,6 +51,14 @@
 
                             </el-button>
                         </el-tooltip>
+
+                        <el-tooltip content="结算记录" placement="top">
+                            <el-button
+                                    @click="jilu(scope.row.tyhHosregEntity.tyhPatientEntity.patientId)"
+                                    icon="el-icon-view" size="mini">
+
+                            </el-button>
+                        </el-tooltip>
                     </template>
                 </el-table-column>
             </el-table>
@@ -68,7 +76,6 @@
                     <el-col :span="10">
                         <el-form-item label="结账日期" prop="">
                                 <el-date-picker
-                                        format="YYYY-MM-DD HH:mm:ss"
                                         v-model="jieFrom.jieData"
                                         type="datetime"
                                         placeholder="选择日期时间">
@@ -216,42 +223,42 @@
                     jiePrice:0,
                     jieName:'',
                     hosregNum:'',
-                    tyhJiexes:{
-
-                    }
+                    patientId:0,
+                    tyhJiexes:[]
                 }
             }
         },
         methods:{
+            jilu(id){
+                this.$router.push({path: '/zyfyjzx',query:{ id:id}});
+            },
+
+
             addjie(){
-                console.log(this.jieFrom)
                 let a = 0
-                this.jieFrom.drug.forEach(v=>{
-                    this.tableData5.splice(a,0,v.lyhDrugEntity)
+                this.tableData2.forEach(v=>{
+                    this.jieFrom.tyhJiexes.splice(a,0,v)
                     a=a+1
                 })
-                // let b=0
-                // this.jieFrom.project.forEach(v=>{
-                //     this.tableData6.splice(a,0,v.tyhRecipedetailEntity.yxjProjectEntity)
-                //     b=b+1
-                // })
-                // let c=0
-                // this.jieFrom.project2.forEach(v=>{
-                //     this.tableData6.splice(a,a,v.tyhRecipedetailEntity.yxjProjectEntity)
-                //     c=c+1
-                // })
-                // this.tableData5.splice(b+a,b+a,this.tableData6)
-                this.jieFrom.tyhJiexes=this.tableData5
+                this.jieFrom.project.forEach(v=>{
+                    this.jieFrom.tyhJiexes.splice(a,0,v.tyhRecipedetailEntity.yxjProjectEntity)
+                    a=a+1
+                })
+                this.jieFrom.project2.forEach(v=>{
+                    this.jieFrom.tyhJiexes.splice(a,0,v.tyhRecipedetailEntity.yxjProjectEntity)
+                    a=a+1
+                })
                 console.log(this.jieFrom)
-                this.axios.post("http://localhost:8088/add-jie",this.jieFrom)
-                    .then((v) => {
+                    this.axios.post("http://localhost:8088/add-jie",this.jieFrom)
+                        .then((v) => {
                             this.$message.success("結算成功")
-                    })
+                        })
             },
 
             dian(s){
                 this.jieFrom.jieName=s.tyhHosregEntity.tyhPatientEntity.patientName
                 this.jieFrom.hosregNum=s.tyhHosregEntity.hosregNum
+                this.jieFrom.patientId=s.tyhHosregEntity.tyhPatientEntity.patientId
                 this.initData2(s.tyhHosregEntity.tyhPatientEntity.patientId)
                 this.initData3(s.tyhHosregEntity.tyhPatientEntity.patientId)
                 this.initData4(s.tyhHosregEntity.tyhPatientEntity.patientId)
@@ -268,10 +275,11 @@
                 this.axios.get("http://localhost:8088/find-jie",{params:{id:s}})
                     .then((v) => {
                         this.tableData2 = v.data;
-
+                        let a = 0
                         this.tableData2.forEach(v=>{
                             v.executedelPrice=v.executedelNumber*v.lyhDrugEntity.drugPrice
                             this.jieFrom.jiePrice=this.jieFrom.jiePrice+v.executedelPrice
+                            a=a+1
                         })
                         this.jieFrom.drug=this.tableData2
                     })
