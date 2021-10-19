@@ -52,9 +52,9 @@
                 label="药品数量">
               <template #default="scope">
 
-                <el-input placeholder="请输入内容" v-show="scope.row.show" v-model.number="scope.row.numbers"></el-input>
+<!--                <el-input placeholder="请输入内容" v-show="scope.row.show" v-model.number="scope.row.numbers"></el-input>-->
                 <!--                <span v-show="!scope.row.show">{{scope.row.numbers}}</span>-->
-
+      {{scope.row.numbers}}
               </template>
 
 
@@ -130,11 +130,20 @@ export default {
   },
 
   methods: {
+
+    goBack(){
+      this.$router.push({
+        path: '/return'
+      })
+    },
+
     insert(){
 
       this.axios.post("http://localhost:8088/add-report",this.ruleFrom)
             .then((v) => {
-              this.$message("1");
+              this.$router.push({
+                path: '/return'
+              })
             })
     },
 // 获取当前日期的方法

@@ -119,6 +119,7 @@
               :before-close="handleClose">
             <div style="margin-top: -30px">—————————————————————<span style="color:red">退货票据</span>———————————————————————</div>
             <div style="margin-top: 10px">
+
               <el-form :model="ruleFrom" status-icon  ref="ruleForm" label-width="100px" class="demo-ruleForm">
 
 
@@ -301,10 +302,6 @@
 
 
         </el-card>
-
-
-
-
       </el-tab-pane>
 
 
@@ -477,6 +474,7 @@ tableDate:[],
       purchaseTableList: [],
       // 状态数据字典
       statusOptions: [],
+      auditLsit:[],
       // 供应商列表
       providerOptions: [],
       // 查询参数
@@ -595,7 +593,7 @@ methods:{
 
 
   initDate() {
-    this.axios.get("http://localhost:8088/find-audit")
+    this.axios.get("http://localhost:8088/find-audit4")
         .then((v) => {
           this.tableData2 = v.data;
         })
@@ -619,6 +617,10 @@ methods:{
   created() {
     this.initDate();
     this.initDate2();
+    this.axios.get("http://localhost:8088/find-audit4")
+        .then((v) => {
+          this.auditLsit = v.data;
+        })
   }
 
 }
